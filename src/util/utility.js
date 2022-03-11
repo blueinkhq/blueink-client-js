@@ -14,5 +14,10 @@ utilities.handleError = (err) => {
     }
 }
 
+// Just generate some random number for now
+utilities.generateKey = (type) => {
+    return type.toString().toUpperCase() + '-' + Math.floor(Math.random() * 1000).toString();
+}
+
 module.exports = utilities
 

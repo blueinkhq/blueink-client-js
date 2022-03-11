@@ -6,7 +6,7 @@ describe("Bundles", () => {
 	const canceledBundleId = "e1aswoGKQ9";
 
 	it("List all Bundles", () => {
-		return client.bundles.list().then((res) => expect(res.status).toBe(200));
+		return client.bundles.list({status: 'co'}).then((res) => expect(res.status).toBe(200));
 	});
 
 	it("Retrieve a Bundle", () => {
