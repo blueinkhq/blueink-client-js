@@ -1,6 +1,7 @@
 const sampleBundle = require("../seed/sample");
 const axios = require("../config/axios/axios");
 require('dotenv').config();
+const has = Object.prototype.hasOwnProperty;
 
 /*
 Trade off between object and data
@@ -13,7 +14,6 @@ Object:
     - Document might be complicated since having more methods
     - Take longer to implement
     - Might be difficult to pass the Object between modules/components
-
 Data: 
     Pro:
     - Easier to implement
@@ -32,7 +32,7 @@ class BlueInkClient {
 		if (privateApiKey) {
 			this.#privateApiKey = privateApiKey;
 		} else {
-			this.#privateApiKey = process.env.BLUE_INK_PRIVATE_KEY
+			this.#privateApiKey = process.env.BLUEINK_PRIVATE_KEY
 		}
 
 		// Define Base URL
@@ -40,7 +40,7 @@ class BlueInkClient {
 			this.#baseApiUrl = baseApiUrl
 		}
 		if (!this.baseApiUrl) {
-			this.#baseApiUrl = process.env.BLUE_INK_API_URI;
+			this.#baseApiUrl = process.env.BLUEINK_API_URI;
 		}
 		if (!this.#baseApiUrl) {
 			this.#baseApiUrl = this.#defaultBaseUrl;
@@ -54,6 +54,13 @@ class BlueInkClient {
 	}
 
 	#post = (path, data) => {
+		if (has.call(data, 'headers')) {
+			return axios.post(path, data.data, {
+				headers: {
+					...data.headers,
+				}
+			})
+		}
 		return axios.post(path, data);
 	};
 

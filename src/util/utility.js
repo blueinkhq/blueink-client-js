@@ -19,5 +19,9 @@ utilities.generateKey = (type) => {
     return type.toString().toUpperCase() + '-' + Math.floor(Math.random() * 1000).toString();
 }
 
+utilities.isEmpty = (obj) => {
+    return Object.keys(obj).length === 0;
+}
+
 module.exports = utilities
 

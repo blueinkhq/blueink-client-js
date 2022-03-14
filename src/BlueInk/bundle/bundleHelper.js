@@ -1,8 +1,16 @@
-const {sampleBundle, sample2} = require("../../seed/sample");
+const { sampleBundle, sample2 } = require("../../seed/sample");
 const { generateKey } = require("../../util/utility");
 const fs = require("fs");
-const FormData = require("form-data");
+const path = require('path');
+// const FormData = require("form-data");
+const { FormData } = require("formdata-node");
 const has = Object.prototype.hasOwnProperty;
+const { fileFromPathSync } = require("formdata-node/file-from-path");
+// const {FormData} = require('formdata-node');
+const { Readable } = require("stream");
+const { Encoder, FormDataEncoder } = require("form-data-encoder");
+const FILE_PATH = path.resolve('./fw9.pdf');
+const utilities = require("../../util/utility");
 
 const kinds = [
 	"att",
@@ -22,7 +30,9 @@ class BundleHelper {
 	constructor(newBundleData) {
 		// Initialize bundle
 		this.bundleData = { ...sampleBundle, ...newBundleData };
-		this.formData = new FormData();
+
+		// Store the file info and will return it as FormData when the asData method get called.
+		this.files = {};
 	}
 
 	addDocument = (newDoc) => {
@@ -37,17 +47,12 @@ class BundleHelper {
 				has.call(doc, "file_index")
 			).length;
 			newDoc.file_index = index;
-            console.log('path', newDoc.file_path)
-			const file = fs.createReadStream('./fw9.pdf');
-            // console.log(file)
-            file.on('data', () => {
-                console.log('open')
-            })
+			const file = fileFromPathSync(newDoc.file_path);
+			// this.formData.append("bundle_request", JSON.stringify(sample2));
+			// Form Data will store all of the files
+			this.files[`files[${index}]`] = file
+
 			delete newDoc.file_path;
-			this.formData.append("bundle_request", JSON.stringify(sample2));
-			this.formData.append(`file[0}]`, file);
-			// console.log(this.formData)
-            // const a = this.formData.getHeaders();
 		}
 
 		this.bundleData.documents.push(newDoc);
@@ -81,7 +86,19 @@ class BundleHelper {
 		return newField.key;
 	};
 
-	asData = () => this.bundleData;
+	asData = () => {
+		// File is attached
+		if (!utilities.isEmpty(this.files)) {
+			const form = new FormData();
+			for (let key in this.files) {
+				form.append(key, this.files[key]);
+			}
+			form.append("bundle_request", JSON.stringify(this.bundleData));
+			const encoder = new FormDataEncoder(form)
+			return {data: Readable.from(encoder), headers: encoder.headers};
+		}
+		return this.bundleData
+	};
 }
 
 module.exports = BundleHelper;

@@ -80,40 +80,6 @@ const sample2 = {
 		},
 	],
 	documents: [
-		{
-			key: "w4",
-			file_index: 0,
-			fields: [
-				{
-					kind: "inp",
-					key: "inp-name",
-					label: "Your Name",
-					page: 1,
-					x: 15,
-					y: 60,
-					w: 20,
-					h: 3,
-					v_pattern: "email",
-					v_min: 2,
-					v_max: 30,
-					editors: ["signer-1"],
-				},
-				{
-					kind: "sig",
-					key: "sig-01",
-					label: "Your Signature",
-					page: 1,
-					x: 15,
-					y: 68,
-					w: 30,
-					h: 12,
-					v_pattern: "email",
-					v_min: 2,
-					v_max: 30,
-					editors: ["signer-1"],
-				},
-			],
-		},
 	],
 };
 
