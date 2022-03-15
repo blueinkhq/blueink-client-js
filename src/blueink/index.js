@@ -1,6 +1,5 @@
-const sampleBundle = require("../seed/sample");
-const axios = require("../config/axios/axios");
-require('dotenv').config();
+import {instance as axios} from '../config/axios/axios.js'
+import 'dotenv/config';
 const has = Object.prototype.hasOwnProperty;
 
 /*
@@ -29,37 +28,26 @@ class BlueInkClient {
 	#baseApiUrl;
 	constructor(privateApiKey, baseApiUrl) {
 		// Define Private Key
-		if (privateApiKey) {
-			this.#privateApiKey = privateApiKey;
-		} else {
-			this.#privateApiKey = process.env.BLUEINK_PRIVATE_KEY
-		}
+		this.#privateApiKey = privateApiKey || process.env.BLUEINK_PRIVATE_KEY;
 
 		// Define Base URL
-		if (baseApiUrl) {
-			this.#baseApiUrl = baseApiUrl
-		}
-		if (!this.baseApiUrl) {
-			this.#baseApiUrl = process.env.BLUEINK_API_URI;
-		}
-		if (!this.#baseApiUrl) {
-			this.#baseApiUrl = this.#defaultBaseUrl;
-		}
+		this.#baseApiUrl =
+			baseApiUrl || process.env.BLUEINK_API_URI || this.#baseApiUrl;
 
 		axios.interceptors.request.use((config) => {
 			config.headers.Authorization = `Token ${this.#privateApiKey}`;
-			config.baseURL = this.#baseApiUrl
+			config.baseURL = this.#baseApiUrl;
 			return config;
 		});
 	}
 
 	#post = (path, data) => {
-		if (has.call(data, 'headers')) {
+		if (has.call(data, "headers")) {
 			return axios.post(path, data.data, {
 				headers: {
 					...data.headers,
-				}
-			})
+				},
+			});
 		}
 		return axios.post(path, data);
 	};
@@ -85,7 +73,6 @@ class BlueInkClient {
 		return axios.patch(path, data);
 	};
 
-
 	bundles = {
 		create: (data = initBundle) => this.#post("/bundles/", data),
 		list: (query) => this.#get("/bundles/", query),
@@ -103,4 +90,4 @@ class BlueInkClient {
 	};
 }
 
-module.exports = BlueInkClient;
+export {BlueInkClient}

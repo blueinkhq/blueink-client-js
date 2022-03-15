@@ -1,16 +1,11 @@
-const { sampleBundle, sample2 } = require("../../seed/sample");
-const { generateKey } = require("../../util/utility");
-const fs = require("fs");
-const path = require('path');
-// const FormData = require("form-data");
-const { FormData } = require("formdata-node");
+import { FormDataEncoder } from "form-data-encoder";
+import { FormData } from "formdata-node";
+import { fileFromPathSync } from "formdata-node/file-from-path";
+import { Readable } from "stream";
+import { sampleBundle } from "../../seed/sample.js";
+import { utilities } from "../../util/utility.js";
 const has = Object.prototype.hasOwnProperty;
-const { fileFromPathSync } = require("formdata-node/file-from-path");
-// const {FormData} = require('formdata-node');
-const { Readable } = require("stream");
-const { Encoder, FormDataEncoder } = require("form-data-encoder");
-const FILE_PATH = path.resolve('./fw9.pdf');
-const utilities = require("../../util/utility");
+
 
 const kinds = [
 	"att",
@@ -36,7 +31,7 @@ class BundleHelper {
 	}
 
 	addDocument = (newDoc) => {
-		const key = generateKey("doc");
+		const key = utilities.generateKey("doc");
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
@@ -50,7 +45,7 @@ class BundleHelper {
 			const file = fileFromPathSync(newDoc.file_path);
 			// this.formData.append("bundle_request", JSON.stringify(sample2));
 			// Form Data will store all of the files
-			this.files[`files[${index}]`] = file
+			this.files[`files[${index}]`] = file;
 
 			delete newDoc.file_path;
 		}
@@ -60,7 +55,7 @@ class BundleHelper {
 	};
 
 	addSigner = (newSigner) => {
-		const key = generateKey("signer");
+		const key = utilities.generateKey("signer");
 		if (!newSigner.key) {
 			newSigner.key = key;
 		}
@@ -72,13 +67,8 @@ class BundleHelper {
 	addField = (docKey, newField) => {
 		if (!newField.kind) throw new Error("kind is required.");
 		if (!kinds.includes(newField.kind)) throw new Error("kind is invalid.");
-		if (!newField.key) newField.key = generateKey("field");
+		if (!newField.key) newField.key = utilities.generateKey("field");
 
-		// We will provide them default x, y, w, h?
-		if (!newField.x) newField.x = 15;
-		if (!newField.y) newField.y = 60;
-		if (!newField.w) newField.w = 20;
-		if (!newField.h) newField.h = 3;
 		const document = this.bundleData.documents.find(
 			(doc) => doc.key === docKey
 		);
@@ -94,11 +84,13 @@ class BundleHelper {
 				form.append(key, this.files[key]);
 			}
 			form.append("bundle_request", JSON.stringify(this.bundleData));
-			const encoder = new FormDataEncoder(form)
-			return {data: Readable.from(encoder), headers: encoder.headers};
+			const encoder = new FormDataEncoder(form);
+			return { data: Readable.from(encoder), headers: encoder.headers };
 		}
-		return this.bundleData
+		return this.bundleData;
 	};
 }
 
-module.exports = BundleHelper;
+// module.exports = BundleHelper;
+export { BundleHelper };
+utilities.generateKey

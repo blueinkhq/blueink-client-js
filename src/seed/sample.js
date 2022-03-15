@@ -83,4 +83,5 @@ const sample2 = {
 	],
 };
 
-module.exports = { sampleBundle, sample2 };
+// module.exports = { sampleBundle, sample2 };
+export {sampleBundle, sample2}
