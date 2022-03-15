@@ -26,6 +26,10 @@ class BlueInkClient {
 	#privateApiKey;
 	#defaultBaseUrl = "https://api.blueink.com/api/v2";
 	#baseApiUrl;
+	#bundlesPath = '/bundles';
+	#personsPath = '/persons';
+	#packetsPath = '/packets';
+	#templatesPath = '/templates';
 	constructor(privateApiKey, baseApiUrl) {
 		// Define Private Key
 		this.#privateApiKey = privateApiKey || process.env.BLUEINK_PRIVATE_KEY;
@@ -74,19 +78,19 @@ class BlueInkClient {
 	};
 
 	bundles = {
-		create: (data = initBundle) => this.#post("/bundles/", data),
-		list: (query) => this.#get("/bundles/", query),
-		retrieve: (bundleId) => this.#get(`/bundles/${bundleId}/`),
-		cancel: (bundleId) => this.#put(`/bundles/${bundleId}/cancel/`),
-		listEvents: (bundleId) => this.#get(`/bundles/${bundleId}/events/`),
-		listFiles: (bundleId) => this.#get(`/bundles/${bundleId}/files/`),
-		listData: (bundleId) => this.#get(`/bundles/${bundleId}/data/`),
+		create: (data = initBundle) => this.#post(`${this.#bundlesPath}/`, data),
+		list: (query) => this.#get(`${this.#bundlesPath}/`, query),
+		retrieve: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/`),
+		cancel: (bundleId) => this.#put(`${this.#bundlesPath}/${bundleId}/cancel/`),
+		listEvents: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/events/`),
+		listFiles: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/files/`),
+		listData: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/data/`),
 	};
 
 	persons = {
-		create: (data) => this.#post("/persons/", data),
-		list: (query) => this.#get("/persons/", query),
-		retrieve: (personId) => this.#get(`/persons/${personId}/`),
+		create: (data) => this.#post(`${this.#personsPath}/`, data),
+		list: (query) => this.#get(`${this.#personsPath}/`, query),
+		retrieve: (personId) => this.#get(`${this.#personsPath}/${personId}/`),
 	};
 }
 

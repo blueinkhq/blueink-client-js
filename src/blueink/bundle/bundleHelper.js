@@ -6,7 +6,6 @@ import { sampleBundle } from "../../seed/sample.js";
 import { utilities } from "../../util/utility.js";
 const has = Object.prototype.hasOwnProperty;
 
-
 const kinds = [
 	"att",
 	"cbx",
@@ -37,16 +36,19 @@ class BundleHelper {
 
 		// File path is used;
 		if (newDoc.file_path) {
-			// Find current index
-			const index = this.bundleData.documents.filter((doc) =>
-				has.call(doc, "file_index")
-			).length;
-			newDoc.file_index = index;
-			const file = fileFromPathSync(newDoc.file_path);
-			// this.formData.append("bundle_request", JSON.stringify(sample2));
-			// Form Data will store all of the files
-			this.files[`files[${index}]`] = file;
+			if (!has.call(newDoc, "file_index")) {
+				// Find current index
+				const index = this.bundleData.documents.filter((doc) =>
+					has.call(doc, "file_index")
+				).length;
 
+				newDoc.file_index = index;
+			}
+
+			const file = fileFromPathSync(newDoc.file_path);
+
+			// Form Data will store all of the files
+			this.files[`files[${newDoc.file_index}]`] = file;
 			delete newDoc.file_path;
 		}
 
@@ -93,4 +95,4 @@ class BundleHelper {
 
 // module.exports = BundleHelper;
 export { BundleHelper };
-utilities.generateKey
+utilities.generateKey;

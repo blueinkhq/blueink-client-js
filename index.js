@@ -1,12 +1,6 @@
-const BlueInkClient = require("./src/blueink/index.js");
-const sampleBundle = require("./src/seed/sample");
-const BundleHelper = require("./src/blueink/bundle/bundleHelper.js");
-require("dotenv").config();
-const axios = require("axios").default;
-const {Readable} = require('stream');
-const fetch = require('node-fetch')
-const { Encoder, FormDataEncoder } = require("form-data-encoder");
-
+import {BlueInkClient} from './src/blueink/index.js'
+import {BundleHelper} from "./src/blueink/bundle/bundleHelper.js";
+import 'dotenv/config'
 
 
 // Sample API Call
@@ -21,11 +15,10 @@ const callApi = async () => {
 			email_subject: "Yay First Bundle",
 			email_message: "This is your first bundle.",
 		});
-		// const docKey1 = nbh.addDocument({
-		// 	key: "DOC-1",
-		// 	file_url: "https://www.irs.gov/pub/irs-pdf/fw4.pdf",
-		// 	// file_path: "fw9.pdf",
-		// });
+		const docKey1 = nbh.addDocument({
+			key: "DOC-1",
+			file_url: "https://www.irs.gov/pub/irs-pdf/fw4.pdf",
+		});
 
 
 		const signer1 = nbh.addSigner({
@@ -33,12 +26,16 @@ const callApi = async () => {
 			email: "peter.gibbons@example.com",
 		});
 
-		// const field = nbh.addField(docKey1, {
-		// 	label: "Your Name",
-		// 	page: 1,
-		// 	kind: "txt",
-		// 	editors: [signer1],
-		// });
+		const field = nbh.addField(docKey1, {
+			label: "Your Name",
+			page: 1,
+			kind: "txt",
+			editors: [signer1],
+			x: 15,
+			y: 60,
+			w: 20,
+			h: 3,
+		});
 
 		const dockey2 = nbh.addDocument({
 			key: 'DOC-2',
@@ -50,14 +47,19 @@ const callApi = async () => {
 			page: 1,
 			kind: "txt",
 			editors: [signer1],
+			x: 15,
+			y: 60,
+			w: 20,
+			h: 3,
 		})
 
 
-		// const res = await client.bundles.create(nbh.asData());
-		// console.log(res.status)
+		const res = await client.bundles.create(nbh.asData());
+		console.log(res.status)
 	} catch (e) {
 		if (e.response) {
 			console.log(e.response)
+			console.log(e.response.data.errors)
 		}
 		else {
 			console.log(e);
@@ -67,4 +69,5 @@ const callApi = async () => {
 
 callApi();
 
-module.exports = client;
+// module.exports = client;
+export {client}
