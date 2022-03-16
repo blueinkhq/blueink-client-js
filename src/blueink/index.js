@@ -91,7 +91,21 @@ class BlueInkClient {
 		create: (data) => this.#post(`${this.#personsPath}/`, data),
 		list: (query) => this.#get(`${this.#personsPath}/`, query),
 		retrieve: (personId) => this.#get(`${this.#personsPath}/${personId}/`),
+		update: (personId, data) => this.#put(`${this.#personsPath}/${personId}/`, data),
+		partialUpdate: (personId, data) => this.#patch(`${this.#personsPath}/${personId}/`, data),
+		delete: (personId) => this.#delete(`${this.#personsPath}/${personId}/`)
 	};
+
+	packets = {
+		update: (packetId, data) => this.#patch(`${this.#packetsPath}/${packetId}`, data),
+		remind: (packetId) => this.#put(`${this.#packetsPath}/${packetId}/remind/`),
+		retrieveCOE: (packetId) => this.#get(`${this.#packetsPath}/${packetId}/coe/`),
+	};
+
+	templates = {
+		list: (query) => this.#get(`${this.#templatesPath}/`, query),
+		retrieve: (templateId) => this.#get(`${this.#templatesPath}/${templateId}/`),
+	}
 }
 
 export {BlueInkClient}

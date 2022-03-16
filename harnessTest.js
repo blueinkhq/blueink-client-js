@@ -100,12 +100,12 @@ await testHarness(async () => {
         email: "peter.gibbons@example.com",
     });
 
-    const dockey2 = nbh.addDocument({
+    const docKey2 = nbh.addDocument({
         key: 'DOC-2',
         file_path: './fw9.pdf',
     })
 
-    nbh.addField(dockey2, {
+    nbh.addField(docKey2, {
         label: "Your Name",
         page: 1,
         kind: "txt",
