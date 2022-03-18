@@ -36,7 +36,7 @@ class BlueInkClient {
 
 		// Define Base URL
 		this.#baseApiUrl =
-			baseApiUrl || process.env.BLUEINK_API_URI || this.#baseApiUrl;
+			baseApiUrl || process.env.BLUEINK_API_URI || this.#defaultBaseUrl;
 
 		axios.interceptors.request.use((config) => {
 			config.headers.Authorization = `Token ${this.#privateApiKey}`;
@@ -56,9 +56,11 @@ class BlueInkClient {
 		return axios.post(path, data);
 	};
 
-	#get = (path, query = {}) => {
-		const params = new URLSearchParams(query).toString();
-		return axios.get(`${path}?${params}`);
+	#get = (path, params = {}) => {
+		// const params = new URLSearchParams(query).toString();
+		return axios.get(`${path}`, {
+			params: params
+		});
 	};
 
 	#put = (path, data = {}) => {
@@ -79,7 +81,7 @@ class BlueInkClient {
 
 	bundles = {
 		create: (data = initBundle) => this.#post(`${this.#bundlesPath}/`, data),
-		list: (query) => this.#get(`${this.#bundlesPath}/`, query),
+		list: (params) => this.#get(`${this.#bundlesPath}/`, params),
 		retrieve: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/`),
 		cancel: (bundleId) => this.#put(`${this.#bundlesPath}/${bundleId}/cancel/`),
 		listEvents: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/events/`),
@@ -89,7 +91,7 @@ class BlueInkClient {
 
 	persons = {
 		create: (data) => this.#post(`${this.#personsPath}/`, data),
-		list: (query) => this.#get(`${this.#personsPath}/`, query),
+		list: (params) => this.#get(`${this.#personsPath}/`, params),
 		retrieve: (personId) => this.#get(`${this.#personsPath}/${personId}/`),
 		update: (personId, data) => this.#put(`${this.#personsPath}/${personId}/`, data),
 		partialUpdate: (personId, data) => this.#patch(`${this.#personsPath}/${personId}/`, data),
@@ -103,7 +105,7 @@ class BlueInkClient {
 	};
 
 	templates = {
-		list: (query) => this.#get(`${this.#templatesPath}/`, query),
+		list: (params) => this.#get(`${this.#templatesPath}/`, params),
 		retrieve: (templateId) => this.#get(`${this.#templatesPath}/${templateId}/`),
 	}
 }
