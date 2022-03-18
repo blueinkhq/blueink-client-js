@@ -1,5 +1,6 @@
-import {instance as axios} from '../config/axios/axios.js'
-import 'dotenv/config';
+import { instance as axios } from "../config/axios/axios.js";
+import "dotenv/config";
+import { PaginationHelper } from "./pagination.js";
 const has = Object.prototype.hasOwnProperty;
 
 /*
@@ -26,10 +27,10 @@ class BlueInkClient {
 	#privateApiKey;
 	#defaultBaseUrl = "https://api.blueink.com/api/v2";
 	#baseApiUrl;
-	#bundlesPath = '/bundles';
-	#personsPath = '/persons';
-	#packetsPath = '/packets';
-	#templatesPath = '/templates';
+	#bundlesPath = "/bundles";
+	#personsPath = "/persons";
+	#packetsPath = "/packets";
+	#templatesPath = "/templates";
 	constructor(privateApiKey, baseApiUrl) {
 		// Define Private Key
 		this.#privateApiKey = privateApiKey || process.env.BLUEINK_PRIVATE_KEY;
@@ -56,11 +57,20 @@ class BlueInkClient {
 		return axios.post(path, data);
 	};
 
-	#get = (path, params = {}) => {
+	#get = async (path, params = {}) => {
 		// const params = new URLSearchParams(query).toString();
-		return axios.get(`${path}`, {
-			params: params
-		});
+		// return axios.get(`${path}`, {
+		// 	params: params
+		// });
+
+		try {
+			const response = await axios.get(`${path}`, {
+				params: params,
+			});
+			return new PaginationHelper(response, path, params, this);
+		} catch (error) {
+			throw error;
+		}
 	};
 
 	#put = (path, data = {}) => {
@@ -84,8 +94,10 @@ class BlueInkClient {
 		list: (params) => this.#get(`${this.#bundlesPath}/`, params),
 		retrieve: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/`),
 		cancel: (bundleId) => this.#put(`${this.#bundlesPath}/${bundleId}/cancel/`),
-		listEvents: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/events/`),
-		listFiles: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/files/`),
+		listEvents: (bundleId) =>
+			this.#get(`${this.#bundlesPath}/${bundleId}/events/`),
+		listFiles: (bundleId) =>
+			this.#get(`${this.#bundlesPath}/${bundleId}/files/`),
 		listData: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/data/`),
 	};
 
@@ -93,21 +105,26 @@ class BlueInkClient {
 		create: (data) => this.#post(`${this.#personsPath}/`, data),
 		list: (params) => this.#get(`${this.#personsPath}/`, params),
 		retrieve: (personId) => this.#get(`${this.#personsPath}/${personId}/`),
-		update: (personId, data) => this.#put(`${this.#personsPath}/${personId}/`, data),
-		partialUpdate: (personId, data) => this.#patch(`${this.#personsPath}/${personId}/`, data),
-		delete: (personId) => this.#delete(`${this.#personsPath}/${personId}/`)
+		update: (personId, data) =>
+			this.#put(`${this.#personsPath}/${personId}/`, data),
+		partialUpdate: (personId, data) =>
+			this.#patch(`${this.#personsPath}/${personId}/`, data),
+		delete: (personId) => this.#delete(`${this.#personsPath}/${personId}/`),
 	};
 
 	packets = {
-		update: (packetId, data) => this.#patch(`${this.#packetsPath}/${packetId}`, data),
+		update: (packetId, data) =>
+			this.#patch(`${this.#packetsPath}/${packetId}`, data),
 		remind: (packetId) => this.#put(`${this.#packetsPath}/${packetId}/remind/`),
-		retrieveCOE: (packetId) => this.#get(`${this.#packetsPath}/${packetId}/coe/`),
+		retrieveCOE: (packetId) =>
+			this.#get(`${this.#packetsPath}/${packetId}/coe/`),
 	};
 
 	templates = {
 		list: (params) => this.#get(`${this.#templatesPath}/`, params),
-		retrieve: (templateId) => this.#get(`${this.#templatesPath}/${templateId}/`),
-	}
+		retrieve: (templateId) =>
+			this.#get(`${this.#templatesPath}/${templateId}/`),
+	};
 }
 
-export {BlueInkClient}
+export { BlueInkClient };

@@ -1,7 +1,7 @@
-import {BlueInkClient} from './src/blueink/index.js'
-import {BundleHelper} from "./src/blueink/bundle/bundleHelper.js";
-import 'dotenv/config'
-
+import { BlueInkClient } from "./src/blueink/index.js";
+import { BundleHelper } from "./src/blueink/bundle/bundleHelper.js";
+import { PaginationHelper } from "./src/blueink/pagination.js";
+import "dotenv/config";
 
 // Sample API Call
 const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_KEY);
@@ -20,7 +20,6 @@ const callApi = async () => {
 			file_url: "https://www.irs.gov/pub/irs-pdf/fw4.pdf",
 		});
 
-
 		const signer1 = nbh.addSigner({
 			name: "Testing",
 			email: "peter.gibbons@example.com",
@@ -38,9 +37,9 @@ const callApi = async () => {
 		});
 
 		const dockey2 = nbh.addDocument({
-			key: 'DOC-2',
-			file_path: './fw9.pdf',
-		})
+			key: "DOC-2",
+			file_path: "./fw9.pdf",
+		});
 
 		nbh.addField(dockey2, {
 			label: "Your Name",
@@ -51,20 +50,23 @@ const callApi = async () => {
 			y: 60,
 			w: 20,
 			h: 3,
-		})
-
+		});
 
 		const res = await client.bundles.list({
-            page: 2,
-            status: 'co'
-        });
-		console.log(res)
+			page: 1,
+			per_page: 1,
+		});
+		// console.log("\n ==> Response", res);
+		console.log("===> Next Page: ", await res.nextPage());
+		console.log("===> Next Page: ", await res.nextPage());
+		// console.log("===> Next Page: ", res.nextPage());
+		// console.log("===> Next Page: ", res.nextPage());
+		// console.log("===> Next Page: ", res.nextPage());
 	} catch (e) {
 		if (e.response) {
-			console.log(e.response)
-			console.log(e.response.data.errors)
-		}
-		else {
+			console.log(e.response);
+			console.log(e.response.data);
+		} else {
 			console.log(e);
 		}
 	}
@@ -72,4 +74,4 @@ const callApi = async () => {
 
 callApi();
 
-export {client}
+export { client };

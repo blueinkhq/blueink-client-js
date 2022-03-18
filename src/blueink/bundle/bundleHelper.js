@@ -20,7 +20,7 @@ const kinds = [
 	"txt",
 ];
 
-class BundleHelper {
+export class BundleHelper {
 	constructor(newBundleData) {
 		// Initialize bundle
 		this.bundleData = { ...sampleBundle, ...newBundleData };
@@ -93,6 +93,3 @@ class BundleHelper {
 	};
 }
 
-// module.exports = BundleHelper;
-export { BundleHelper };
-utilities.generateKey;
