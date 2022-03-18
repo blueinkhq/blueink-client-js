@@ -52,13 +52,15 @@ const callApi = async () => {
 			h: 3,
 		});
 
-		const res = await client.bundles.list({
-			page: 1,
-			per_page: 1,
+		// const res = await client.bundles.list();
+		const pagedList = await client.bundles.pagedList({
+			page: 2,
+			per_page: 3,
 		});
-		// console.log("\n ==> Response", res);
-		console.log("===> Next Page: ", await res.nextPage());
-		console.log("===> Next Page: ", await res.nextPage());
+		const nextPage = await pagedList.nextPage();
+		console.log("\n ===> Response", pagedList.pagination);
+		console.log("===> Next Page: ", nextPage.pagination);
+		// console.log("===> Next Page: ", await pagedList.nextPage());
 		// console.log("===> Next Page: ", res.nextPage());
 		// console.log("===> Next Page: ", res.nextPage());
 		// console.log("===> Next Page: ", res.nextPage());

@@ -17,7 +17,7 @@ export class PaginationHelper {
 		this.#pagination = this.#getPagination();
 		this.#pages = this.#getNextPage();
 		const instance = {
-			data: response.data,
+			...response,
 			pagination: this.#pagination,
 			nextPage: this.#nextPage,
 		};
@@ -49,32 +49,25 @@ export class PaginationHelper {
 	}
 
 	#nextPage = () => {
-		console.log(this.#path);
 		const nextPage = this.#pages.next();
 		if (!nextPage.done) {
 			switch (this.#path) {
 				case "/bundles/":
-					return this.#client.bundles.list({
+					return this.#client.bundles.pagedList({
 						...this.#params,
 						page: nextPage.value,
 					});
 				case "/persons/":
-					return this.#client.persons.list({
+					return this.#client.persons.pagedList({
 						...this.#params,
 						page: nextPage.value,
 					});
 				case "/templates/":
-					return this.#client.templates.list({
+					return this.#client.templates.pagedList({
 						...this.#params,
 						page: nextPage.value,
 					});
 			}
-			// return this.#client.bundles.list({
-			// 	...this.#params,
-			// 	page: nextPage.value,
-			// });
-		} else {
-			return "You reached the last page.";
 		}
 	};
 }
