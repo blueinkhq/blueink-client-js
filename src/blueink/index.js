@@ -57,12 +57,13 @@ class BlueInkClient {
 		return axios.post(path, data);
 	};
 
-	#get = async (path, params = {}) => {
-		// const params = new URLSearchParams(query).toString();
-		// return axios.get(`${path}`, {
-		// 	params: params
-		// });
+	#get = (path, params = {}) => {
+		return axios.get(`${path}`, {
+			params: params,
+		});
+	};
 
+	#pagedList = async (path, params = {}) => {
 		try {
 			const response = await axios.get(`${path}`, {
 				params: params,
@@ -99,6 +100,7 @@ class BlueInkClient {
 		listFiles: (bundleId) =>
 			this.#get(`${this.#bundlesPath}/${bundleId}/files/`),
 		listData: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/data/`),
+		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
 	};
 
 	persons = {
@@ -110,6 +112,7 @@ class BlueInkClient {
 		partialUpdate: (personId, data) =>
 			this.#patch(`${this.#personsPath}/${personId}/`, data),
 		delete: (personId) => this.#delete(`${this.#personsPath}/${personId}/`),
+		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
 	};
 
 	packets = {
@@ -124,6 +127,7 @@ class BlueInkClient {
 		list: (params) => this.#get(`${this.#templatesPath}/`, params),
 		retrieve: (templateId) =>
 			this.#get(`${this.#templatesPath}/${templateId}/`),
+		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
 	};
 }
 
