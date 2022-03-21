@@ -58,12 +58,15 @@ const callApi = async () => {
 			per_page: 3,
 		});
 		const nextPage = await pagedList.nextPage();
-		console.log("\n ===> Response", pagedList.pagination);
-		console.log("===> Next Page: ", nextPage.pagination);
-		// console.log("===> Next Page: ", await pagedList.nextPage());
-		// console.log("===> Next Page: ", res.nextPage());
-		// console.log("===> Next Page: ", res.nextPage());
-		// console.log("===> Next Page: ", res.nextPage());
+		const nextPage2 = await pagedList.nextPage();
+
+		// for (let page of pagedList.pages) {
+		// 	console.log(await page);
+		// }
+
+		console.log("====> Current Page: ", pagedList.currentPage);
+		console.log("===> Next Page: ", nextPage.currentPage);
+		console.log("===> Next Page: ", nextPage2.currentPage);
 	} catch (e) {
 		if (e.response) {
 			console.log(e.response);
