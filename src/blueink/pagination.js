@@ -62,17 +62,17 @@ export class PaginationHelper {
 
 	getPageContent = (pageNumber) => {
 		switch (this.#path) {
-			case "/bundles/":
+			case "/bundles":
 				return this.#client.bundles.pagedList({
 					...this.#params,
 					page: pageNumber,
 				});
-			case "/persons/":
+			case "/persons":
 				return this.#client.persons.pagedList({
 					...this.#params,
 					page: pageNumber,
 				});
-			case "/templates/":
+			case "/templates":
 				return this.#client.templates.pagedList({
 					...this.#params,
 					page: pageNumber,
@@ -82,6 +82,7 @@ export class PaginationHelper {
 
 	#getNextPage = () => {
 		const nextPage = this.#nextPages.next();
+		console.log("run next page", nextPage);
 		if (!nextPage.done) {
 			return nextPage.value;
 		}

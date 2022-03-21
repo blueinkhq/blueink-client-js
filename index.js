@@ -56,35 +56,37 @@ const callApi = async () => {
 		const pagedList = await client.bundles.pagedList({
 			page: 5,
 			per_page: 10,
+			// relatedData: true,
 		});
 
-		const response = await client.bundles.retrieve("ReGx0JSafZ", {
-			relatedData: true,
-		});
-		console.log("\n===> Bundle with Related Data", response.data);
+		// const response = await client.bundles.retrieve("ReGx0JSafZ", {
+		// 	relatedData: true,
+		// });
+		// console.log("\n===> Bundle with Related Data", response.data);
 
-		console.log("\n ===> Iterative Function");
-		for (let page of pagedList.pages) {
-			const pageData = await page;
-			console.log("====> Current Page: ", pageData.currentPage);
-		}
+		// console.log("\n ===> Iterative Function");
+		// for (let page of pagedList.pages) {
+		// 	const pageData = await page;
+		// 	console.log("====> Current Page: ", pageData.currentPage);
+		// }
 
 		const nextPage = await pagedList.nextPage();
 		const nextPage2 = await pagedList.nextPage();
 
+		// console.log("\n===> Current Data: ", pagedList);
 		console.log("\n===> Current Page: ", pagedList.currentPage);
 		console.log("=====> Next Page: ", nextPage.currentPage);
-		console.log("=====> Next Page: ", nextPage2.currentPage);
+		// console.log("=====> Next Page: ", nextPage2.currentPage);
 
-		const previousPage = await pagedList.previousPage();
-		const previousPage2 = await pagedList.previousPage();
-		console.log("\n===> Current Page: ", pagedList.currentPage);
-		console.log("=====> Previous Page: ", previousPage.currentPage);
-		console.log("=====> Previous Page: ", previousPage2.currentPage);
+		// const previousPage = await pagedList.previousPage();
+		// const previousPage2 = await pagedList.previousPage();
+		// console.log("\n===> Current Page: ", pagedList.currentPage);
+		// console.log("=====> Previous Page: ", previousPage.currentPage);
+		// console.log("=====> Previous Page: ", previousPage2.currentPage);
 	} catch (e) {
 		if (e.response) {
 			console.log(e.response);
-			console.log(e.response.data);
+			console.log("\n===> Error: ", e.response.data);
 		} else {
 			console.log(e);
 		}

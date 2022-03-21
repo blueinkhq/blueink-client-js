@@ -65,7 +65,7 @@ class BlueInkClient {
 
 	#pagedList = async (path, params = {}) => {
 		try {
-			const response = await axios.get(`${path}`, {
+			const response = await axios.get(`${path}/`, {
 				params: params,
 			});
 			return new PaginationHelper(response, path, params, this);
@@ -142,7 +142,20 @@ class BlueInkClient {
 		listFiles: (bundleId) =>
 			this.#get(`${this.#bundlesPath}/${bundleId}/files/`),
 		listData: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/data/`),
-		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
+		pagedList: async (params) => {
+			if (params.relatedData === true) {
+				const response = await this.#get(`${this.#bundlesPath}/`, params);
+				response.data = await Promise.all(
+					response.data.map(async (bundle) => {
+						const related_data = await this.#getRelatedData(bundle);
+						return { ...bundle, related_data };
+					})
+				);
+				return new PaginationHelper(response, this.#bundlesPath, params, this);
+			} else {
+				return this.#pagedList(`${this.#bundlesPath}`, params);
+			}
+		},
 	};
 
 	persons = {
@@ -154,7 +167,7 @@ class BlueInkClient {
 		partialUpdate: (personId, data) =>
 			this.#patch(`${this.#personsPath}/${personId}/`, data),
 		delete: (personId) => this.#delete(`${this.#personsPath}/${personId}/`),
-		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
+		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}`, params),
 	};
 
 	packets = {
@@ -169,7 +182,7 @@ class BlueInkClient {
 		list: (params) => this.#get(`${this.#templatesPath}/`, params),
 		retrieve: (templateId) =>
 			this.#get(`${this.#templatesPath}/${templateId}/`),
-		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
+		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}`, params),
 	};
 }
 
