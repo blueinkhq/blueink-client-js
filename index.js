@@ -58,6 +58,18 @@ const callApi = async () => {
 			per_page: 5,
 		});
 
+		const data = await client.bundles.list({
+			relatedData: true,
+			per_page: 2,
+		});
+
+		console.log(data);
+
+		// const bundle = await client.bundles.retrieve("ReGx0JSafZ", {
+		// 	relatedData: true,
+		// });
+		// console.log(bundle);
+
 		// console.log("\n ===> Iterative Function");
 		// for (let page of pagedList.pages) {
 		// 	const pageData = await page;
