@@ -4,7 +4,8 @@ const has = Object.prototype.hasOwnProperty;
 
 export class PaginationHelper {
 	#response;
-	#pages;
+	#nextPages;
+	#previousPages;
 	#path;
 	#params;
 	#client;
@@ -18,17 +19,19 @@ export class PaginationHelper {
 		this.#path = path;
 		this.#params = params;
 		this.#client = client;
+		this.#nextPages = this.getNextPage();
+		this.#previousPages = this.getPreviousPage();
 		this.#getPagination();
-		this.#pages = this.#getNextPage();
 		const instance = {
 			data: response.data,
 			currentPage: this.#currentPage,
 			perPage: this.#perPage,
 			totalPages: this.#totalPages,
 			totalResults: this.#totalResults,
-			nextPage: this.#nextPage,
-			pages: this.getNext(),
 			queryParams: this.#params,
+			pages: this.getNextPage(),
+			nextPage: this.#getNextPage,
+			previousPage: this.#getPreviousPage,
 		};
 		return instance;
 	}
@@ -45,19 +48,19 @@ export class PaginationHelper {
 		}
 	};
 
-	*#getNextPage() {
+	*getNextPage() {
 		for (let i = this.#currentPage + 1; i <= this.#totalPages; ++i) {
-			yield i;
+			yield this.getPageContent(i);
 		}
 	}
 
-	*getNext() {
-		for (let i = this.#currentPage + 1; i <= this.#totalPages; ++i) {
-			yield yield this.getNextPageContent(i);
+	*getPreviousPage() {
+		for (let i = this.#currentPage - 1; i >= 1; --i) {
+			yield this.getPageContent(i);
 		}
 	}
 
-	getNextPageContent = (pageNumber) => {
+	getPageContent = (pageNumber) => {
 		switch (this.#path) {
 			case "/bundles/":
 				return this.#client.bundles.pagedList({
@@ -77,10 +80,17 @@ export class PaginationHelper {
 		}
 	};
 
-	#nextPage = () => {
-		const nextPage = this.#pages.next();
+	#getNextPage = () => {
+		const nextPage = this.#nextPages.next();
 		if (!nextPage.done) {
-			return this.getNextPageContent(nextPage.value);
+			return nextPage.value;
+		}
+	};
+
+	#getPreviousPage = () => {
+		const previousPage = this.#previousPages.next();
+		if (!previousPage.done) {
+			return previousPage.value;
 		}
 	};
 }

@@ -54,19 +54,28 @@ const callApi = async () => {
 
 		// const res = await client.bundles.list();
 		const pagedList = await client.bundles.pagedList({
-			page: 2,
-			per_page: 3,
+			page: 5,
+			per_page: 5,
 		});
-		const nextPage = await pagedList.nextPage();
-		const nextPage2 = await pagedList.nextPage();
 
+		// console.log("\n ===> Iterative Function");
 		// for (let page of pagedList.pages) {
-		// 	console.log(await page);
+		// 	const pageData = await page;
+		// 	console.log("====> Current Page: ", pageData.currentPage);
 		// }
 
-		console.log("====> Current Page: ", pagedList.currentPage);
-		console.log("===> Next Page: ", nextPage.currentPage);
-		console.log("===> Next Page: ", nextPage2.currentPage);
+		// const nextPage = await pagedList.nextPage();
+		// const nextPage2 = await pagedList.nextPage();
+
+		// console.log("\n===> Current Page: ", pagedList.currentPage);
+		// console.log("=====> Next Page: ", nextPage.currentPage);
+		// console.log("=====> Next Page: ", nextPage2.currentPage);
+
+		// const previousPage = await pagedList.previousPage();
+		// const previousPage2 = await pagedList.previousPage();
+		// console.log("\n===> Current Page: ", pagedList.currentPage);
+		// console.log("=====> Previous Page: ", previousPage.currentPage);
+		// console.log("=====> Previous Page: ", previousPage2.currentPage);
 	} catch (e) {
 		if (e.response) {
 			console.log(e.response);
