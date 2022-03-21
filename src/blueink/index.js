@@ -90,10 +90,52 @@ class BlueInkClient {
 		return axios.patch(path, data);
 	};
 
+	#getRelatedData = async (bundle) => {
+		try {
+			const related_data = {};
+			related_data.events = await this.#get(
+				`${this.#bundlesPath}/${bundle.id}/events/`
+			);
+			if (bundle.status === "co") {
+				related_data.files = await this.#get(
+					`${this.#bundlesPath}/${bundle.id}/files/`
+				);
+				related_data.data = await this.#get(
+					`${this.#bundlesPath}/${bundle.id}/data/`
+				);
+			}
+			return related_data;
+		} catch (error) {
+			throw error;
+		}
+	};
+
 	bundles = {
 		create: (data = initBundle) => this.#post(`${this.#bundlesPath}/`, data),
-		list: (params) => this.#get(`${this.#bundlesPath}/`, params),
-		retrieve: (bundleId) => this.#get(`${this.#bundlesPath}/${bundleId}/`),
+		list: async (params) => {
+			if (params.relatedData === true) {
+				const response = await this.#get(`${this.#bundlesPath}/`, params);
+				response.data = await Promise.all(
+					response.data.map(async (bundle) => {
+						const related_data = await this.#getRelatedData(bundle);
+						return { ...bundle, related_data };
+					})
+				);
+				return response;
+			} else {
+				return this.#get(`${this.#bundlesPath}/`, params);
+			}
+		},
+		retrieve: async (bundleId, options = {}) => {
+			if (options.relatedData === true) {
+				const response = await this.#get(`${this.#bundlesPath}/${bundleId}/`);
+				const related_data = await this.#getRelatedData(response.data);
+				response.data = { ...response.data, related_data };
+				return response;
+			} else {
+				return this.#get(`${this.#bundlesPath}/${bundleId}/`);
+			}
+		},
 		cancel: (bundleId) => this.#put(`${this.#bundlesPath}/${bundleId}/cancel/`),
 		listEvents: (bundleId) =>
 			this.#get(`${this.#bundlesPath}/${bundleId}/events/`),
