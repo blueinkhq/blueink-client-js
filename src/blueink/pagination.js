@@ -84,6 +84,8 @@ export class PaginationHelper {
 		const nextPage = this.#nextPages.next();
 		if (!nextPage.done) {
 			return nextPage.value;
+		} else {
+			throw new Error("Invalid page.");
 		}
 	};
 
@@ -91,6 +93,8 @@ export class PaginationHelper {
 		const previousPage = this.#previousPages.next();
 		if (!previousPage.done) {
 			return previousPage.value;
+		} else {
+			throw new Error("Invalid page.");
 		}
 	};
 }
