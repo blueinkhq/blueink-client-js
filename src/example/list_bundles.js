@@ -59,6 +59,11 @@ const askFetchPage = async (page) => {
 	return answer;
 };
 
+/*
+EXAMPLE of Listing Bundles
+Same methods are applied to Persons and Templates
+*/
+
 const listBundles = async () => {
 	try {
 		const action = await askAction();
@@ -68,7 +73,7 @@ const listBundles = async () => {
 			case "List Bundles": {
 				// Regular list with default 50 results per page.
 				const response = await client.bundles.list({
-					related_data,
+					related_data, //bool
 				});
 				console.log(response);
 				break;
@@ -78,7 +83,7 @@ const listBundles = async () => {
 
 				// Example how to paged list.
 				const response = await client.bundles.pagedList({
-					related_data,
+					related_data, //bool
 					page: pagination.page,
 					per_page: pagination.per_page,
 				});
@@ -125,4 +130,3 @@ const listBundles = async () => {
 };
 
 listBundles();
-// askAction();
