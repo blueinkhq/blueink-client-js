@@ -4,7 +4,7 @@ import { PaginationHelper } from "./src/blueink/pagination.js";
 import "dotenv/config";
 
 // Sample API Call
-const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_KEY);
+const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const callApi = async () => {
 	try {
@@ -54,33 +54,35 @@ const callApi = async () => {
 
 		// const res = await client.bundles.list();
 		const pagedList = await client.bundles.pagedList({
-			page: 5,
-			per_page: 10,
+			page: 3,
+			per_page: 50,
+			related_data: true,
 		});
 
-		const response = await client.bundles.retrieve("ReGx0JSafZ", {
-			relatedData: true,
-		});
-		console.log("\n===> Bundle with Related Data", response.data);
+		// const response = await client.bundles.retrieve("ReGx0JSafZ", {
+		// 	related_data: true,
+		// });
+		// console.log("\n===> Bundle with Related Data", response.data);
 
-		console.log("\n ===> Iterative Function");
-		for (let page of pagedList.pages) {
-			const pageData = await page;
-			console.log("====> Current Page: ", pageData.currentPage);
-		}
+		// console.log("\n ===> Iterative Function");
+		// for (let page of pagedList.pages) {
+		// 	const pageData = await page;
+		// 	console.log("====> Current Page: ", pageData.currentPage);
+		// }
 
 		const nextPage = await pagedList.nextPage();
+		// console.log(nextPage);
 		const nextPage2 = await pagedList.nextPage();
 
-		console.log("\n===> Current Page: ", pagedList.currentPage);
-		console.log("=====> Next Page: ", nextPage.currentPage);
-		console.log("=====> Next Page: ", nextPage2.currentPage);
+		// console.log("\n===> Current Page: ", pagedList.currentPage);
+		// console.log("=====> Next Page: ", nextPage.currentPage);
+		// console.log("=====> Next Page: ", nextPage2.currentPage);
 
-		const previousPage = await pagedList.previousPage();
-		const previousPage2 = await pagedList.previousPage();
-		console.log("\n===> Current Page: ", pagedList.currentPage);
-		console.log("=====> Previous Page: ", previousPage.currentPage);
-		console.log("=====> Previous Page: ", previousPage2.currentPage);
+		// const previousPage = await pagedList.previousPage();
+		// const previousPage2 = await pagedList.previousPage();
+		// console.log("\n===> Current Page: ", pagedList.currentPage);
+		// console.log("=====> Previous Page: ", previousPage.currentPage);
+		// console.log("=====> Previous Page: ", previousPage2.currentPage);
 	} catch (e) {
 		if (e.response) {
 			console.log(e.response);

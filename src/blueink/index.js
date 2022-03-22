@@ -65,10 +65,21 @@ class BlueInkClient {
 
 	#pagedList = async (path, params = {}) => {
 		try {
-			const response = await axios.get(`${path}`, {
-				params: params,
-			});
-			return new PaginationHelper(response, path, params, this);
+			if (params.related_data === true) {
+				const response = await this.#get(`${this.#bundlesPath}/`, params);
+				response.data = await Promise.all(
+					response.data.map(async (bundle) => {
+						const related_data = await this.#getRelatedData(bundle);
+						return { ...bundle, related_data };
+					})
+				);
+				return new PaginationHelper(response, path, params, this);
+			} else {
+				const response = await axios.get(`${path}`, {
+					params: params,
+				});
+				return new PaginationHelper(response, path, params, this);
+			}
 		} catch (error) {
 			throw error;
 		}
@@ -112,8 +123,8 @@ class BlueInkClient {
 
 	bundles = {
 		create: (data = initBundle) => this.#post(`${this.#bundlesPath}/`, data),
-		list: async (params) => {
-			if (params.relatedData === true) {
+		list: async (params = {}) => {
+			if (params.related_data === true) {
 				const response = await this.#get(`${this.#bundlesPath}/`, params);
 				response.data = await Promise.all(
 					response.data.map(async (bundle) => {
@@ -127,7 +138,7 @@ class BlueInkClient {
 			}
 		},
 		retrieve: async (bundleId, options = {}) => {
-			if (options.relatedData === true) {
+			if (options.related_data === true) {
 				const response = await this.#get(`${this.#bundlesPath}/${bundleId}/`);
 				const related_data = await this.#getRelatedData(response.data);
 				response.data = { ...response.data, related_data };
@@ -147,14 +158,15 @@ class BlueInkClient {
 
 	persons = {
 		create: (data) => this.#post(`${this.#personsPath}/`, data),
-		list: (params) => this.#get(`${this.#personsPath}/`, params),
+		list: (params = {}) => this.#get(`${this.#personsPath}/`, params),
 		retrieve: (personId) => this.#get(`${this.#personsPath}/${personId}/`),
 		update: (personId, data) =>
 			this.#put(`${this.#personsPath}/${personId}/`, data),
 		partialUpdate: (personId, data) =>
 			this.#patch(`${this.#personsPath}/${personId}/`, data),
 		delete: (personId) => this.#delete(`${this.#personsPath}/${personId}/`),
-		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
+		pagedList: (params = {}) =>
+			this.#pagedList(`${this.#bundlesPath}/`, params),
 	};
 
 	packets = {
@@ -166,10 +178,11 @@ class BlueInkClient {
 	};
 
 	templates = {
-		list: (params) => this.#get(`${this.#templatesPath}/`, params),
+		list: (params = {}) => this.#get(`${this.#templatesPath}/`, params),
 		retrieve: (templateId) =>
 			this.#get(`${this.#templatesPath}/${templateId}/`),
-		pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
+		pagedList: (params = {}) =>
+			this.#pagedList(`${this.#bundlesPath}/`, params),
 	};
 }
 
