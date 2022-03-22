@@ -6,7 +6,7 @@ import chalk from "chalk";
 
 const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
 
-const createBundleFromUrl = async () => {
+const createBundleFromPath = async () => {
 	try {
 		const requester_email = await askRequesterEmail();
 		const bundleHelper = new BundleHelper({
@@ -84,4 +84,4 @@ const askFilePath = async () => {
 	return answer.file_path;
 };
 
-createBundleFromUrl();
+createBundleFromPath();
