@@ -33,7 +33,7 @@ class BlueInkClient {
 	#templatesPath = "/templates";
 	constructor(privateApiKey, baseApiUrl) {
 		// Define Private Key
-		this.#privateApiKey = privateApiKey || process.env.BLUEINK_PRIVATE_KEY;
+		this.#privateApiKey = privateApiKey || process.env.BLUEINK_PRIVATE_API_KEY;
 
 		// Define Base URL
 		this.#baseApiUrl =
