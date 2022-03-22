@@ -99,7 +99,7 @@ const listBundles = async () => {
 				while (previous_page) {
 					previous_page = await askFetchPage("previous");
 					if (previous_page) {
-						// Fetch the next page by calling nextPage();
+						// Fetch the previous page by calling previousPage();
 						const previousPageResponse = await response.previousPage();
 						console.log(
 							chalk.bgGreen.black("Fetch Previous Page Successfully.")
