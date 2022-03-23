@@ -4,6 +4,7 @@ import { fileFromPathSync } from "formdata-node/file-from-path";
 import { Readable } from "stream";
 import { sampleBundle } from "../../seed/sample.js";
 import { utilities } from "../../util/utility.js";
+import isEmpty from "lodash.isempty";
 const has = Object.prototype.hasOwnProperty;
 
 const kinds = [
@@ -54,6 +55,70 @@ export class BundleHelper {
 
 		this.bundleData.documents.push(newDoc);
 		return newDoc.key;
+	};
+
+	addDocumentTemplate = (template) => {
+		const error = [];
+		const noBlankMessage = "This field must not be blank.";
+		if (!template.key) template.key = utilities.generateKey("tem");
+
+		// Check template_id
+		if (!template.template_id) {
+			error.push({
+				field: "template_id",
+				message: noBlankMessage,
+			});
+		}
+
+		// Check assignments
+		if (!template.assignments || isEmpty(template.assignments)) {
+			error.push({
+				field: "assignments",
+				message: noBlankMessage,
+			});
+		} else if (!Array.isArray(template.assignments)) {
+			error.push({
+				field: "assignments",
+				message: "This field must be an array",
+			});
+		} else {
+			for (let i in template.assignments) {
+				if (!template.assignments[i].role) {
+					error.push({
+						field: `assignments[${i}].role`,
+						message: noBlankMessage,
+					});
+				}
+				if (!template.assignments[i].signer) {
+					error.push({
+						field: `assignments[${i}].signer`,
+						message: noBlankMessage,
+					});
+				}
+			}
+		}
+
+		//Check field_values
+		if (template.field_values && !Array.isArray(template.field_values)) {
+			error.push({
+				field: `field_values`,
+				message: "This field must be an array.",
+			});
+		} else {
+			for (let i in template.field_values) {
+				if (!template.field_values[i].key) {
+					error.push({
+						field: `field_values[${i}].key`,
+						message: noBlankMessage,
+					});
+				}
+			}
+		}
+
+		if (isEmpty(error)) {
+			this.bundleData.documents.push(template);
+			return template.key;
+		} else throw error;
 	};
 
 	addSigner = (newSigner) => {

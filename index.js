@@ -2,6 +2,7 @@ import { BlueInkClient } from "./src/blueink/index.js";
 import { BundleHelper } from "./src/blueink/bundle/bundleHelper.js";
 import { PaginationHelper } from "./src/blueink/pagination.js";
 import "dotenv/config";
+import chalk from "chalk";
 
 // Sample API Call
 const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
@@ -52,12 +53,24 @@ const callApi = async () => {
 			h: 3,
 		});
 
-		// const res = await client.bundles.list();
-		const pagedList = await client.bundles.pagedList({
-			page: 3,
-			per_page: 50,
-			related_data: true,
+		const docKey3 = nbh.addDocumentTemplate({
+			template_id: "tempID",
+			assignments: [
+				{
+					role: "dsd",
+					signer: "sd",
+				},
+			],
 		});
+
+		console.log(docKey3);
+
+		// const res = await client.bundles.list();
+		// const pagedList = await client.bundles.pagedList({
+		// 	page: 3,
+		// 	per_page: 50,
+		// 	related_data: true,
+		// });
 
 		// const response = await client.bundles.retrieve("ReGx0JSafZ", {
 		// 	related_data: true,
@@ -70,9 +83,9 @@ const callApi = async () => {
 		// 	console.log("====> Current Page: ", pageData.currentPage);
 		// }
 
-		const nextPage = await pagedList.nextPage();
+		// const nextPage = await pagedList.nextPage();
 		// console.log(nextPage);
-		const nextPage2 = await pagedList.nextPage();
+		// const nextPage2 = await pagedList.nextPage();
 
 		// console.log("\n===> Current Page: ", pagedList.currentPage);
 		// console.log("=====> Next Page: ", nextPage.currentPage);
@@ -84,6 +97,7 @@ const callApi = async () => {
 		// console.log("=====> Previous Page: ", previousPage.currentPage);
 		// console.log("=====> Previous Page: ", previousPage2.currentPage);
 	} catch (e) {
+		console.log(chalk.bgRed.white(" ERROR "));
 		if (e.response) {
 			console.log(e.response);
 			console.log(e.response.data);
