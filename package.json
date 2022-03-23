@@ -1,6 +1,7 @@
 {
 	"name": "blueink-client-api",
 	"description": "BlueInk JS Library",
+	"version": "1.0.0",
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
