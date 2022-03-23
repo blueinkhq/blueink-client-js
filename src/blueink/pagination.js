@@ -23,7 +23,7 @@ export class PaginationHelper {
 		this.#previousPages = this.getPreviousPage();
 		this.#getPagination();
 		const instance = {
-			data: response.data,
+			...response,
 			currentPage: this.#currentPage,
 			perPage: this.#perPage,
 			totalPages: this.#totalPages,

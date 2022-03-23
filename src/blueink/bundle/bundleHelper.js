@@ -35,6 +35,15 @@ export class BundleHelper {
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
+		if (!has.call(newDoc, "file_path") || !has.call(newDoc, "file_url")) {
+			throw [
+				{
+					field: "file_path/file_url",
+					message: "This field must not be blank.",
+				},
+			];
+		}
+
 		// File path is used;
 		if (newDoc.file_path) {
 			if (!has.call(newDoc, "file_index")) {
@@ -71,12 +80,10 @@ export class BundleHelper {
 		}
 
 		// Check assignments
-		if (!template.assignments || isEmpty(template.assignments)) {
-			error.push({
-				field: "assignments",
-				message: noBlankMessage,
-			});
-		} else if (!Array.isArray(template.assignments)) {
+		if (
+			has.call(template, "assignments") &&
+			!Array.isArray(template.assignments)
+		) {
 			error.push({
 				field: "assignments",
 				message: "This field must be an array",
@@ -121,6 +128,29 @@ export class BundleHelper {
 		} else throw error;
 	};
 
+	assignRole = (signerKey, templateKey, roleId) => {
+		// Check if signer exists
+		const signerIndex = this.bundleData.packets.findIndex(
+			(signer) => signer.key === signerKey
+		);
+		if (signerIndex === -1) throw new Error("Signer key is invalid.");
+
+		// Find the template
+		const template = this.bundleData.documents.find(
+			(template) => template.key === templateKey
+		);
+		if (!template) throw new Error("Document key is invalid.");
+		if (!has.call(template, "template_id")) {
+			throw new Error(`Document with key ${templateKey} is not a template.`);
+		}
+		if (!template.assignments || !Array.isArray(template.assignments)) {
+			template.assignments = [{ role: roleId, signer: signerKey }];
+		} else {
+			template.assignments.push({ role: roleId, signer: signerKey });
+		}
+		return template;
+	};
+
 	addSigner = (newSigner) => {
 		const key = utilities.generateKey("signer");
 		if (!newSigner.key) {
@@ -132,13 +162,45 @@ export class BundleHelper {
 
 	// Field only need for DocumentRequest
 	addField = (docKey, newField) => {
-		if (!newField.kind) throw new Error("kind is required.");
-		if (!kinds.includes(newField.kind)) throw new Error("kind is invalid.");
+		const errors = [];
+		const noBlankMessage = "This field must not be blank.";
+
+		const requiredFields = ["kind", "x", "y", "w", "h"];
+		requiredFields.forEach((field) => {
+			if (!newField[field]) {
+				errors.push({
+					field,
+					message: noBlankMessage,
+				});
+			}
+		});
+
+		if (!kinds.includes(newField.kind)) {
+			errors.push({
+				field: "kind",
+				message: "kind is invalid.",
+			});
+		}
 		if (!newField.key) newField.key = utilities.generateKey("field");
 
 		const document = this.bundleData.documents.find(
 			(doc) => doc.key === docKey
 		);
+		if (!document) {
+			errors.push({
+				field: "docKey",
+				message: `Document with key ${docKey} is invalid.`,
+			});
+		}
+		if (has.call(newField, "editors") && !Array.isArray(newField.editors)) {
+			errors.push({
+				field: "editors",
+				message: "This field must be an array",
+			});
+		}
+
+		if (!isEmpty(errors)) throw errors;
+
 		document.fields.push(newField);
 		return newField.key;
 	};
