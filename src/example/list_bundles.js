@@ -1,8 +1,7 @@
-import "dotenv/config";
-import { BundleHelper } from "../blueink/bundle/bundleHelper.js";
-import { BlueInkClient } from "../blueink/index.js";
-import inquirer from "inquirer";
 import chalk from "chalk";
+import "dotenv/config";
+import inquirer from "inquirer";
+import { BlueInkClient } from "../blueink/index.js";
 
 const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
 

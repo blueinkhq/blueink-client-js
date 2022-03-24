@@ -2,6 +2,7 @@ import { BlueInkClient } from "./src/blueink/index.js";
 import { BundleHelper } from "./src/blueink/helper/bundleHelper.js";
 import { PaginationHelper } from "./src/blueink/pagination.js";
 import "dotenv/config";
+import chalk from "chalk";
 
 // Sample API Call
 const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
@@ -29,7 +30,7 @@ const callApi = async () => {
 			label: "Your Name",
 			page: 1,
 			kind: "txt",
-			editors: [signer1],
+			// editors: ["fsdf"],
 			x: 15,
 			y: 60,
 			w: 20,
@@ -45,45 +46,20 @@ const callApi = async () => {
 			label: "Your Name",
 			page: 1,
 			kind: "txt",
-			editors: [signer1],
+			editors: ["signer1"],
 			x: 15,
 			y: 60,
 			w: 20,
 			h: 3,
 		});
 
-		// const res = await client.bundles.list();
-		const pagedList = await client.bundles.pagedList({
-			page: 3,
-			per_page: 50,
-			related_data: true,
+		const docKey3 = nbh.addDocumentTemplate({
+			template_id: "170b32fb-1af3-4c28-b9ea-ada852216e51",
 		});
 
-		// const response = await client.bundles.retrieve("ReGx0JSafZ", {
-		// 	related_data: true,
-		// });
-		// console.log("\n===> Bundle with Related Data", response.data);
-
-		// console.log("\n ===> Iterative Function");
-		// for (let page of pagedList.pages) {
-		// 	const pageData = await page;
-		// 	console.log("====> Current Page: ", pageData.currentPage);
-		// }
-
-		const nextPage = await pagedList.nextPage();
-		// console.log(nextPage);
-		const nextPage2 = await pagedList.nextPage();
-
-		// console.log("\n===> Current Page: ", pagedList.currentPage);
-		// console.log("=====> Next Page: ", nextPage.currentPage);
-		// console.log("=====> Next Page: ", nextPage2.currentPage);
-
-		// const previousPage = await pagedList.previousPage();
-		// const previousPage2 = await pagedList.previousPage();
-		// console.log("\n===> Current Page: ", pagedList.currentPage);
-		// console.log("=====> Previous Page: ", previousPage.currentPage);
-		// console.log("=====> Previous Page: ", previousPage2.currentPage);
+		const a = nbh.assignRole(signer1, docKey3, "role-9f93");
 	} catch (e) {
+		console.log(chalk.bgRed.white(" ERROR "));
 		if (e.response) {
 			console.log(e.response);
 			console.log(e.response.data);
