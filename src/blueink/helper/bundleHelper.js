@@ -1,9 +1,9 @@
 import { FormDataEncoder } from "form-data-encoder";
 import { FormData } from "formdata-node";
-import { fileFromPathSync } from "formdata-node/file-from-path";
+// import { fileFromPathSync } from "formdata-node/file-from-path";
 import { Readable } from "stream";
 import { sampleBundle } from "../../seed/sample.js";
-import { utilities } from "../../util/utility.js";
+import { generateKey } from "../../util/utility.js";
 import isEmpty from "lodash.isempty";
 const has = Object.prototype.hasOwnProperty;
 
@@ -31,7 +31,7 @@ export class BundleHelper {
 	}
 
 	addDocument = (newDoc) => {
-		const key = utilities.generateKey("doc");
+		const key = generateKey("doc");
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
@@ -69,7 +69,7 @@ export class BundleHelper {
 	addDocumentTemplate = (template) => {
 		const error = [];
 		const noBlankMessage = "This field must not be blank.";
-		if (!template.key) template.key = utilities.generateKey("tem");
+		if (!template.key) template.key = generateKey("tem");
 
 		// Check template_id
 		if (!template.template_id) {
@@ -152,7 +152,7 @@ export class BundleHelper {
 	};
 
 	addSigner = (newSigner) => {
-		const key = utilities.generateKey("signer");
+		const key = generateKey("signer");
 		if (!newSigner.key) {
 			newSigner.key = key;
 		}
@@ -181,7 +181,7 @@ export class BundleHelper {
 				message: "kind is invalid.",
 			});
 		}
-		if (!newField.key) newField.key = utilities.generateKey("field");
+		if (!newField.key) newField.key = generateKey("field");
 
 		const document = this.bundleData.documents.find(
 			(doc) => doc.key === docKey
@@ -207,7 +207,7 @@ export class BundleHelper {
 
 	asData = () => {
 		// File is attached
-		if (!utilities.isEmpty(this.files)) {
+		if (!isEmpty(this.files)) {
 			const form = new FormData();
 			for (let key in this.files) {
 				form.append(key, this.files[key]);

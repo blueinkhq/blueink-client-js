@@ -1,6 +1,6 @@
 import { instance as axios } from "../config/axios/axios.js";
 import "dotenv/config";
-import { PaginationHelper } from "./pagination.js";
+import { PaginationHelper } from "./helper/pagination.js";
 const has = Object.prototype.hasOwnProperty;
 
 /*

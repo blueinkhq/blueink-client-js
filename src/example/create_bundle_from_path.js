@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { BundleHelper } from "../blueink/bundle/bundleHelper.js";
+import { BundleHelper } from "../blueink/helper/bundleHelper.js";
 import { BlueInkClient } from "../blueink/index.js";
 import inquirer from "inquirer";
 import chalk from "chalk";

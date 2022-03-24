@@ -1,8 +1,7 @@
-import { BlueInkClient } from "./src/blueink/index.js";
-import { BundleHelper } from "./src/blueink/bundle/bundleHelper.js";
-import { PaginationHelper } from "./src/blueink/pagination.js";
-import "dotenv/config";
 import chalk from "chalk";
+import "dotenv/config";
+import { BundleHelper } from "./src/blueink/helper/bundleHelper.js";
+import { BlueInkClient } from "./src/blueink/index.js";
 
 // Sample API Call
 const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
