@@ -35,7 +35,7 @@ export class BundleHelper {
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
-		if (!has.call(newDoc, "file_path") || !has.call(newDoc, "file_url")) {
+		if (!has.call(newDoc, "file_path") && !has.call(newDoc, "file_url")) {
 			throw [
 				{
 					field: "file_path/file_url",
