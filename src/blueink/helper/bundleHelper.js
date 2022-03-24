@@ -1,6 +1,6 @@
 import { FormDataEncoder } from "form-data-encoder";
 import { FormData } from "formdata-node";
-// import { fileFromPathSync } from "formdata-node/file-from-path";
+import { fileFromPathSync } from "formdata-node/file-from-path";
 import { Readable } from "stream";
 import { sampleBundle } from "../../seed/sample.js";
 import { generateKey } from "../../util/utility.js";
