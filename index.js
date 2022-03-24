@@ -1,5 +1,5 @@
 import { BlueInkClient } from "./src/blueink/index.js";
-import { BundleHelper } from "./src/blueink/bundle/bundleHelper.js";
+import { BundleHelper } from "./src/blueink/helper/bundleHelper.js";
 import { PaginationHelper } from "./src/blueink/pagination.js";
 import "dotenv/config";
 

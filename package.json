@@ -7,6 +7,7 @@
 		"test": "jest",
 		"create-bundle-from-path": "node src/example/create_bundle_from_path.js",
 		"create-bundle-from-url": "node src/example/create_bundle_from_url.js",
+		"create-bundle-from-template": "node src/example/create_bundle_from_template.js",
 		"list-bundles": "node src/example/list_bundles.js"
 	},
 	"author": "",

@@ -1,4 +1,4 @@
-import { BlueInkClient } from "./index.js";
+import { BlueInkClient } from "../index.js";
 import "dotenv/config";
 const has = Object.prototype.hasOwnProperty;
 
