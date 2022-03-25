@@ -1,5 +1,5 @@
 import { FormDataEncoder } from "form-data-encoder";
-import { FormData } from "formdata-node";
+import { FormData, File } from "formdata-node";
 import { fileFromPathSync } from "formdata-node/file-from-path";
 import { Readable } from "stream";
 import { sampleBundle } from "../../seed/sample.js";
@@ -35,16 +35,20 @@ export class BundleHelper {
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
-		if (!has.call(newDoc, "file_path") && !has.call(newDoc, "file_url")) {
+		if (
+			!has.call(newDoc, "file_path") &&
+			!has.call(newDoc, "file_url") &&
+			!has.call(newDoc, "file_data")
+		) {
 			throw [
 				{
-					field: "file_path/file_url",
+					field: "file_path/file_url/file_data",
 					message: "This field must not be blank.",
 				},
 			];
 		}
 
-		// File path is used;
+		// File path is used
 		if (newDoc.file_path) {
 			if (!has.call(newDoc, "file_index")) {
 				// Find current index
@@ -60,6 +64,19 @@ export class BundleHelper {
 			// Form Data will store all of the files
 			this.files[`files[${newDoc.file_index}]`] = file;
 			delete newDoc.file_path;
+		} else if (newDoc.file_data) {
+			// File data is used
+			if (!has.call(newDoc, "file_index")) {
+				// Find current index
+				const index = this.bundleData.documents.filter((doc) =>
+					has.call(doc, "file_index")
+				).length;
+
+				newDoc.file_index = index;
+			}
+			const file = new File([newDoc.file_data], "file-from-data.pdf");
+			this.files[`files[${newDoc.file_index}]`] = file;
+			delete newDoc.file_data;
 		}
 
 		this.bundleData.documents.push(newDoc);
