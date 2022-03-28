@@ -22,6 +22,15 @@ const kinds = [
 ];
 
 export class BundleHelper {
+	/**
+	 * Define a Bundle Helper
+	 * @param {Object} newBundleData
+	 * @param {string} newBundleData.label
+	 * @param {string} newBundleData.requester_email
+	 * @param {string} newBundleData.requester_name
+	 * @param {string} newBundleData.email_subject
+	 * @param {string} newBundleData.email_message
+	 */
 	constructor(newBundleData) {
 		// Initialize bundle
 		this.bundleData = { ...sampleBundle, ...newBundleData };
@@ -30,6 +39,14 @@ export class BundleHelper {
 		this.files = {};
 	}
 
+	/**
+	 * Add a new Document to the bundle.
+	 * @param {Object} newDoc - Must include either file_url, file_path, or file_data.
+	 * @param {string} [newDoc.file_url] - The url to the pdf document. If file_url is provided, file_path and file_data will be ignored.
+	 * @param {string} [newDoc.file_path] -The path to the pdf file. If file_path is provided, file_data will be ignored.
+	 * @param {Buffer} [newDoc.file_data] - The buffer of the file.
+	 * @returns - Key of the Document.
+	 */
 	addDocument = (newDoc) => {
 		const key = generateKey("doc");
 		if (!newDoc.key) newDoc.key = key;
@@ -83,6 +100,12 @@ export class BundleHelper {
 		return newDoc.key;
 	};
 
+	/**
+	 * Add a Document Template to the bundle.
+	 * @param {Object} template - Must include valid template id from BlueInk Dashboard.
+	 * @param {string} template.template_id
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentTemplate = (template) => {
 		const error = [];
 		const noBlankMessage = "This field must not be blank.";
@@ -145,6 +168,12 @@ export class BundleHelper {
 		} else throw error;
 	};
 
+	/**
+	 * Assign a Role to a Signer (Packet). Used when a Document Template is used.
+	 * @param {string} signerKey
+	 * @param {string} templateKey
+	 * @param {string} roleId
+	 */
 	assignRole = (signerKey, templateKey, roleId) => {
 		// Check if signer exists
 		const signerIndex = this.bundleData.packets.findIndex(
@@ -168,6 +197,11 @@ export class BundleHelper {
 		return template;
 	};
 
+	/**
+	 * Add a Signer (Packet) to the bundle
+	 * @param {Object} newSigner
+	 * @returns - Key of the Signer.
+	 */
 	addSigner = (newSigner) => {
 		const key = generateKey("signer");
 		if (!newSigner.key) {
@@ -177,7 +211,12 @@ export class BundleHelper {
 		return newSigner.key;
 	};
 
-	// Field only need for DocumentRequest
+	/**
+	 * Add a new Field to the Document. Field only need for DocumentRequest.
+	 * @param {string} docKey - The Key of the Document.
+	 * @param {Object} newField - New Field
+	 * @returns - Key of the Field.
+	 */
 	addField = (docKey, newField) => {
 		const errors = [];
 		const noBlankMessage = "This field must not be blank.";
@@ -222,6 +261,10 @@ export class BundleHelper {
 		return newField.key;
 	};
 
+	/**
+	 * Return the data for bundle.create
+	 * @returns - Bundle Data
+	 */
 	asData = () => {
 		// File is attached
 		if (!isEmpty(this.files)) {

@@ -57,6 +57,10 @@ const callApi = async () => {
 		});
 
 		const a = nbh.assignRole(signer1, docKey3, "role-9f93");
+		nbh.assignRole();
+
+		const pagedList = await client.bundles.pagedList();
+		// pagedList.
 	} catch (e) {
 		console.log(chalk.bgRed.white(" ERROR "));
 		if (e.response) {
