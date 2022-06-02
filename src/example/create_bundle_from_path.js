@@ -19,7 +19,7 @@ const createBundleFromPath = async () => {
 		console.log("Test Bundle Data is added using BundleHelper Class. \n");
 
 		const file_path = await askFilePath();
-		const docKey1 = bundleHelper.addDocument({
+		const docKey1 = bundleHelper.addDocumentB({
 			key: "DOC-1",
 			file_path,
 		});

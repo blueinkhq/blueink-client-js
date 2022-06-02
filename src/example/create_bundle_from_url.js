@@ -19,7 +19,7 @@ const createBundleFromUrl = async () => {
 		console.log("Test Bundle Data is added using BundleHelper Class. \n");
 
 		const file_url = await askFileUrl();
-		const docKey1 = bundleHelper.addDocument({
+		const docKey1 = bundleHelper.addDocumentByUrl({
 			key: "DOC-1",
 			file_url,
 		});
