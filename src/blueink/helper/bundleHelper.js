@@ -1,25 +1,13 @@
-import { FormDataEncoder } from "form-data-encoder";
-import { FormData, File } from "formdata-node";
-import { fileFromPathSync } from "formdata-node/file-from-path";
-import { Readable } from "stream";
-import { sampleBundle } from "../../seed/sample.js";
-import { generateKey } from "../../util/utility.js";
-import isEmpty from "lodash.isempty";
+import { FormDataEncoder } from 'form-data-encoder';
+import { FormData, File } from 'formdata-node';
+import { fileFromPathSync } from 'formdata-node/file-from-path';
+import { Readable } from 'stream';
+import { sampleBundle } from '../../seed/sample.js';
+import { generateKey } from '../../util/utility.js';
+import isEmpty from 'lodash.isempty';
 const has = Object.prototype.hasOwnProperty;
 
-const kinds = [
-	"att",
-	"cbx",
-	"chk",
-	"dat",
-	"ini",
-	"inp",
-	"sdt",
-	"sel",
-	"sig",
-	"sum",
-	"txt",
-];
+const kinds = ['att', 'cbx', 'chk', 'dat', 'ini', 'inp', 'sdt', 'sel', 'sig', 'sum', 'txt'];
 
 export class BundleHelper {
 	/**
@@ -47,31 +35,25 @@ export class BundleHelper {
 	 * @param {Buffer} [newDoc.file_data] - The buffer of the file.
 	 * @returns - Key of the Document.
 	 */
-	addDocument = (newDoc) => {
-		const key = generateKey("doc");
+	#addDocument = (newDoc) => {
+		const key = generateKey('doc');
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
-		if (
-			!has.call(newDoc, "file_path") &&
-			!has.call(newDoc, "file_url") &&
-			!has.call(newDoc, "file_data")
-		) {
+		if (!has.call(newDoc, 'file_path') && !has.call(newDoc, 'file_url') && !has.call(newDoc, 'file_data')) {
 			throw [
 				{
-					field: "file_path/file_url/file_data",
-					message: "This field must not be blank.",
+					field: 'file_path/file_url/file_data',
+					message: 'This field must not be blank.',
 				},
 			];
 		}
 
 		// File path is used
 		if (newDoc.file_path) {
-			if (!has.call(newDoc, "file_index")) {
+			if (!has.call(newDoc, 'file_index')) {
 				// Find current index
-				const index = this.bundleData.documents.filter((doc) =>
-					has.call(doc, "file_index")
-				).length;
+				const index = this.bundleData.documents.filter((doc) => has.call(doc, 'file_index')).length;
 
 				newDoc.file_index = index;
 			}
@@ -83,21 +65,55 @@ export class BundleHelper {
 			delete newDoc.file_path;
 		} else if (newDoc.file_data) {
 			// File data is used
-			if (!has.call(newDoc, "file_index")) {
+			if (!has.call(newDoc, 'file_index')) {
 				// Find current index
-				const index = this.bundleData.documents.filter((doc) =>
-					has.call(doc, "file_index")
-				).length;
+				const index = this.bundleData.documents.filter((doc) => has.call(doc, 'file_index')).length;
 
 				newDoc.file_index = index;
 			}
-			const file = new File([newDoc.file_data], "file-from-data.pdf");
+			const file = new File([newDoc.file_data], 'file-from-data.pdf');
 			this.files[`files[${newDoc.file_index}]`] = file;
 			delete newDoc.file_data;
 		}
 
 		this.bundleData.documents.push(newDoc);
 		return newDoc.key;
+	};
+
+	addDocumentByPath = (newDoc) => {
+		if (!has.call(newDoc, 'file_path')) {
+			throw [
+				{
+					field: 'file_path',
+					message: 'This field must not be blank.',
+				},
+			];
+		}
+		return this.#addDocument(newDoc);
+	};
+
+	addDocumentByUrl = (newDoc) => {
+		if (!has.call(newDoc, 'file_url')) {
+			throw [
+				{
+					field: 'file_url',
+					message: 'This field must not be blank.',
+				},
+			];
+		}
+		return this.#addDocument(newDoc);
+	};
+
+	addDocumentByFile = (newDoc) => {
+		if (!has.call(newDoc, 'file_data')) {
+			throw [
+				{
+					field: 'file_data',
+					message: 'This field must not be blank.',
+				},
+			];
+		}
+		return this.#addDocument(newDoc);
 	};
 
 	/**
@@ -108,25 +124,22 @@ export class BundleHelper {
 	 */
 	addDocumentTemplate = (template) => {
 		const error = [];
-		const noBlankMessage = "This field must not be blank.";
-		if (!template.key) template.key = generateKey("tem");
+		const noBlankMessage = 'This field must not be blank.';
+		if (!template.key) template.key = generateKey('tem');
 
 		// Check template_id
 		if (!template.template_id) {
 			error.push({
-				field: "template_id",
+				field: 'template_id',
 				message: noBlankMessage,
 			});
 		}
 
 		// Check assignments
-		if (
-			has.call(template, "assignments") &&
-			!Array.isArray(template.assignments)
-		) {
+		if (has.call(template, 'assignments') && !Array.isArray(template.assignments)) {
 			error.push({
-				field: "assignments",
-				message: "This field must be an array",
+				field: 'assignments',
+				message: 'This field must be an array',
 			});
 		} else {
 			for (let i in template.assignments) {
@@ -149,7 +162,7 @@ export class BundleHelper {
 		if (template.field_values && !Array.isArray(template.field_values)) {
 			error.push({
 				field: `field_values`,
-				message: "This field must be an array.",
+				message: 'This field must be an array.',
 			});
 		} else {
 			for (let i in template.field_values) {
@@ -176,17 +189,13 @@ export class BundleHelper {
 	 */
 	assignRole = (signerKey, templateKey, roleId) => {
 		// Check if signer exists
-		const signerIndex = this.bundleData.packets.findIndex(
-			(signer) => signer.key === signerKey
-		);
-		if (signerIndex === -1) throw new Error("Signer key is invalid.");
+		const signerIndex = this.bundleData.packets.findIndex((signer) => signer.key === signerKey);
+		if (signerIndex === -1) throw new Error('Signer key is invalid.');
 
 		// Find the template
-		const template = this.bundleData.documents.find(
-			(template) => template.key === templateKey
-		);
-		if (!template) throw new Error("Document key is invalid.");
-		if (!has.call(template, "template_id")) {
+		const template = this.bundleData.documents.find((template) => template.key === templateKey);
+		if (!template) throw new Error('Document key is invalid.');
+		if (!has.call(template, 'template_id')) {
 			throw new Error(`Document with key ${templateKey} is not a template.`);
 		}
 		if (!template.assignments || !Array.isArray(template.assignments)) {
@@ -203,7 +212,7 @@ export class BundleHelper {
 	 * @returns - Key of the Signer.
 	 */
 	addSigner = (newSigner) => {
-		const key = generateKey("signer");
+		const key = generateKey('signer');
 		if (!newSigner.key) {
 			newSigner.key = key;
 		}
@@ -219,9 +228,9 @@ export class BundleHelper {
 	 */
 	addField = (docKey, newField) => {
 		const errors = [];
-		const noBlankMessage = "This field must not be blank.";
+		const noBlankMessage = 'This field must not be blank.';
 
-		const requiredFields = ["kind", "x", "y", "w", "h"];
+		const requiredFields = ['kind', 'x', 'y', 'w', 'h'];
 		requiredFields.forEach((field) => {
 			if (!newField[field]) {
 				errors.push({
@@ -233,25 +242,23 @@ export class BundleHelper {
 
 		if (!kinds.includes(newField.kind)) {
 			errors.push({
-				field: "kind",
-				message: "kind is invalid.",
+				field: 'kind',
+				message: 'kind is invalid.',
 			});
 		}
-		if (!newField.key) newField.key = generateKey("field");
+		if (!newField.key) newField.key = generateKey('field');
 
-		const document = this.bundleData.documents.find(
-			(doc) => doc.key === docKey
-		);
+		const document = this.bundleData.documents.find((doc) => doc.key === docKey);
 		if (!document) {
 			errors.push({
-				field: "docKey",
+				field: 'docKey',
 				message: `Document with key ${docKey} is invalid.`,
 			});
 		}
-		if (has.call(newField, "editors") && !Array.isArray(newField.editors)) {
+		if (has.call(newField, 'editors') && !Array.isArray(newField.editors)) {
 			errors.push({
-				field: "editors",
-				message: "This field must be an array",
+				field: 'editors',
+				message: 'This field must be an array',
 			});
 		}
 
@@ -260,6 +267,21 @@ export class BundleHelper {
 		document.fields.push(newField);
 		return newField.key;
 	};
+
+	/**
+	 * Set Document value
+	 * @param {string} docKey 
+	 * @param {string} key 
+	 * @param {*} value 
+	 */
+	setValue = (docKey, key, value) => {
+		const document = this.bundleData.documents.find((doc) => doc.key === docKey);
+		if (!document) {
+			throw new Error(`Document with key ${docKey} is invalid.`)
+		}
+		document[key] = value;
+		return document;
+	}
 
 	/**
 	 * Return the data for bundle.create
@@ -272,7 +294,7 @@ export class BundleHelper {
 			for (let key in this.files) {
 				form.append(key, this.files[key]);
 			}
-			form.append("bundle_request", JSON.stringify(this.bundleData));
+			form.append('bundle_request', JSON.stringify(this.bundleData));
 			const encoder = new FormDataEncoder(form);
 			return { data: Readable.from(encoder), headers: encoder.headers };
 		}

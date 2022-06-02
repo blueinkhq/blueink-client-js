@@ -1,28 +1,9 @@
-import { instance as axios } from "../config/axios/axios.js";
 import "dotenv/config";
+import axios from 'axios';
+
 import { PaginationHelper } from "./helper/pagination.js";
+
 const has = Object.prototype.hasOwnProperty;
-
-/*
-Trade off between object and data
-Object: 
-    Pro:
-    - Can call method to do some action without id parameter
-    - Easy to use?
-    - Semantic
-    Con:
-    - Document might be complicated since having more methods
-    - Take longer to implement
-    - Might be difficult to pass the Object between modules/components
-Data: 
-    Pro:
-    - Easier to implement
-    - Neat document
-    - Can call API anywhere with ID
-    Cons:
-    - Require parameters for each action
-*/
-
 class BlueInkClient {
 	#privateApiKey;
 	#defaultBaseUrl = "https://api.blueink.com/api/v2";
@@ -44,11 +25,8 @@ class BlueInkClient {
 		this.#baseApiUrl =
 			baseApiUrl || process.env.BLUEINK_API_URI || this.#defaultBaseUrl;
 
-		axios.interceptors.request.use((config) => {
-			config.headers.Authorization = `Token ${this.#privateApiKey}`;
-			config.baseURL = this.#baseApiUrl;
-			return config;
-		});
+		axios.defaults.baseURL = this.#baseApiUrl;
+		axios.defaults.headers.common['Authorization'] = `Token ${this.#privateApiKey}`;
 	}
 
 	#post = (path, data) => {
