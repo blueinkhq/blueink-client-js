@@ -98,40 +98,16 @@ export class BundleHelper {
 		return newDoc.key;
 	};
 
-	addDocumentByPath = (newDoc) => {
-		if (!has.call(newDoc, 'file_path')) {
-			throw [
-				{
-					field: 'file_path',
-					message: 'This field must not be blank.',
-				},
-			];
-		}
-		return this.#addDocument(newDoc);
+	addDocumentByPath = (filePath, additionalFields = {}) => {
+		return this.#addDocument({'file_path': filePath, ...additionalFields});
 	};
 
-	addDocumentByUrl = (newDoc) => {
-		if (!has.call(newDoc, 'file_url')) {
-			throw [
-				{
-					field: 'file_url',
-					message: 'This field must not be blank.',
-				},
-			];
-		}
-		return this.#addDocument(newDoc);
+	addDocumentByUrl = (fileURL, additionalFields = {}) => {
+		return this.#addDocument({'file_url': fileURL, ...additionalFields});
 	};
 
-	addDocumentByFile = (newDoc) => {
-		if (!has.call(newDoc, 'file_data')) {
-			throw [
-				{
-					field: 'file_data',
-					message: 'This field must not be blank.',
-				},
-			];
-		}
-		return this.#addDocument(newDoc);
+	addDocumentByFile = (fileData, additionalFields = {}) => {
+		return this.#addDocument({'file_data': fileData, ...additionalFields});
 	};
 
 	/**
