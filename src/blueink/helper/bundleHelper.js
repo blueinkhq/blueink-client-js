@@ -179,9 +179,9 @@ class BundleHelper {
 	 * Assign a Role to a Signer (Packet). Used when a Document Template is used.
 	 * @param {string} signerKey
 	 * @param {string} templateKey
-	 * @param {string} roleId
+	 * @param {string} roleKey
 	 */
-	assignRole = (signerKey, templateKey, roleId) => {
+	assignRole = (signerKey, templateKey, roleKey) => {
 		// Check if signer exists
 		const signerIndex = this.bundleData.packets.findIndex((signer) => signer.key === signerKey);
 		if (signerIndex === -1) throw new Error('Signer key is invalid.');
@@ -193,9 +193,9 @@ class BundleHelper {
 			throw new Error(`Document with key ${templateKey} is not a template.`);
 		}
 		if (!template.assignments || !Array.isArray(template.assignments)) {
-			template.assignments = [{ role: roleId, signer: signerKey }];
+			template.assignments = [{ role: roleKey, signer: signerKey }];
 		} else {
-			template.assignments.push({ role: roleId, signer: signerKey });
+			template.assignments.push({ role: roleKey, signer: signerKey });
 		}
 		return template;
 	};
