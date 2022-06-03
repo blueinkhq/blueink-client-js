@@ -1,12 +1,14 @@
 import "dotenv/config";
-import axios from 'axios';
+import axios from "axios";
 
 import { PaginationHelper } from "./helper/pagination.js";
+import { DEFAULT_BASE_URL } from "./constants.js";
 
 const has = Object.prototype.hasOwnProperty;
+
 class Client {
 	#privateApiKey;
-	#defaultBaseUrl = "https://api.blueink.com/api/v2";
+	#defaultBaseUrl = DEFAULT_BASE_URL;
 	#baseApiUrl;
 	#bundlesPath = "/bundles";
 	#personsPath = "/persons";

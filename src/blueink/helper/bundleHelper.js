@@ -6,12 +6,27 @@ import { Readable } from 'stream';
 
 import { sampleBundle } from '../../seed/sample.js';
 import { generateKey } from '../../util/utility.js';
+import {
+	ATTACHMENT_TYPE,
+	BUNDLE_ORDER,
+	BUNDLE_STATUS,
+	DELIVER_VIA,
+	FIELD_KIND,
+	PACKET_STATUS,
+	V_PATTERN,
+} from '../constants.js';
 
 const has = Object.prototype.hasOwnProperty;
 
-const kinds = ['att', 'cbx', 'chk', 'dat', 'ini', 'inp', 'sdt', 'sel', 'sig', 'sum', 'txt'];
 
 export class BundleHelper {
+	ATTACHMENT_TYPE = ATTACHMENT_TYPE
+	BUNDLE_ORDER = BUNDLE_ORDER
+	BUNDLE_STATUS = BUNDLE_STATUS
+	DELIVER_VIA = DELIVER_VIA
+	FIELD_KIND = FIELD_KIND
+	PACKET_STATUS = PACKET_STATUS
+	V_PATTERN = V_PATTERN
 
 	/**
 	 * Define a Bundle Helper
@@ -243,7 +258,7 @@ export class BundleHelper {
 			}
 		});
 
-		if (!kinds.includes(newField.kind)) {
+		if (!FIELD_KIND.includes(newField.kind)) {
 			errors.push({
 				field: 'kind',
 				message: 'kind is invalid.',
