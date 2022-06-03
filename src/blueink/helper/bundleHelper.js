@@ -19,7 +19,7 @@ import {
 const has = Object.prototype.hasOwnProperty;
 
 
-export class BundleHelper {
+class BundleHelper {
 	ATTACHMENT_TYPE = ATTACHMENT_TYPE
 	BUNDLE_ORDER = BUNDLE_ORDER
 	BUNDLE_STATUS = BUNDLE_STATUS
@@ -295,3 +295,5 @@ export class BundleHelper {
 		return this.bundleData;
 	};
 }
+
+export default BundleHelper;

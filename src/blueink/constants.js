@@ -1,4 +1,4 @@
-¶export const DEFAULT_BASE_URL = "https://api.blueink.com/api/v2";
+export const DEFAULT_BASE_URL = "https://api.blueink.com/api/v2";
 
 export const ATTACHMENT_TYPE = {
     JPG: "jpg",
@@ -22,7 +22,6 @@ export const BUNDLE_ORDER = {
     SENT: "sent",
     COMPLETED_AT: "completed_at",
 };
-
 
 export const BUNDLE_STATUS = {
     NEW: "ne",
