@@ -1,9 +1,6 @@
 import { client } from "../../index.js";
 
 describe("Bundles", () => {
-	const sentBundleId = "w5cpHdvRoN";
-	const completedBundleId = "ReGx0JSafZ";
-	const canceledBundleId = "e1aswoGKQ9";
 
 	it("List all Bundles", async () => {
 		const { status, data } = await client.bundles.list({ status: "co" });

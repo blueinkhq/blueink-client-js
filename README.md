@@ -119,6 +119,7 @@ const pagedListAllBundles = async () => {
 
 		console.log("Here is your previous page data: ", previousPageData);
 	} catch (error) {
+		// Error handling
 		if (error.response) {
 			console.log("There was an error in your request: ", error.response);
 		} else {
@@ -132,6 +133,8 @@ pagedListAllBundles();
 ```
 
 Creating a new Bundle can be tedious and complex. Therefore, we provide `BundleHelper` which helps you to create a new bundle with less error prone.
+To create a new bundle, we can either use `addDocumentByPath`, `addDocumentByPath`, `addDocumentByFile`.
+
 
 ```js
 import { BlueInkClient, BundleHelper } from "blueink-client-js";
@@ -149,13 +152,22 @@ const createNewBundle = async () => {
 			email_message: "This is your first bundle.",
 		});
 
-		// Adding a new document is easy with addDocument method
-		const docKey = bundleHelper.addDocument({
+		// Adding a new document is easy with addDocument* method
+		const docKey = bundleHelper.addDocumentByPath("path-to-your-file.pdf", {
 			key: "DOC-1", // key will be generated automatically if not provided
-			file_path: "path-to-your-file.pdf",
-			// or
-			// file_url: 'some-url.pdf'
 		});
+
+		/* Adding a new document url
+		const docKey = bundleHelper.addDocumentByUrl("url-to-pdf-file", {
+			key: "DOC-1", // key will be generated automatically if not provided
+		});
+		*/
+
+		/* Adding a new document file
+		const docKey = bundleHelper.addDocumentByFile(file, {
+			key: "DOC-1", // key will be generated automatically if not provided
+		});
+		*/
 
 		// Add a new signer to your bundle
 		const signerKey = bundleHelper.addSigner({
@@ -197,4 +209,23 @@ const createNewBundle = async () => {
 
 // Invokes the async function
 createNewBundle();
+```
+
+## Examples
+To run the example:
+```
+npm run create-bundle-from-path
+
+```
+```
+npm run create-bundle-from-url
+
+```
+```
+npm run create-bundle-from-template
+
+```
+```
+npm run list-bundles
+
 ```
