@@ -12,7 +12,7 @@ const askAction = async () => {
 		name: "action",
 		type: "list",
 		message: "Choose an action to continue",
-		choices: ["List Bundles", "List Bundles with Pagination"],
+		choices: ["List Bundles", "List Bundles with Pagination", "List Bundles using Iterator"],
 	});
 	return answer.action;
 };
@@ -93,7 +93,7 @@ const listBundles = async () => {
 					next_page = await askFetchPage("next");
 					if (next_page) {
 						// Fetch the next page by calling nextPage();
-						const nextPageResponse = await response.nextPage();
+						const nextPageResponse = await response.pagination.nextPage();
 						console.log(chalk.bgGreen.black("Fetch Next Page Successfully."));
 						console.log(nextPageResponse);
 					}
@@ -104,7 +104,7 @@ const listBundles = async () => {
 					previous_page = await askFetchPage("previous");
 					if (previous_page) {
 						// Fetch the previous page by calling previousPage();
-						const previousPageResponse = await response.previousPage();
+						const previousPageResponse = await response.pagination.previousPage();
 						console.log(
 							chalk.bgGreen.black("Fetch Previous Page Successfully.")
 						);
@@ -112,6 +112,21 @@ const listBundles = async () => {
 					}
 				}
 
+				break;
+			}
+			case "List Bundles using Iterator": {
+				const pagination = await askPagination();
+
+				// Example how to fetch bundles using iterator
+				const response = await client.bundles.pagedList({
+					related_data, //bool
+					page: pagination.page,
+					per_page: pagination.per_page,
+				});
+				
+				for (let page of response.pagination.pages) {
+					console.log(await page);
+				}
 				break;
 			}
 		}

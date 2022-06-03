@@ -234,7 +234,7 @@ class BundleHelper {
 			}
 		});
 
-		if (!FIELD_KIND.includes(newField.kind)) {
+		if (!Object.values(FIELD_KIND).includes(newField.kind)) {
 			errors.push({
 				field: 'kind',
 				message: 'kind is invalid.',

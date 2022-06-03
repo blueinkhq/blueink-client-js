@@ -1,5 +1,5 @@
-import { Client } from "../index.js";
-import "dotenv/config";
+import { Client } from '../index.js';
+import 'dotenv/config';
 const has = Object.prototype.hasOwnProperty;
 
 export class PaginationHelper {
@@ -24,22 +24,23 @@ export class PaginationHelper {
 		this.#getPagination();
 		const instance = {
 			...response,
-			currentPage: this.#currentPage,
-			perPage: this.#perPage,
-			totalPages: this.#totalPages,
-			totalResults: this.#totalResults,
-			queryParams: this.#params,
-			pages: this.getNextPage(),
-			nextPage: this.#getNextPage,
-			previousPage: this.#getPreviousPage,
+			pagination: {
+				currentPage: this.#currentPage,
+				perPage: this.#perPage,
+				totalPages: this.#totalPages,
+				totalResults: this.#totalResults,
+				pages: this.getNextPage(),
+				nextPage: this.#getNextPage,
+				previousPage: this.#getPreviousPage,
+			},
 		};
 		return instance;
 	}
 
 	#getPagination = () => {
-		if (has.call(this.#response.headers, "x-blueink-pagination")) {
-			const paginationHeader = this.#response.headers["x-blueink-pagination"];
-			const formattedPagination = paginationHeader.split(",");
+		if (has.call(this.#response.headers, 'x-blueink-pagination')) {
+			const paginationHeader = this.#response.headers['x-blueink-pagination'];
+			const formattedPagination = paginationHeader.split(',');
 
 			this.#currentPage = parseInt(formattedPagination[0]);
 			this.#totalPages = parseInt(formattedPagination[1]);
@@ -62,17 +63,17 @@ export class PaginationHelper {
 
 	getPageContent = (pageNumber) => {
 		switch (this.#path) {
-			case "/bundles/":
+			case '/bundles/':
 				return this.#client.bundles.pagedList({
 					...this.#params,
 					page: pageNumber,
 				});
-			case "/persons/":
+			case '/persons/':
 				return this.#client.persons.pagedList({
 					...this.#params,
 					page: pageNumber,
 				});
-			case "/templates/":
+			case '/templates/':
 				return this.#client.templates.pagedList({
 					...this.#params,
 					page: pageNumber,
@@ -85,7 +86,7 @@ export class PaginationHelper {
 		if (!nextPage.done) {
 			return nextPage.value;
 		} else {
-			throw new Error("Invalid page.");
+			throw new Error('Invalid page.');
 		}
 	};
 
@@ -94,7 +95,7 @@ export class PaginationHelper {
 		if (!previousPage.done) {
 			return previousPage.value;
 		} else {
-			throw new Error("Invalid page.");
+			throw new Error('Invalid page.');
 		}
 	};
 }

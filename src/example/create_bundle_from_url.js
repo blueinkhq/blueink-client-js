@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { BundleHelper } from "../blueink/helper/bundleHelper.js";
+import { BundleHelper } from "../blueink/index.js";
 import { Client } from "../blueink/index.js";
 import inquirer from "inquirer";
 import chalk from "chalk";
@@ -19,9 +19,8 @@ const createBundleFromUrl = async () => {
 		console.log("Test Bundle Data is added using BundleHelper Class. \n");
 
 		const file_url = await askFileUrl();
-		const docKey1 = bundleHelper.addDocumentByUrl({
+		const docKey1 = bundleHelper.addDocumentByUrl(file_url, {
 			key: "DOC-1",
-			file_url,
 		});
 		console.log("Test Document is added using BundleHelper Class. \n");
 
