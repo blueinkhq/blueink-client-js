@@ -1,15 +1,18 @@
 import { FormDataEncoder } from 'form-data-encoder';
 import { FormData, File } from 'formdata-node';
 import { fileFromPathSync } from 'formdata-node/file-from-path';
+import isEmpty from 'lodash.isempty';
 import { Readable } from 'stream';
+
 import { sampleBundle } from '../../seed/sample.js';
 import { generateKey } from '../../util/utility.js';
-import isEmpty from 'lodash.isempty';
+
 const has = Object.prototype.hasOwnProperty;
 
 const kinds = ['att', 'cbx', 'chk', 'dat', 'ini', 'inp', 'sdt', 'sel', 'sig', 'sum', 'txt'];
 
 export class BundleHelper {
+
 	/**
 	 * Define a Bundle Helper
 	 * @param {Object} newBundleData
