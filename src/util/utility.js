@@ -1,8 +1,7 @@
+import crypto from 'crypto';
+
 // Just generate some random number for now
 export const generateKey = (type) => {
-	return (
-		type.toString().toUpperCase() +
-		"-" +
-		Math.floor(Math.random() * 1000).toString()
-	);
+	const randomKey = crypto.randomBytes(2).toString('hex');
+	return type.toString().toUpperCase() + '-' + randomKey;
 };

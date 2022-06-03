@@ -1,6 +1,6 @@
 import { FormDataEncoder } from 'form-data-encoder';
 import { FormData, File } from 'formdata-node';
-// import { fileFromPathSync } from 'formdata-node/file-from-path';
+import { fileFromPathSync } from 'formdata-node/file-from-path';
 import isEmpty from 'lodash.isempty';
 import { Readable } from 'stream';
 
