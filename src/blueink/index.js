@@ -4,7 +4,7 @@ import axios from 'axios';
 import { PaginationHelper } from "./helper/pagination.js";
 
 const has = Object.prototype.hasOwnProperty;
-class BlueInkClient {
+class Client {
 	#privateApiKey;
 	#defaultBaseUrl = "https://api.blueink.com/api/v2";
 	#baseApiUrl;
@@ -291,4 +291,4 @@ class BlueInkClient {
 	};
 }
 
-export { BlueInkClient };
+export { Client };

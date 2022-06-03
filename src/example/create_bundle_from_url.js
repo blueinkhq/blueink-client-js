@@ -1,10 +1,10 @@
 import "dotenv/config";
 import { BundleHelper } from "../blueink/helper/bundleHelper.js";
-import { BlueInkClient } from "../blueink/index.js";
+import { Client } from "../blueink/index.js";
 import inquirer from "inquirer";
 import chalk from "chalk";
 
-const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const createBundleFromUrl = async () => {
 	try {

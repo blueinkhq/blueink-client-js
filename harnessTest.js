@@ -1,8 +1,8 @@
 import { BundleHelper } from "./src/blueink/bundle/bundleHelper.js";
-import { BlueInkClient } from "./src/blueink/index.js";
+import { Client } from "./src/blueink/index.js";
 import "dotenv/config";
 
-const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 const sentBundleId = "w5cpHdvRoN";
 const completedBundleId = "ReGx0JSafZ";
 const canceledBundleId = "e1aswoGKQ9";
