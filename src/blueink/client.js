@@ -1,10 +1,10 @@
 import "dotenv/config";
 import axios from "axios";
+import has from "lodash.has";
 
 import { PaginationHelper } from "./helper/pagination.js";
 import { DEFAULT_BASE_URL } from "./constants.js";
 
-const has = Object.prototype.hasOwnProperty;
 
 class Client {
     #privateApiKey;
@@ -27,12 +27,24 @@ class Client {
         this.#baseApiUrl =
             baseApiUrl || process.env.BLUEINK_API_URI || this.#defaultBaseUrl;
 
-        axios.defaults.baseURL = this.#baseApiUrl;
-        axios.defaults.headers.common['Authorization'] = `Token ${this.#privateApiKey}`;
+        this._axios = axios.create({
+            baseURL: this.#baseApiUrl,
+        })
+
+        this._axios.headers.common['Authorization'] = `Token ${this.#privateApiKey}`;
+        this._axios.interceptors.response.use(function (response) {
+            // Any status code that lie within the range of 2xx cause this function to trigger
+            // Do something with response data
+            return response;
+        }, function (error) {
+            // Any status codes that falls outside the range of 2xx cause this function to trigger
+            // Do something with response error
+            return Promise.reject(error);
+        });
     }
 
     #post = (path, data) => {
-        if (has.call(data, "headers")) {
+        if (has(data, "headers")) {
             return axios.post(path, data.data, {
                 headers: {
                     ...data.headers,
