@@ -1,5 +1,6 @@
 import { FormDataEncoder } from 'form-data-encoder';
 import { FormData, File } from 'formdata-node';
+import { fileFromPathSync } from "formdata-node/file-from-path";
 import isEmpty from 'lodash.isempty';
 import has from 'lodash.has';
 import { Readable } from 'stream';
@@ -55,7 +56,6 @@ class BundleHelper {
 			if (!has(newDoc, 'file_index')) {
 				// Find current index
 				const index = this.bundleData.documents.filter((doc) => has(doc, 'file_index')).length;
-
 				newDoc.file_index = index;
 			}
 

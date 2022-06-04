@@ -74,7 +74,7 @@ const listBundles = async () => {
 				const response = await client.bundles.list({
 					related_data, //bool
 				});
-				console.log(response);
+				console.log(response.data.slice(0, 3));
 				break;
 			}
 			case "List Bundles with Pagination": {

@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import has from 'lodash.has';
 
 export class PaginationHelper {
 	#response;
@@ -9,58 +8,33 @@ export class PaginationHelper {
 	#params;
 	#client;
 	#pageNumber;
-	#perPage;
 	#totalPages;
-	#totalResults;
 
 	constructor(response, path, params, client) {
 		this.#response = response;
 		this.#path = path;
 		this.#params = params;
 		this.#client = client;
-		this.#nextPages = this.getNextPage();
-		this.#previousPages = this.getPreviousPage();
-		this.#getPagination();
-
-		self.page_number = int(pagination_split[0])
-		self.total_pages = int(pagination_split[1])
-		self.per_page = int(pagination_split[2])
-		self.total_results = int(pagination_split[3])
+		this.#nextPages = this.yieldNextPage();
+		this.#previousPages = this.yieldPreviousPage();
 
 		const instance = {
 			...response,
-			pagination: {
-				pageNumber: this.#pageNumber,
-				perPage: this.#perPage,
-				totalPages: this.#totalPages,
-				totalResults: this.#totalResults,
-				pages: this.getNextPage(),
-				nextPage: this.#getNextPage,
-				previousPage: this.#getPreviousPage,
-			},
+			pages: this.yieldNextPage(),
+			nextPage: this.#getNextPage,
+			previousPage: this.#getPreviousPage,
 		};
+
 		return instance;
 	}
 
-	#getPagination = () => {
-		if (has(this.#response.headers, 'x-blueink-pagination')) {
-			const paginationHeader = this.#response.headers['x-blueink-pagination'];
-			const formattedPagination = paginationHeader.split(',');
-
-			this.#pageNumber = parseInt(formattedPagination[0]);
-			this.#totalPages = parseInt(formattedPagination[1]);
-			this.#perPage = parseInt(formattedPagination[2]);
-			this.#totalResults = parseInt(formattedPagination[3]);
-		}
-	};
-
-	*getNextPage() {
+	*yieldNextPage() {
 		for (let i = this.#pageNumber + 1; i <= this.#totalPages; ++i) {
 			yield this.getPageContent(i);
 		}
 	}
 
-	*getPreviousPage() {
+	*yieldPreviousPage() {
 		for (let i = this.#pageNumber - 1; i >= 1; --i) {
 			yield this.getPageContent(i);
 		}

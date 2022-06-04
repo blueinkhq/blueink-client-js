@@ -1,6 +1,6 @@
 {
 	"name": "blueink-client-api",
-	"description": "BlueInk JS Library",
+	"description": "A Javascript client library for the BlueInk eSignature REST API",
 	"version": "1.0.0",
 	"main": "index.js",
 	"type": "module",
@@ -11,8 +11,8 @@
 		"create-bundle-from-template": "node src/example/create_bundle_from_template.js",
 		"list-bundles": "node src/example/list_bundles.js"
 	},
-	"author": "",
-	"license": "ISC",
+	"author": "Blueink",
+	"license": "MIT",
 	"dependencies": {
 		"axios": "^0.24.0",
 		"form-data": "^4.0.0",

@@ -23,39 +23,61 @@ class Client {
         // Define Private Key
         this.#privateApiKey = privateApiKey || process.env.BLUEINK_PRIVATE_API_KEY;
 
+        if (!this.#privateApiKey) {
+            throw Error(
+                'Blueink Private API Key must be passed to the Client on initialization, '
+                + 'or provided in the environment variable BLUEINK_PRIVATE_API_KEY.'
+            )
+        }
         // Define Base URL
         this.#baseApiUrl =
-            baseApiUrl || process.env.BLUEINK_API_URI || this.#defaultBaseUrl;
+            baseApiUrl || process.env.BLUEINK_API_URL || this.#defaultBaseUrl;
 
         this._axios = axios.create({
             baseURL: this.#baseApiUrl,
+            headers: {
+                common: {
+                    Authorization: `Token ${this.#privateApiKey}`,
+                },
+            },
         })
 
-        this._axios.headers.common['Authorization'] = `Token ${this.#privateApiKey}`;
-        this._axios.interceptors.response.use(function (response) {
-            // Any status code that lie within the range of 2xx cause this function to trigger
-            // Do something with response data
+        this._axios.interceptors.response.use(response => {
+            response.pagination = this.getPagination(response);
             return response;
-        }, function (error) {
-            // Any status codes that falls outside the range of 2xx cause this function to trigger
-            // Do something with response error
+        }, error => {
             return Promise.reject(error);
         });
     }
 
+    getPagination = (response) => {
+        if (has(response.headers, 'x-blueink-pagination')) {
+            const paginationBits = response.headers['x-blueink-pagination'].split(',');
+
+            return {
+                pageNumber: parseInt(paginationBits[0]),
+                totalPages: parseInt(paginationBits[1]),
+                perPage: parseInt(paginationBits[2]),
+                totalResults: parseInt(paginationBits[3]),
+            };
+        }
+
+        return null;
+    };
+
     #post = (path, data) => {
         if (has(data, "headers")) {
-            return axios.post(path, data.data, {
+            return this._axios.post(path, data.data, {
                 headers: {
                     ...data.headers,
                 },
             });
         }
-        return axios.post(path, data);
+        return this._axios.post(path, data);
     };
 
     #get = (path, params = {}) => {
-        return axios.get(`${path}`, {
+        return this._axios.get(`${path}`, {
             params: params,
         });
     };
@@ -72,7 +94,7 @@ class Client {
                 );
                 return new PaginationHelper(response, path, params, this);
             } else {
-                const response = await axios.get(`${path}`, {
+                const response = await this._axios.get(`${path}`, {
                     params: params,
                 });
                 return new PaginationHelper(response, path, params, this);
@@ -83,7 +105,7 @@ class Client {
     };
 
     #put = (path, data = {}) => {
-        return axios.put(path, data);
+        return this._axios.put(path, data);
     };
 
     #delete = (path, data) => {
@@ -95,7 +117,7 @@ class Client {
     };
 
     #patch = (path, data) => {
-        return axios.patch(path, data);
+        return this._axios.patch(path, data);
     };
 
     #getRelatedData = async (bundle) => {
