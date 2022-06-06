@@ -1,10 +1,10 @@
 import "dotenv/config";
 import axios from "axios";
+import has from "lodash.has";
 
 import { PaginationHelper } from "./helper/pagination.js";
 import { DEFAULT_BASE_URL } from "./constants.js";
 
-const has = Object.prototype.hasOwnProperty;
 
 class Client {
     #privateApiKey;
@@ -23,27 +23,61 @@ class Client {
         // Define Private Key
         this.#privateApiKey = privateApiKey || process.env.BLUEINK_PRIVATE_API_KEY;
 
+        if (!this.#privateApiKey) {
+            throw Error(
+                'Blueink Private API Key must be passed to the Client on initialization, '
+                + 'or provided in the environment variable BLUEINK_PRIVATE_API_KEY.'
+            )
+        }
         // Define Base URL
         this.#baseApiUrl =
-            baseApiUrl || process.env.BLUEINK_API_URI || this.#defaultBaseUrl;
+            baseApiUrl || process.env.BLUEINK_API_URL || this.#defaultBaseUrl;
 
-        axios.defaults.baseURL = this.#baseApiUrl;
-        axios.defaults.headers.common['Authorization'] = `Token ${this.#privateApiKey}`;
+        this._axios = axios.create({
+            baseURL: this.#baseApiUrl,
+            headers: {
+                common: {
+                    Authorization: `Token ${this.#privateApiKey}`,
+                },
+            },
+        })
+
+        this._axios.interceptors.response.use(response => {
+            response.pagination = this.getPagination(response);
+            return response;
+        }, error => {
+            return Promise.reject(error);
+        });
     }
 
+    getPagination = (response) => {
+        if (has(response.headers, 'x-blueink-pagination')) {
+            const paginationBits = response.headers['x-blueink-pagination'].split(',');
+
+            return {
+                pageNumber: parseInt(paginationBits[0]),
+                totalPages: parseInt(paginationBits[1]),
+                perPage: parseInt(paginationBits[2]),
+                totalResults: parseInt(paginationBits[3]),
+            };
+        }
+
+        return null;
+    };
+
     #post = (path, data) => {
-        if (has.call(data, "headers")) {
-            return axios.post(path, data.data, {
+        if (has(data, "headers")) {
+            return this._axios.post(path, data.data, {
                 headers: {
                     ...data.headers,
                 },
             });
         }
-        return axios.post(path, data);
+        return this._axios.post(path, data);
     };
 
     #get = (path, params = {}) => {
-        return axios.get(`${path}`, {
+        return this._axios.get(`${path}`, {
             params: params,
         });
     };
@@ -60,7 +94,7 @@ class Client {
                 );
                 return new PaginationHelper(response, path, params, this);
             } else {
-                const response = await axios.get(`${path}`, {
+                const response = await this._axios.get(`${path}`, {
                     params: params,
                 });
                 return new PaginationHelper(response, path, params, this);
@@ -71,7 +105,7 @@ class Client {
     };
 
     #put = (path, data = {}) => {
-        return axios.put(path, data);
+        return this._axios.put(path, data);
     };
 
     #delete = (path, data) => {
@@ -83,7 +117,7 @@ class Client {
     };
 
     #patch = (path, data) => {
-        return axios.patch(path, data);
+        return this._axios.patch(path, data);
     };
 
     #getRelatedData = async (bundle) => {

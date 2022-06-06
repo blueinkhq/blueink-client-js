@@ -2,32 +2,16 @@ import { FormDataEncoder } from 'form-data-encoder';
 import { FormData, File } from 'formdata-node';
 import { fileFromPathSync } from 'formdata-node/file-from-path';
 import isEmpty from 'lodash.isempty';
+import has from 'lodash.has';
 import { Readable } from 'stream';
 
 import { sampleBundle } from '../../seed/sample.js';
 import { generateKey } from '../../util/utility.js';
-import {
-	ATTACHMENT_TYPE,
-	BUNDLE_ORDER,
-	BUNDLE_STATUS,
-	DELIVER_VIA,
-	FIELD_KIND,
-	PACKET_STATUS,
-	V_PATTERN,
-} from '../constants.js';
+import { FIELD_KIND } from '../constants.js';
 
-const has = Object.prototype.hasOwnProperty;
 
 
 class BundleHelper {
-	ATTACHMENT_TYPE = ATTACHMENT_TYPE
-	BUNDLE_ORDER = BUNDLE_ORDER
-	BUNDLE_STATUS = BUNDLE_STATUS
-	DELIVER_VIA = DELIVER_VIA
-	FIELD_KIND = FIELD_KIND
-	PACKET_STATUS = PACKET_STATUS
-	V_PATTERN = V_PATTERN
-
 	/**
 	 * Define a Bundle Helper
 	 * @param {Object} newBundleData
@@ -58,7 +42,7 @@ class BundleHelper {
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
-		if (!has.call(newDoc, 'file_path') && !has.call(newDoc, 'file_url') && !has.call(newDoc, 'file_data')) {
+		if (!has(newDoc, 'file_path') && !has(newDoc, 'file_url') && !has(newDoc, 'file_data')) {
 			throw [
 				{
 					field: 'file_path/file_url/file_data',
@@ -69,10 +53,9 @@ class BundleHelper {
 
 		// File path is used
 		if (newDoc.file_path) {
-			if (!has.call(newDoc, 'file_index')) {
+			if (!has(newDoc, 'file_index')) {
 				// Find current index
-				const index = this.bundleData.documents.filter((doc) => has.call(doc, 'file_index')).length;
-
+				const index = this.bundleData.documents.filter((doc) => has(doc, 'file_index')).length;
 				newDoc.file_index = index;
 			}
 
@@ -83,9 +66,9 @@ class BundleHelper {
 			delete newDoc.file_path;
 		} else if (newDoc.file_data) {
 			// File data is used
-			if (!has.call(newDoc, 'file_index')) {
+			if (!has(newDoc, 'file_index')) {
 				// Find current index
-				const index = this.bundleData.documents.filter((doc) => has.call(doc, 'file_index')).length;
+				const index = this.bundleData.documents.filter((doc) => has(doc, 'file_index')).length;
 
 				newDoc.file_index = index;
 			}
@@ -130,7 +113,7 @@ class BundleHelper {
 		}
 
 		// Check assignments
-		if (has.call(template, 'assignments') && !Array.isArray(template.assignments)) {
+		if (has(template, 'assignments') && !Array.isArray(template.assignments)) {
 			error.push({
 				field: 'assignments',
 				message: 'This field must be an array',
@@ -189,7 +172,7 @@ class BundleHelper {
 		// Find the template
 		const template = this.bundleData.documents.find((template) => template.key === templateKey);
 		if (!template) throw new Error('Document key is invalid.');
-		if (!has.call(template, 'template_id')) {
+		if (!has(template, 'template_id')) {
 			throw new Error(`Document with key ${templateKey} is not a template.`);
 		}
 		if (!template.assignments || !Array.isArray(template.assignments)) {
@@ -249,7 +232,7 @@ class BundleHelper {
 				message: `Document with key ${docKey} is invalid.`,
 			});
 		}
-		if (has.call(newField, 'editors') && !Array.isArray(newField.editors)) {
+		if (has(newField, 'editors') && !Array.isArray(newField.editors)) {
 			errors.push({
 				field: 'editors',
 				message: 'This field must be an array',

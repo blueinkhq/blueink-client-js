@@ -49,10 +49,8 @@ const createBundleFromTemplate = async () => {
 		console.log("Creating a new Bundle.");
 
 		const response = await client.bundles.create(bundleHelper.asData());
-		console.log(
-			chalk.bgGreen.black("Your Bundle has been created successfully.")
-		);
-		console.log(response);
+		console.log(chalk.bgGreen.black(`Bundle ${response.data.id} was created successfully.`));
+		console.log(response.data);
 	} catch (error) {
 		if (error.response) {
 			console.log(error.response);

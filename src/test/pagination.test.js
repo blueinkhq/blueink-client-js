@@ -10,7 +10,7 @@ describe("Pagination", () => {
 		for (let page of pageList.pages) {
 			++i;
 			const pageData = await page;
-			expect(pageData.currentPage).toBe(i);
+			expect(pageData.pageNumber).toBe(i);
 		}
 	});
 
@@ -20,7 +20,7 @@ describe("Pagination", () => {
 			per_page: 20,
 		});
 		const nextPage = await pageList.nextPage();
-		expect(nextPage.currentPage).toBe(3);
+		expect(nextPage.pageNumber).toBe(3);
 	});
 
 	it("Get Previous Page", async () => {
@@ -29,6 +29,6 @@ describe("Pagination", () => {
 			per_page: 20,
 		});
 		const nextPage = await pageList.previousPage();
-		expect(nextPage.currentPage).toBe(2);
+		expect(nextPage.pageNumber).toBe(2);
 	});
 });

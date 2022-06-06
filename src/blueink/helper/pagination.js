@@ -1,7 +1,3 @@
-import { Client } from '../index.js';
-import 'dotenv/config';
-const has = Object.prototype.hasOwnProperty;
-
 export class PaginationHelper {
 	#response;
 	#nextPages;
@@ -9,54 +5,35 @@ export class PaginationHelper {
 	#path;
 	#params;
 	#client;
-	#currentPage;
-	#perPage;
+	#pageNumber;
 	#totalPages;
-	#totalResults;
 
 	constructor(response, path, params, client) {
 		this.#response = response;
 		this.#path = path;
 		this.#params = params;
 		this.#client = client;
-		this.#nextPages = this.getNextPage();
-		this.#previousPages = this.getPreviousPage();
-		this.#getPagination();
+		this.#nextPages = this.yieldNextPage();
+		this.#previousPages = this.yieldPreviousPage();
+
 		const instance = {
 			...response,
-			pagination: {
-				currentPage: this.#currentPage,
-				perPage: this.#perPage,
-				totalPages: this.#totalPages,
-				totalResults: this.#totalResults,
-				pages: this.getNextPage(),
-				nextPage: this.#getNextPage,
-				previousPage: this.#getPreviousPage,
-			},
+			pages: this.yieldNextPage(),
+			nextPage: this.#getNextPage,
+			previousPage: this.#getPreviousPage,
 		};
+
 		return instance;
 	}
 
-	#getPagination = () => {
-		if (has.call(this.#response.headers, 'x-blueink-pagination')) {
-			const paginationHeader = this.#response.headers['x-blueink-pagination'];
-			const formattedPagination = paginationHeader.split(',');
-
-			this.#currentPage = parseInt(formattedPagination[0]);
-			this.#totalPages = parseInt(formattedPagination[1]);
-			this.#perPage = parseInt(formattedPagination[2]);
-			this.#totalResults = parseInt(formattedPagination[3]);
-		}
-	};
-
-	*getNextPage() {
-		for (let i = this.#currentPage + 1; i <= this.#totalPages; ++i) {
+	*yieldNextPage() {
+		for (let i = this.#pageNumber + 1; i <= this.#totalPages; ++i) {
 			yield this.getPageContent(i);
 		}
 	}
 
-	*getPreviousPage() {
-		for (let i = this.#currentPage - 1; i >= 1; --i) {
+	*yieldPreviousPage() {
+		for (let i = this.#pageNumber - 1; i >= 1; --i) {
 			yield this.getPageContent(i);
 		}
 	}
