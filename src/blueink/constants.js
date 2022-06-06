@@ -35,6 +35,11 @@ export const BUNDLE_STATUS = {
     FAILED: "fa",
 };
 
+export const CONTACT_CHANNEL = {
+    EMAIL: "em",
+    PHONE: "mp",
+}
+
 export const DELIVER_VIA = {
     EMAIL: "em",
     SMS: "sm",

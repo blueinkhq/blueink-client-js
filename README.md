@@ -44,6 +44,9 @@ Otherwise, it will check for the URL in `.env` file or use the default one.
 
 ## Usage
 
+### Bundles
+#### Listing
+Listing has several options regarding pagination.
 ```js
 import { BlueInkClient } from "blueink-client-js";
 
@@ -81,7 +84,7 @@ const listAllBundles = async () => {
 listAllBundles();
 ```
 
-We provide the paged list where it has a generator function so you can fetch the next or previous page just using `nextPage` or `previousPage` methods
+We provide the paged list where it has a generator function so you can fetch the next or previous page just using `nextPage` or `previousPage` methods. If no parameters are set, it will start at page 0 and have up to 50 bundles per page.
 
 ```js
 import { BlueInkClient } from "blueink-client-js";
@@ -132,6 +135,7 @@ const pagedListAllBundles = async () => {
 pagedListAllBundles();
 ```
 
+#### Creation/Bundle Helper
 Creating a new Bundle can be tedious and complex. Therefore, we provide `BundleHelper` which helps you to create a new bundle with less error prone.
 To create a new bundle, we can either use `addDocumentByPath`, `addDocumentByPath`, `addDocumentByFile`.
 
@@ -211,6 +215,59 @@ const createNewBundle = async () => {
 createNewBundle();
 ```
 
+#### Retrieval
+```js
+const response = await client.bundles.retrieve(bundleId, { related_data: true });
+```
+
+#### Deletion
+```js
+await client.bundles.delete(bundleId);
+```
+
+#### Other methods
+- `cancel`
+- `listEvents`
+- `listFiles`
+- `listData`
+
+### Persons
+Persons have similar methods as Bundles:
+```js
+await client.persons.create(newPerson);
+await client.persons.list();
+await client.persons.pagedList({
+	page: 1,
+	per_page: 10,
+});
+await client.persons.retrieve(newPerson);
+await client.persons.update(newPerson);
+await client.persons.partialUpdate(newPerson);
+await client.persons.create(newPerson);
+await client.persons.create(newPerson);
+
+```
+
+### Packets
+Packets can be updated. Reminders may be triggered, and COEs can be retrieve using the client:
+```js
+await client.packets.update(packetId, {...data});
+await client.packets.remind(packetId);
+await client.packets.retrieveCOE(packetId);
+
+```
+
+### Templates
+Templates can be listed, paged listed, or retrieved:
+```js
+await client.templates.list();
+await client.templates.pagedList({
+	page: 1,
+	per_page: 10,
+});
+await client.templates.retrieve(templateId);
+```
+
 ## Examples
 To run the example:
 ```
@@ -229,3 +286,11 @@ npm run create-bundle-from-template
 npm run list-bundles
 
 ```
+
+## Additional Resources
+- [BlueInk Client Php Library]('')
+- [BlueInk Client Python Library]('')
+
+## BlueInk Support
+
+## Contributors
