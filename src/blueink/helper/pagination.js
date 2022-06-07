@@ -1,10 +1,9 @@
+import isEmpty from 'lodash.isempty';
+
 export class PaginationHelper {
-	#nextPages;
-	#previousPages;
 	#params;
-	#pageNumber;
 	#pagedRequest;
-	#lastResponse;
+	#lastPagination;
 
 	/**
 	 *
@@ -15,51 +14,22 @@ export class PaginationHelper {
 	constructor(pagedRequest, params) {
 		this.#params = params;
 		this.#pagedRequest = pagedRequest;
-
-		this.#lastResponse = {};
+		this.#lastPagination = {};
 
 		return this.yieldNextPage();
 	}
 
-	*yieldNextPage() {
+	async *yieldNextPage() {
 		let currentPage = this.#params.page;
-		while (!this.#lastResponse.totalPages || currentPage <= this.#lastResponse.totalPages) {
-			yield this.getPageContent(currentPage);
+		while (isEmpty(this.#lastPagination) || currentPage <= this.#lastPagination.totalPages) {
+			yield await this.getPageContent(currentPage);
 			currentPage++;
 		}
 	}
 
-	*yieldPreviousPage() {
-		if (!this.#lastResponse) {
-			for (let i = this.#pageNumber - 1; i >= 1; --i) {
-				yield this.getPageContent(i);
-			}
-		}
-	}
-
-	getPageContent = (pageNumber) => {
-		const promise = this.#pagedRequest({ ...this.#params, page: pageNumber });
-		promise.then((res) => {
-			this.#lastResponse = res.pagination;
-		});
-		return promise;
-	};
-
-	#getNextPage = () => {
-		const nextPage = this.#nextPages.next();
-		if (!nextPage.done) {
-			return nextPage.value;
-		} else {
-			throw new Error('Invalid page.');
-		}
-	};
-
-	#getPreviousPage = () => {
-		const previousPage = this.#previousPages.next();
-		if (!previousPage.done) {
-			return previousPage.value;
-		} else {
-			throw new Error('Invalid page.');
-		}
+	async getPageContent(pageNumber) {
+		const response = await this.#pagedRequest({ ...this.#params, page: pageNumber });
+		this.#lastPagination = response.pagination;
+		return response;
 	};
 }
