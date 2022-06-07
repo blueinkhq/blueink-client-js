@@ -1,61 +1,48 @@
 export class PaginationHelper {
-	#response;
 	#nextPages;
 	#previousPages;
-	#path;
 	#params;
-	#client;
 	#pageNumber;
-	#totalPages;
+	#pagedRequest;
+	#lastResponse;
 
-	constructor(response, path, params, client) {
-		this.#response = response;
-		this.#path = path;
+	/**
+	 *
+	 * @param {*} pagedRequest
+	 * @param {*} params
+	 * @returns iterator function
+	 */
+	constructor(pagedRequest, params) {
 		this.#params = params;
-		this.#client = client;
-		this.#nextPages = this.yieldNextPage();
-		this.#previousPages = this.yieldPreviousPage();
+		this.#pagedRequest = pagedRequest;
 
-		const instance = {
-			...response,
-			pages: this.yieldNextPage(),
-			nextPage: this.#getNextPage,
-			previousPage: this.#getPreviousPage,
-		};
+		this.#lastResponse = {};
 
-		return instance;
+		return this.yieldNextPage();
 	}
 
 	*yieldNextPage() {
-		for (let i = this.#pageNumber + 1; i <= this.#totalPages; ++i) {
-			yield this.getPageContent(i);
+		let currentPage = this.#params.page;
+		while (!this.#lastResponse.totalPages || currentPage <= this.#lastResponse.totalPages) {
+			yield this.getPageContent(currentPage);
+			currentPage++;
 		}
 	}
 
 	*yieldPreviousPage() {
-		for (let i = this.#pageNumber - 1; i >= 1; --i) {
-			yield this.getPageContent(i);
+		if (!this.#lastResponse) {
+			for (let i = this.#pageNumber - 1; i >= 1; --i) {
+				yield this.getPageContent(i);
+			}
 		}
 	}
 
 	getPageContent = (pageNumber) => {
-		switch (this.#path) {
-			case '/bundles/':
-				return this.#client.bundles.pagedList({
-					...this.#params,
-					page: pageNumber,
-				});
-			case '/persons/':
-				return this.#client.persons.pagedList({
-					...this.#params,
-					page: pageNumber,
-				});
-			case '/templates/':
-				return this.#client.templates.pagedList({
-					...this.#params,
-					page: pageNumber,
-				});
-		}
+		const promise = this.#pagedRequest({ ...this.#params, page: pageNumber });
+		promise.then((res) => {
+			this.#lastResponse = res.pagination;
+		});
+		return promise;
 	};
 
 	#getNextPage = () => {

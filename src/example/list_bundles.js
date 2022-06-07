@@ -86,27 +86,16 @@ const listBundles = async () => {
 					page: pagination.page,
 					per_page: pagination.per_page,
 				});
-				console.log(response);
 
 				let next_page = true;
 				while (next_page) {
 					next_page = await askFetchPage('next');
 					if (next_page) {
 						// Fetch the next page by calling nextPage();
-						const nextPageResponse = await response.pagination.nextPage();
+						const nextPageResponse = response.next();
+						const result = await nextPageResponse.value;
 						console.log(chalk.bgGreen.black('Fetch Next Page Successfully.'));
-						console.log(nextPageResponse);
-					}
-				}
-
-				let previous_page = true;
-				while (previous_page) {
-					previous_page = await askFetchPage('previous');
-					if (previous_page) {
-						// Fetch the previous page by calling previousPage();
-						const previousPageResponse = await response.pagination.previousPage();
-						console.log(chalk.bgGreen.black('Fetch Previous Page Successfully.'));
-						console.log(previousPageResponse);
+						console.log(result);
 					}
 				}
 
@@ -116,14 +105,15 @@ const listBundles = async () => {
 				const pagination = await askPagination();
 
 				// Example how to fetch bundles using iterator
-				const response = await client.bundles.pagedList({
+				const pages = await client.bundles.pagedList({
 					related_data, //bool
 					page: pagination.page,
 					per_page: pagination.per_page,
 				});
 
-				for (let page of response.pagination.pages) {
-					console.log(await page);
+				for (const page of pages) {
+					const result = await page;
+					console.log(result.pagination);
 				}
 				break;
 			}
@@ -141,25 +131,4 @@ const listBundles = async () => {
 	}
 };
 
-// listBundles();
-
-const example = async () => {
-	try {
-		const res = await client.bundles.pagedList({
-			per_page: 50,
-			page: 3
-		})
-
-		console.log(res)
-	} catch (error) {
-		console.log(chalk.bgRed.white('\nError: '));
-		if (error.response) {
-			console.log(error.response);
-			console.log(error.response.data);
-		} else {
-			console.log(error);
-		}
-	}
-};
-
-example();
+listBundles();

@@ -82,26 +82,27 @@ class Client {
         });
     };
 
-    #pagedList = async (path, params = {}) => {
-        try {
-            if (params.related_data === true) {
-                const response = await this.#get(`${this.#bundlesPath}/`, params);
-                response.data = await Promise.all(
-                    response.data.map(async (bundle) => {
-                        const related_data = await this.#getRelatedData(bundle);
-                        return { ...bundle, related_data };
-                    })
-                );
-                return new PaginationHelper(response, path, params, this);
-            } else {
-                const response = await this._axios.get(`${path}`, {
-                    params: params,
-                });
-                return new PaginationHelper(response, path, params, this);
-            }
-        } catch (error) {
-            throw error;
-        }
+    #pagedList = async (request, params = {}) => {
+        return new PaginationHelper(request, params)
+        // try {
+        //     if (params.related_data === true) {
+        //         const response = await this.#get(`${this.#bundlesPath}/`, params);
+        //         response.data = await Promise.all(
+        //             response.data.map(async (bundle) => {
+        //                 const related_data = await this.#getRelatedData(bundle);
+        //                 return { ...bundle, related_data };
+        //             })
+        //         );
+        //         return new PaginationHelper(response, path, params, this);
+        //     } else {
+        //         const response = await this._axios.get(`${path}`, {
+        //             params: params,
+        //         });
+        //         return new PaginationHelper(response, path, params, this);
+        //     }
+        // } catch (error) {
+        //     throw error;
+        // }
     };
 
     #put = (path, data = {}) => {
@@ -218,7 +219,7 @@ class Client {
          * @param {number} [params.per_page]
          * @returns {PaginationHelper} List of Bundles.
          */
-        pagedList: (params) => this.#pagedList(`${this.#bundlesPath}/`, params),
+        pagedList: (params) => this.#pagedList(this.bundles.list, params),
     };
 
     persons = {
@@ -273,7 +274,7 @@ class Client {
          * @returns {PaginationHelper} List of Persons.
          */
         pagedList: (params = {}) =>
-            this.#pagedList(`${this.#bundlesPath}/`, params),
+            this.#pagedList(this.persons.list, params),
     };
 
     packets = {
@@ -323,7 +324,7 @@ class Client {
          * @returns {PaginationHelper} List of Templates.
          */
         pagedList: (params = {}) =>
-            this.#pagedList(`${this.#bundlesPath}/`, params),
+            this.#pagedList(this.templates.list, params),
     };
 }
 
