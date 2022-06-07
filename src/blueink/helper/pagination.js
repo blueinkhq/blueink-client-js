@@ -22,12 +22,12 @@ export class PaginationHelper {
 	async *yieldNextPage() {
 		let currentPage = this.#params.page;
 		while (isEmpty(this.#lastPagination) || currentPage <= this.#lastPagination.totalPages) {
-			yield await this.getPageContent(currentPage);
+			yield await this.getPageResponse(currentPage);
 			currentPage++;
 		}
 	}
 
-	async getPageContent(pageNumber) {
+	async getPageResponse(pageNumber) {
 		const response = await this.#pagedRequest({ ...this.#params, page: pageNumber });
 		this.#lastPagination = response.pagination;
 		return response;
