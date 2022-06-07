@@ -1,3 +1,4 @@
+export const BLUEINK_PAGINATION_HEADER = "x-blueink-pagination";
 export const DEFAULT_BASE_URL = "https://api.blueink.com/api/v2";
 
 export const ATTACHMENT_TYPE = {

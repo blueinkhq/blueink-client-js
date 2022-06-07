@@ -3,7 +3,7 @@ import axios from "axios";
 import has from "lodash.has";
 
 import { PaginationHelper } from "./helper/pagination.js";
-import { DEFAULT_BASE_URL } from "./constants.js";
+import { BLUEINK_PAGINATION_HEADER, DEFAULT_BASE_URL } from "./constants.js";
 
 
 class Client {
@@ -51,8 +51,8 @@ class Client {
     }
 
     getPagination = (response) => {
-        if (has(response.headers, 'x-blueink-pagination')) {
-            const paginationBits = response.headers['x-blueink-pagination'].split(',');
+        if (has(response.headers, BLUEINK_PAGINATION_HEADER)) {
+            const paginationBits = response.headers[BLUEINK_PAGINATION_HEADER].split(',');
 
             return {
                 pageNumber: parseInt(paginationBits[0]),
