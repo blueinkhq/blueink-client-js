@@ -14,6 +14,10 @@ class Client {
     #personsPath = "/persons";
     #packetsPath = "/packets";
     #templatesPath = "/templates";
+    #webhooksPath = "/webhooks";
+    #webhookEventsPath = "/webhooks/deliveries/";
+    #webhookHeadersPath = "/webhooks/headers/";
+    #webhookSecretPath = "/webhooks/secret/";
 
     /**
      * @param {string} privateApiKey
@@ -84,25 +88,6 @@ class Client {
 
     #pagedList = async (request, params = {}) => {
         return new PaginationHelper(request, params)
-        // try {
-        //     if (params.related_data === true) {
-        //         const response = await this.#get(`${this.#bundlesPath}/`, params);
-        //         response.data = await Promise.all(
-        //             response.data.map(async (bundle) => {
-        //                 const related_data = await this.#getRelatedData(bundle);
-        //                 return { ...bundle, related_data };
-        //             })
-        //         );
-        //         return new PaginationHelper(response, path, params, this);
-        //     } else {
-        //         const response = await this._axios.get(`${path}`, {
-        //             params: params,
-        //         });
-        //         return new PaginationHelper(response, path, params, this);
-        //     }
-        // } catch (error) {
-        //     throw error;
-        // }
     };
 
     #put = (path, data = {}) => {
@@ -326,6 +311,129 @@ class Client {
         pagedList: (params = {}) =>
             this.#pagedList(this.templates.list, params),
     };
+
+    webhooks = {
+        /**
+         * List all Webhooks.
+         * @param {object} params
+         * @returns All Webhooks
+         */
+        list: (params = {}) => this.#get(`${this.#webhooksPath}/`, params),
+
+        /**
+         * Create new Webhook Subscription.
+         * @param {object} data
+         * @param {string} data.url
+         * @param {string[]} data.event_types
+         * @param {boolean} [data.enabled]
+         * @param {boolean} [data.json]
+         * @returns New Webhook data
+         */
+        create: (data) => this.#post(`${this.#webhooksPath}/`, data),
+
+        /**
+		 * Retrieve a Webhook.
+		 * @param {string} webhookId - The ID that uniquely identifies the Webhook.
+		 * @returns Webhook Data
+		 */
+		retrieve: (webhookId) => this.#get(`${this.#webhooksPath}/${webhookId}/`),
+
+		/**
+		 * Update the Webhook with new data.
+		 * NOTE that any subscriptions that are omitted from this request will be DELETED.
+		 * If you don't want to replace all data on the Webhook, you probably want to use partialUpdate instead.
+		 * @param {string} webhookId - The ID that uniquely identifies the Webhook.
+		 * @param {object} data
+		 */
+		update: (webhookId, data) =>
+			this.#put(`${this.#webhooksPath}/${webhookId}`, data),
+
+        /**
+		 * Partially update the Webhook with new data.
+		 * @param {string} webhookId - The ID that uniquely identifies the Webhook.
+		 * @param {object} data
+		 */
+		partialUpdate: (webhookId, data) =>
+			this.#patch(`${this.#webhooksPath}/${webhookId}`, data),
+
+        /**
+		 * Delete a Webhook.
+		 * @param {string} webhookId - The ID that uniquely identifies the Webhook.
+		 */
+		delete: (webhookId) => this.#delete(`${this.#webhooksPath}/${webhookId}/`),
+    }
+
+    webhookEvents = {
+        /**
+         * List all Webhook Events.
+         * @param {object} params
+         * @param {string} [params.webhook] - A query for deliveries with events belonging to a specific webhook.
+         * @param {string} [params.event_type] - A query for events of a specific type.
+         * @returns All Webhooks Events
+         */
+        list: (params = {}) => this.#get(`${this.#webhookEventsPath}/`, params),
+    }
+
+    webhookHeaders = {
+        /**
+         * List all Webhook Extra Header.
+         * @param {object} params
+         * @returns All Webhook Extra Header
+         */
+        list: (params = {}) => this.#get(`${this.#webhookHeadersPath}/`, params),
+
+        /**
+         * Create new Webhook Extra Header.
+         * @param {object} data
+         * @param {string} data.webhook
+         * @param {string} data.name
+         * @param {string} data.value
+         * @param {number} [data.order]
+         * @returns New Webhook Extra Header Data
+         */
+        create: (data) => this.#post(`${this.#webhookHeadersPath}/`, data),
+
+        /**
+		 * Retrieve a Webhook Extra Header.
+		 * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
+		 * @returns Webhook Extra Header Data
+		 */
+		retrieve: (webhookExtraHeaderId) => this.#get(`${this.#webhookHeadersPath}/${webhookExtraHeaderId}/`),
+
+        /**
+		 * Update the Webhook Extra Header with new data.
+		 * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
+		 * @param {object} data
+		 */
+		update: (webhookExtraHeaderId, data) => this.#put(`${this.#webhookHeadersPath}/${webhookExtraHeaderId}`, data),
+
+        /**
+		 * Partially update the Webhook Extra Header with new data.
+		 * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
+		 * @param {object} data
+		 */
+		partialUpdate: (webhookExtraHeaderId, data) => this.#patch(`${this.#webhookHeadersPath}/${webhookExtraHeaderId}`, data),
+
+        /**
+		 * Delete a Webhook Extra Header.
+		 * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
+		 */
+		delete: (webhookExtraHeaderId) => this.#delete(`${this.#webhookHeadersPath}/${webhookExtraHeaderId}/`),
+    }
+
+    webhookSecret = {
+        /**
+		 * Retrieve Webhook Shared Secret.
+		 * @returns Webhook Shared Secret Data
+		 */
+		retrieve: () => this.#get(`${this.#webhookSecretPath}/`),
+
+        /**
+		 * Regenerate Webhook Shared Secret.
+		 * @returns New Webhook Shared Secret Data
+		 */
+        regenerate: () => this.#post(`${this.#webhookSecretPath}/regenerate/`),
+    }
 }
 
 export default Client;
