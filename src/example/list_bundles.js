@@ -1,7 +1,7 @@
-import chalk from 'chalk';
-import 'dotenv/config';
-import inquirer from 'inquirer';
-import { Client } from '../blueink/index.js';
+require("dotenv/config");
+const inquirer = require("inquirer");
+const chalk = require("chalk");
+const { Client } = require('../../index');
 
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 

@@ -1,4 +1,4 @@
-import Client from "./client.js"
-import BundleHelper from "./helper/bundleHelper.js"
+const Client = require('./client.js');
+const BundleHelper = require('./helper/bundleHelper.js');
 
-export { Client, BundleHelper };
+module.exports = { Client, BundleHelper };

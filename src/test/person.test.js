@@ -1,4 +1,7 @@
-import { client } from "../../index.js";
+require('dotenv/config');
+const { Client } = require('../../index');
+
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 describe("Persons", () => {
 	let newPersonId = "";

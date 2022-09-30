@@ -1,15 +1,13 @@
-import { FormDataEncoder } from 'form-data-encoder';
-import { FormData, File } from 'formdata-node';
-import { fileFromPathSync } from 'formdata-node/file-from-path';
-import isEmpty from 'lodash.isempty';
-import has from 'lodash.has';
-import { Readable } from 'stream';
+const { FormDataEncoder } = require('form-data-encoder');
+const { FormData, File } = require('formdata-node');
+// const { fileFromPathSync } = require('formdata-node/file-from-path');
+const isEmpty = require('lodash.isempty');
+const has = require('lodash.has');
+const { Readable } = require('stream');
 
-import { sampleBundle } from '../../seed/sample.js';
-import { generateKey } from '../../util/utility.js';
-import { FIELD_KIND } from '../constants.js';
-
-
+const { sampleBundle } = require('../../seed/sample.js');
+const { generateKey } = require('../../util/utility.js');
+const { FIELD_KIND } = require('../constants.js');
 
 class BundleHelper {
 	/**
@@ -42,7 +40,11 @@ class BundleHelper {
 		if (!newDoc.key) newDoc.key = key;
 		if (!newDoc.fields) newDoc.fields = [];
 
-		if (!has(newDoc, 'file_path') && !has(newDoc, 'file_url') && !has(newDoc, 'file_data')) {
+		if (
+			!has(newDoc, 'file_path') &&
+			!has(newDoc, 'file_url') &&
+			!has(newDoc, 'file_data')
+		) {
 			throw [
 				{
 					field: 'file_path/file_url/file_data',
@@ -55,7 +57,9 @@ class BundleHelper {
 		if (newDoc.file_path) {
 			if (!has(newDoc, 'file_index')) {
 				// Find current index
-				const index = this.bundleData.documents.filter((doc) => has(doc, 'file_index')).length;
+				const index = this.bundleData.documents.filter((doc) =>
+					has(doc, 'file_index')
+				).length;
 				newDoc.file_index = index;
 			}
 
@@ -68,7 +72,9 @@ class BundleHelper {
 			// File data is used
 			if (!has(newDoc, 'file_index')) {
 				// Find current index
-				const index = this.bundleData.documents.filter((doc) => has(doc, 'file_index')).length;
+				const index = this.bundleData.documents.filter((doc) =>
+					has(doc, 'file_index')
+				).length;
 
 				newDoc.file_index = index;
 			}
@@ -82,15 +88,15 @@ class BundleHelper {
 	};
 
 	addDocumentByPath = (filePath, additionalFields = {}) => {
-		return this.#addDocument({'file_path': filePath, ...additionalFields});
+		return this.#addDocument({ file_path: filePath, ...additionalFields });
 	};
 
 	addDocumentByUrl = (fileURL, additionalFields = {}) => {
-		return this.#addDocument({'file_url': fileURL, ...additionalFields});
+		return this.#addDocument({ file_url: fileURL, ...additionalFields });
 	};
 
 	addDocumentByFile = (fileData, additionalFields = {}) => {
-		return this.#addDocument({'file_data': fileData, ...additionalFields});
+		return this.#addDocument({ file_data: fileData, ...additionalFields });
 	};
 
 	/**
@@ -113,7 +119,10 @@ class BundleHelper {
 		}
 
 		// Check assignments
-		if (has(template, 'assignments') && !Array.isArray(template.assignments)) {
+		if (
+			has(template, 'assignments') &&
+			!Array.isArray(template.assignments)
+		) {
 			error.push({
 				field: 'assignments',
 				message: 'This field must be an array',
@@ -166,14 +175,20 @@ class BundleHelper {
 	 */
 	assignRole = (signerKey, templateKey, roleKey) => {
 		// Check if signer exists
-		const signerIndex = this.bundleData.packets.findIndex((signer) => signer.key === signerKey);
+		const signerIndex = this.bundleData.packets.findIndex(
+			(signer) => signer.key === signerKey
+		);
 		if (signerIndex === -1) throw new Error('Signer key is invalid.');
 
 		// Find the template
-		const template = this.bundleData.documents.find((template) => template.key === templateKey);
+		const template = this.bundleData.documents.find(
+			(template) => template.key === templateKey
+		);
 		if (!template) throw new Error('Document key is invalid.');
 		if (!has(template, 'template_id')) {
-			throw new Error(`Document with key ${templateKey} is not a template.`);
+			throw new Error(
+				`Document with key ${templateKey} is not a template.`
+			);
 		}
 		if (!template.assignments || !Array.isArray(template.assignments)) {
 			template.assignments = [{ role: roleKey, signer: signerKey }];
@@ -225,7 +240,9 @@ class BundleHelper {
 		}
 		if (!newField.key) newField.key = generateKey('field');
 
-		const document = this.bundleData.documents.find((doc) => doc.key === docKey);
+		const document = this.bundleData.documents.find(
+			(doc) => doc.key === docKey
+		);
 		if (!document) {
 			errors.push({
 				field: 'docKey',
@@ -247,18 +264,20 @@ class BundleHelper {
 
 	/**
 	 * Set Document value
-	 * @param {string} docKey 
-	 * @param {string} key 
-	 * @param {*} value 
+	 * @param {string} docKey
+	 * @param {string} key
+	 * @param {*} value
 	 */
 	setValue = (docKey, key, value) => {
-		const document = this.bundleData.documents.find((doc) => doc.key === docKey);
+		const document = this.bundleData.documents.find(
+			(doc) => doc.key === docKey
+		);
 		if (!document) {
-			throw new Error(`Document with key ${docKey} is invalid.`)
+			throw new Error(`Document with key ${docKey} is invalid.`);
 		}
 		document[key] = value;
 		return document;
-	}
+	};
 
 	/**
 	 * Return the data for bundle.create
@@ -279,4 +298,4 @@ class BundleHelper {
 	};
 }
 
-export default BundleHelper;
+module.exports = BundleHelper;

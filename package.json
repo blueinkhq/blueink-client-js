@@ -1,9 +1,8 @@
 {
-	"name": "blueink-client-api",
+	"name": "blueink-js",
 	"description": "A Javascript client library for the BlueInk eSignature REST API",
 	"version": "1.0.0",
 	"main": "index.js",
-	"type": "module",
 	"scripts": {
 		"test": "jest",
 		"create-bundle-from-path": "node src/example/create_bundle_from_path.js",

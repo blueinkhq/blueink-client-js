@@ -1,8 +1,7 @@
-import "dotenv/config";
-import { BundleHelper } from "../blueink/helper/bundleHelper.js";
-import { Client } from "../blueink/index.js";
-import inquirer from "inquirer";
-import chalk from "chalk";
+require("dotenv/config");
+const inquirer = require("inquirer");
+const chalk = require("chalk");
+const { Client, BundleHelper } = require('../../index');
 
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
@@ -18,7 +17,7 @@ const askField = async (field) => {
 	return get_field;
 };
 
-const createBundleFromTemplate = async () => {
+const createBundle= requireTemplate = async () => {
 	try {
 		const requester_email = await askField("requester_email");
 		const bundleHelper = new BundleHelper({
@@ -61,4 +60,4 @@ const createBundleFromTemplate = async () => {
 	}
 };
 
-createBundleFromTemplate();
+createBundle= requireTemplate();
