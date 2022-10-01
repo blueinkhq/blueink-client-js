@@ -283,6 +283,12 @@ class Client {
          */
         retrieveCOE: (packetId) =>
             this.#get(`${this.#packetsPath}/${packetId}/coe/`),
+
+        /**
+         * Create a URL which can be used for embedded signing.
+         * @param {string} packetId - The ID that uniquely identifies the Packet.
+         */
+        embedUrl: (packetId) => this.#post(`${this.#packetsPath}/${packetId}/embed_url/`)
     };
 
     templates = {
