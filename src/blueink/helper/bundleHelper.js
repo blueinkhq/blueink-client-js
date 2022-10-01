@@ -1,6 +1,6 @@
 const { FormDataEncoder } = require('form-data-encoder');
 const { FormData, File } = require('formdata-node');
-// const { fileFromPathSync } = require('formdata-node/file-from-path');
+const { fileFromPathSync } = require('formdata-node/file-from-path');
 const isEmpty = require('lodash.isempty');
 const has = require('lodash.has');
 const { Readable } = require('stream');
@@ -77,8 +77,8 @@ class BundleHelper {
 				).length;
 
 				newDoc.file_index = index;
-			}
-			const file = new File([newDoc.file_data], 'file-from-data.pdf');
+			}``
+			const file = new File([newDoc.file_data.buffer], newDoc.file_data.originalname);
 			this.files[`files[${newDoc.file_index}]`] = file;
 			delete newDoc.file_data;
 		}
