@@ -32,7 +32,8 @@ class BundleHelper {
 	 * @param {Object} newDoc - Must include either file_url, file_path, or file_data.
 	 * @param {string} [newDoc.file_url] - The url to the pdf document. If file_url is provided, file_path and file_data will be ignored.
 	 * @param {string} [newDoc.file_path] -The path to the pdf file. If file_path is provided, file_data will be ignored.
-	 * @param {Buffer} [newDoc.file_data] - The buffer of the file.
+	 * @param {Object} [newDoc.file_data] - The data of the file.
+	 * @param {string} [newDoc.file_b64] - The base 64 string of the file.
 	 * @returns - Key of the Document.
 	 */
 	#addDocument = (newDoc) => {
@@ -43,11 +44,12 @@ class BundleHelper {
 		if (
 			!has(newDoc, 'file_path') &&
 			!has(newDoc, 'file_url') &&
-			!has(newDoc, 'file_data')
+			!has(newDoc, 'file_data') &&
+			!has(newDoc, 'file_b64')
 		) {
 			throw [
 				{
-					field: 'file_path/file_url/file_data',
+					field: 'file_path/file_url/file_data/file_b64',
 					message: 'This field must not be blank.',
 				},
 			];
@@ -81,8 +83,8 @@ class BundleHelper {
 			const file = new File([newDoc.file_data.buffer], newDoc.file_data.originalname);
 			this.files[`files[${newDoc.file_index}]`] = file;
 			delete newDoc.file_data;
-		}
-
+		} 
+		
 		this.bundleData.documents.push(newDoc);
 		return newDoc.key;
 	};
@@ -98,6 +100,10 @@ class BundleHelper {
 	addDocumentByFile = (fileData, additionalFields = {}) => {
 		return this.#addDocument({ file_data: fileData, ...additionalFields });
 	};
+
+	addDocumentByB64 = (fileB64, additionalFields = {}) => {
+		return this.#addDocument({ file_b64: fileB64, ...additionalFields });
+	}
 
 	/**
 	 * Add a Document Template to the bundle.
