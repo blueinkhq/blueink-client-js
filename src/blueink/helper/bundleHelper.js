@@ -88,26 +88,50 @@ class BundleHelper {
 		this.bundleData.documents.push(newDoc);
 		return newDoc.key;
 	};
-
+	
+	/**
+	 * Add document by file path.
+	 * @param {string} filePath - Path to the file.
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByPath = (filePath, additionalFields = {}) => {
 		return this.#addDocument({ file_path: filePath, ...additionalFields });
 	};
 
+	/**
+	 * Add document by file url.
+	 * @param {string} fileURL - File URL.
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByUrl = (fileURL, additionalFields = {}) => {
 		return this.#addDocument({ file_url: fileURL, ...additionalFields });
 	};
 
+	/**
+	 * Add document by file data.
+	 * @param {object} fileData - File data
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByFile = (fileData, additionalFields = {}) => {
 		return this.#addDocument({ file_data: fileData, ...additionalFields });
 	};
 
+	/**
+	 * Add document by base64 string.
+	 * @param {string} fileB64 - Base 64 string of the file
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByB64 = (fileB64, additionalFields = {}) => {
 		return this.#addDocument({ file_b64: fileB64, ...additionalFields });
 	}
 
 	/**
 	 * Add a Document Template to the bundle.
-	 * @param {Object} template - Must include valid template id from BlueInk Dashboard.
+	 * @param {object} template - Must include valid template id from BlueInk Dashboard.
 	 * @param {string} template.template_id
 	 * @returns - Key of the Document Template.
 	 */
