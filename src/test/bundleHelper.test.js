@@ -1,4 +1,4 @@
-import { BundleHelper } from '../blueink';
+const { BundleHelper } = require('../blueink');
 
 describe('Bundle Helper', () => {
     it('Add document', () => {

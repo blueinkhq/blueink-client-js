@@ -11,4 +11,4 @@ const sampleBundle = {
 	documents: [],
 };
 
-export { sampleBundle };
+module.exports = { sampleBundle };

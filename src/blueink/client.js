@@ -1,9 +1,9 @@
-import "dotenv/config";
-import axios from "axios";
-import has from "lodash.has";
+require('dotenv').config()
+const axios = require("axios");
+const has = require("lodash.has");
 
-import { PaginationHelper } from "./helper/pagination.js";
-import { BLUEINK_PAGINATION_HEADER, DEFAULT_BASE_URL } from "./constants.js";
+const PaginationHelper = require("./helper/pagination.js");
+const { BLUEINK_PAGINATION_HEADER, DEFAULT_BASE_URL } = require("./constants.js");
 
 
 class Client {
@@ -436,4 +436,4 @@ class Client {
     }
 }
 
-export default Client;
+module.exports = Client;

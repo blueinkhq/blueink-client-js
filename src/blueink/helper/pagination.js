@@ -1,6 +1,6 @@
-import isEmpty from 'lodash.isempty';
+const isEmpty = require('lodash.isempty');
 
-export class PaginationHelper {
+class PaginationHelper {
 	#params;
 	#pagedRequest;
 	#lastPagination;
@@ -33,3 +33,5 @@ export class PaginationHelper {
 		return response;
 	};
 }
+
+module.exports = PaginationHelper;

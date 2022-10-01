@@ -1,9 +1,8 @@
 {
 	"name": "blueink-js",
 	"description": "A Javascript client library for the BlueInk eSignature REST API",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"main": "index.js",
-	"type": "module",
 	"scripts": {
 		"test": "jest",
 		"create-bundle-from-path": "node src/example/create_bundle_from_path.js",
@@ -28,9 +27,6 @@
 		"chalk": "^5.0.1",
 		"dotenv": "^16.0.0",
 		"inquirer": "^8.2.1",
-		"jest": "^27.5.1",
-		"regenerator-runtime": "^0.13.9",
-		"ts-node": "^10.7.0",
-		"typescript": "^4.6.2"
+		"jest": "^27.5.1"
 	}
 }

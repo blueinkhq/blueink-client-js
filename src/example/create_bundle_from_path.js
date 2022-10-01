@@ -1,10 +1,9 @@
-import 'dotenv/config';
-import { BundleHelper } from '../blueink/index.js';
-import { Client } from '../blueink/index.js';
-import inquirer from 'inquirer';
-import chalk from 'chalk';
+require('dotenv/config');
+const { Client, BundleHelper } = require('../../index');
+const inquirer = require('inquirer');
+const chalk = require('chalk');
 
-const client = new Client();
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const createBundleFromPath = async () => {
 	try {
@@ -44,7 +43,11 @@ const createBundleFromPath = async () => {
 		console.log('Creating a new Bundle.');
 
 		const response = await client.bundles.create(bundleHelper.asData());
-		console.log(chalk.bgGreen.black(`Bundle ${response.data.id} was created successfully.`));
+		console.log(
+			chalk.bgGreen.black(
+				`Bundle ${response.data.id} was created successfully.`
+			)
+		);
 		console.log(response.data);
 	} catch (error) {
 		if (error.response) {
