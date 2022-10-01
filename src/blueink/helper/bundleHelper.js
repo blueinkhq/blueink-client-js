@@ -2,6 +2,7 @@ const { FormDataEncoder } = require('form-data-encoder');
 const { FormData, File } = require('formdata-node');
 const { fileFromPathSync } = require('formdata-node/file-from-path');
 const isEmpty = require('lodash.isempty');
+const get = require('lodash.get');
 const has = require('lodash.has');
 const { Readable } = require('stream');
 
@@ -291,6 +292,39 @@ class BundleHelper {
 		document.fields.push(newField);
 		return newField.key;
 	};
+
+	initializeField = (docKey, fieldKey, value) => {
+		const document = this.bundleData.documents.find(
+			(doc) => doc.key === docKey
+		);
+		if (!document) {
+			throw new Error(`Document with key ${docKey} is invalid.`);
+		}
+		
+		const isTemplate = has(document, 'template_id'); // Document is template
+		if (isTemplate) {
+			const field_values = get(document, 'field_values', []);
+			const index = field_values.findIndex(field => field.key === fieldKey);
+			if (index !== -1) {
+				field_values[index].initial_value = value;
+				document.field_values = [...field_values];
+			} else {
+				field_values.push({
+					key: fieldKey,
+					initial_value: value,
+				})
+			}
+		} else {
+			const fields = get(document, 'fields', []);
+			const index = fields.findIndex(field => field.key === fieldKey);
+			if (index !== -1) {
+				fields[index].initial_value = value;
+				document.fields = [...fields];
+			} else {
+				throw new Error(`Field with key ${fieldKey} cannot be found. The field must be added first.`)
+			}
+		}
+	}
 
 	/**
 	 * Set Document value
