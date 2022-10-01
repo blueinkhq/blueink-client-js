@@ -13,7 +13,7 @@ const { FIELD_KIND } = require('../constants.js');
 class BundleHelper {
 	/**
 	 * Define a Bundle Helper
-	 * @param {Object} newBundleData
+	 * @param {object} newBundleData
 	 * @param {string} newBundleData.label
 	 * @param {string} newBundleData.requester_email
 	 * @param {string} newBundleData.requester_name
@@ -30,10 +30,10 @@ class BundleHelper {
 
 	/**
 	 * Add a new Document to the bundle.
-	 * @param {Object} newDoc - Must include either file_url, file_path, or file_data.
+	 * @param {object} newDoc - Must include either file_url, file_path, or file_data.
 	 * @param {string} [newDoc.file_url] - The url to the pdf document. If file_url is provided, file_path and file_data will be ignored.
 	 * @param {string} [newDoc.file_path] -The path to the pdf file. If file_path is provided, file_data will be ignored.
-	 * @param {Object} [newDoc.file_data] - The data of the file.
+	 * @param {object} [newDoc.file_data] - The data of the file.
 	 * @param {string} [newDoc.file_b64] - The base 64 string of the file.
 	 * @returns - Key of the Document.
 	 */
@@ -231,7 +231,15 @@ class BundleHelper {
 
 	/**
 	 * Add a Signer (Packet) to the bundle
-	 * @param {Object} newSigner
+	 * @param {object} newSigner
+	 * @param {string} [newSigner.key]
+	 * @param {string} newSigner.name
+	 * @param {string} newSigner.email
+	 * @param {string} [newSigner.phone]
+	 * @param {boolean} [newSigner.auth_sms]
+	 * @param {boolean} [newSigner.auth_selfie]
+	 * @param {boolean} [newSigner.auth_id]
+	 * @param {string} [newSigner.deliver_via]
 	 * @returns - Key of the Signer.
 	 */
 	addSigner = (newSigner) => {
@@ -246,8 +254,13 @@ class BundleHelper {
 	/**
 	 * Add a new Field to the Document. Field only need for DocumentRequest.
 	 * @param {string} docKey - The Key of the Document.
-	 * @param {Object} newField - New Field
-	 * @returns - Key of the Field.
+	 * @param {object} newField - New Field
+	 * @param {string} newField.kind
+	 * @param {string} newField.x
+	 * @param {string} newField.y
+	 * @param {string} newField.w
+	 * @param {string} newField.h
+	 * @returns {string} - Key of the Field.
 	 */
 	addField = (docKey, newField) => {
 		const errors = [];
@@ -293,6 +306,13 @@ class BundleHelper {
 		return newField.key;
 	};
 
+	/**
+	 * Initialize field value
+	 * @param {string} docKey - The Key of the Document.
+	 * @param {string} fieldKey - The Key of the Field.
+	 * @param {(string|boolean)} value - The value of the Field.
+	 * @returns - Key of the Field.
+	 */
 	initializeField = (docKey, fieldKey, value) => {
 		const document = this.bundleData.documents.find(
 			(doc) => doc.key === docKey
@@ -307,13 +327,14 @@ class BundleHelper {
 			const index = field_values.findIndex(field => field.key === fieldKey);
 			if (index !== -1) {
 				field_values[index].initial_value = value;
-				document.field_values = [...field_values];
 			} else {
 				field_values.push({
 					key: fieldKey,
 					initial_value: value,
 				})
 			}
+			document.field_values = [...field_values];
+			return fieldKey;
 		} else {
 			const fields = get(document, 'fields', []);
 			const index = fields.findIndex(field => field.key === fieldKey);
@@ -323,6 +344,7 @@ class BundleHelper {
 			} else {
 				throw new Error(`Field with key ${fieldKey} cannot be found. The field must be added first.`)
 			}
+			return fieldKey;
 		}
 	}
 
@@ -330,7 +352,7 @@ class BundleHelper {
 	 * Set Document value
 	 * @param {string} docKey
 	 * @param {string} key
-	 * @param {*} value
+	 * @param {any} value
 	 */
 	setValue = (docKey, key, value) => {
 		const document = this.bundleData.documents.find(
