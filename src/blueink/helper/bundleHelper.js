@@ -19,10 +19,23 @@ class BundleHelper {
 	 * @param {string} newBundleData.requester_name
 	 * @param {string} newBundleData.email_subject
 	 * @param {string} newBundleData.email_message
+	 * @param {boolean} newBundleData.in_order
+	 * @param {string[]} newBundleData.cc_emails
+	 * 
 	 */
 	constructor(newBundleData) {
 		// Initialize bundle
-		this.bundleData = { ...sampleBundle, ...newBundleData };
+		this.bundleData = { ...newBundleData };
+
+		if (!has(newBundleData, 'cc_emails')) {
+			this.bundleData.cc_emails = []
+		}
+		if (!has(newBundleData, 'documents')) {
+			this.bundleData.documents = []
+		}
+		if (!has(newBundleData, 'packets')) {
+			this.bundleData.packets = []
+		}
 
 		// Store the file info and will return it as FormData when the asData method get called.
 		this.files = {};
