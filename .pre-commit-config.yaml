@@ -1,11 +1,11 @@
 repos:
     - repo: https://github.com/standard/standard
-      rev: master
+      rev: v17.0.0
       hooks:
-        - id: standard --fix
+        - id: standard
 
     - repo: https://github.com/pre-commit/mirrors-eslint
-      rev: master
+      rev: v8.25.0
       hooks:
         - id: eslint
           files: \.[jt]sx?$  # *.js, *.jsx, *.ts and *.tsx
