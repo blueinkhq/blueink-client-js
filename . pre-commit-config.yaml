@@ -2,8 +2,8 @@ repos:
     - repo: https://github.com/standard/standard
       rev: master
       hooks:
-        - id: standard
-        
+        - id: standard --fix
+
     - repo: https://github.com/pre-commit/mirrors-eslint
       rev: master
       hooks:
