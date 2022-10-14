@@ -1,0 +1,15 @@
+repos:
+    - repo: https://github.com/standard/standard
+      rev: master
+      hooks:
+        - id: standard
+        
+    - repo: https://github.com/pre-commit/mirrors-eslint
+      rev: master
+      hooks:
+        - id: eslint
+          files: \.[jt]sx?$  # *.js, *.jsx, *.ts and *.tsx
+          types: [file]
+          additional_dependencies:
+            - eslint@latest
+            - eslint-config-standard@latest
