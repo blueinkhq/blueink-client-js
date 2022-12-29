@@ -31,5 +31,11 @@
 		"regenerator-runtime": "^0.13.9",
 		"ts-node": "^10.7.0",
 		"typescript": "^4.6.2"
+	},
+	"standard": {
+		"ignore": [
+			"node_modules/",
+			"test"
+		]
 	}
 }

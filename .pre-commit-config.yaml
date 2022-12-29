@@ -3,13 +3,7 @@ repos:
       rev: v17.0.0
       hooks:
         - id: standard
-
-    - repo: https://github.com/pre-commit/mirrors-eslint
-      rev: v8.25.0
-      hooks:
-        - id: eslint
-          files: \.[jt]sx?$  # *.js, *.jsx, *.ts and *.tsx
-          types: [file]
-          additional_dependencies:
-            - eslint@latest
-            - eslint-config-standard@latest
+          files: src/blueink/
+          exclude: (src/blueink/example/list_bundles.js, src/blueink/seed/)
+          verbose: true
+          entry: bash -c 'standard --fix "$@" || true' --
