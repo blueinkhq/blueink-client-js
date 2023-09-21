@@ -1,4 +1,4 @@
-const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, webhookSecretPath}, request) => {
+const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, webhookDeliveriesPath, webhookSecretPath}, request) => {
     return {
         // --------------------
         // Webhooks
@@ -115,12 +115,32 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
          */
         listEvents: (params = {}) => request.get(`${webhookEventsPath}/`, params),
 
-        //TODO: retrieve_event
+        /**
+         * Retrieve a Webhook Events.
+         * @param {string} webhookEventId - The ID that uniquely identifies the Webhook Events.
+         * @returns Webhook Events Data
+         */
+        retrieveEvent: (webhookEventId) => request.get(`${webhookEventsPath}/${webhookEventId}/`),
 
         // --------------------
-        // TOD: Deliveries
+        // Deliveries
         // --------------------
 
+        /**
+         * List all Webhook Deliveries.
+         * @param {object} params
+         * @param {string} [params.webhook] - A query for deliveries with events belonging to a specific webhook.
+         * @param {string} [params.event_type] - A query for events of a specific type.
+         * @returns All Webhooks Events
+         */
+        listDeliveries: (params = {}) => request.get(`${webhookDeliveriesPath}/`, params),
+
+        /**
+         * Retrieve a Webhook Deliveries.
+         * @param {string} webhookDeliveryId - The ID that uniquely identifies the Webhook Deliveries.
+         * @returns Webhook Deliveries Data
+         */
+        retrieveDelivery: (webhookDeliveryId) => request.get(`${webhookDeliveriesPath}/${webhookDeliveryId}/`),
 
         // --------------------
         // Secret

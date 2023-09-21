@@ -51,8 +51,9 @@ class Client {
         this.templates = TemplateSubClient(this.#templatesPath, request)
         this.webhooks = WebhookSubClient({
             webhooksPath: this.#webhooksPath,
-            webhookHeadersPath: this.#webhookHeadersPath, 
-            webhookEventsPath: this.#webhookEventsPath, 
+            webhookHeadersPath: this.#webhookHeadersPath,
+            webhookEventsPath: this.#webhookEventsPath,
+            webhookDeliveriesPath: this.#webhookDeliveriesPath,
             webhookSecretPath: this.#webhookSecretPath,
         }, request)
     }
