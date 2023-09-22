@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { BLUEINK_PATH, DEFAULT_BASE_URL } = require("./constants.js");
+const { DEFAULT_BASE_URL } = require("./constants.js");
 
 const RequestHelper = require('./helper/RequestHelper.js');
 const { BundleSubClient } = require('./subclients/bundle.js');
@@ -34,11 +34,11 @@ class Client {
 
         const request = new RequestHelper(this.#privateApiKey, this.#baseApiUrl)
 
-        this.bundles = BundleSubClient(BLUEINK_PATH.BUNDLES, request)
-        this.persons = PersonSubClient(BLUEINK_PATH.PERSONS, request)
-        this.packets = PacketSubClient(BLUEINK_PATH.PACKETS, request)
-        this.templates = TemplateSubClient(BLUEINK_PATH.TEMPLATES, request)
-        this.webhooks = WebhookSubClient(BLUEINK_PATH.WEBHOOKS, request)
+        this.bundles = BundleSubClient(request)
+        this.persons = PersonSubClient(request)
+        this.packets = PacketSubClient(request)
+        this.templates = TemplateSubClient(request)
+        this.webhooks = WebhookSubClient(request)
     }
 }
 

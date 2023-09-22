@@ -1,11 +1,13 @@
-const TemplateSubClient = (path, request) => {
+const { TEMPLATES } = require('../endpoints')
+
+const TemplateSubClient = (request) => {
     return {
         /**
          * List all Templates. Maximum 50 results per page.
          * @param {object} params
          * @returns All Templates
          */
-        list: (params = {}) => request.get(`${path}/`, params),
+        list: (params = {}) => request.get(TEMPLATES.LIST, params),
 
         /**
          * Retrieve a Template.
@@ -13,7 +15,7 @@ const TemplateSubClient = (path, request) => {
          * @returns Template Data.
          */
         retrieve: (templateId) =>
-            request.get(`${path}/${templateId}/`),
+            request.get(TEMPLATES.RETRIEVE(templateId)),
 
         /**
          * Paged list Templates.
@@ -27,6 +29,5 @@ const TemplateSubClient = (path, request) => {
         }
     }
 }
-
 
 module.exports = { TemplateSubClient }
