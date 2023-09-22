@@ -1,4 +1,6 @@
-const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, webhookDeliveriesPath, webhookSecretPath}, request) => {
+import { WEBHOOKS } from "../constants"
+
+const WebhookSubClient = (path, request) => {
     return {
         // --------------------
         // Webhooks
@@ -9,7 +11,7 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
          * @param {object} params
          * @returns All Webhooks
          */
-        list: (params = {}) => request.get(`${webhooksPath}/`, params),
+        list: (params = {}) => request.get(`${path}/`, params),
 
         /**
          * Create new Webhook Subscription.
@@ -20,14 +22,14 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
          * @param {boolean} [data.json]
          * @returns New Webhook data
          */
-        create: (data) => request.post(`${webhooksPath}/`, data),
+        create: (data) => request.post(`${path}/`, data),
 
         /**
 		 * Retrieve a Webhook.
 		 * @param {string} webhookId - The ID that uniquely identifies the Webhook.
 		 * @returns Webhook Data
 		 */
-		retrieve: (webhookId) => request.get(`${webhooksPath}/${webhookId}/`),
+		retrieve: (webhookId) => request.get(`${path}/${webhookId}/`),
 
 		/**
 		 * Update the Webhook with new data.
@@ -37,7 +39,7 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
 		 * @param {object} data
 		 */
 		update: (webhookId, data) =>
-			request.put(`${webhooksPath}/${webhookId}`, data),
+			request.put(`${path}/${webhookId}`, data),
 
         /**
 		 * Partially update the Webhook with new data.
@@ -45,13 +47,13 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
 		 * @param {object} data
 		 */
 		partialUpdate: (webhookId, data) =>
-			request.patch(`${webhooksPath}/${webhookId}`, data),
+			request.patch(`${path}/${webhookId}`, data),
 
         /**
 		 * Delete a Webhook.
 		 * @param {string} webhookId - The ID that uniquely identifies the Webhook.
 		 */
-		delete: (webhookId) => request.delete(`${webhooksPath}/${webhookId}/`),
+		delete: (webhookId) => request.delete(`${path}/${webhookId}/`),
 
         // --------------------
         // Extra Header
@@ -62,7 +64,7 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
          * @param {object} params
          * @returns All Webhook Extra Header
          */
-        listHeader: (params = {}) => request.get(`${webhookHeadersPath}/`, params),
+        listHeader: (params = {}) => request.get(`${path}/${WEBHOOKS.HEADERS}`, params),
 
         /**
          * Create new Webhook Extra Header.
@@ -73,34 +75,34 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
          * @param {number} [data.order]
          * @returns New Webhook Extra Header Data
          */
-        createHeader: (data) => request.post(`${webhookHeadersPath}/`, data),
+        createHeader: (data) => request.post(`${path}/${WEBHOOKS.HEADERS}/`, data),
 
         /**
          * Retrieve a Webhook Extra Header.
          * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
          * @returns Webhook Extra Header Data
          */
-        retrieveHeader: (webhookExtraHeaderId) => request.get(`${webhookHeadersPath}/${webhookExtraHeaderId}/`),
+        retrieveHeader: (webhookExtraHeaderId) => request.get(`${path}/${WEBHOOKS.HEADERS}/${webhookExtraHeaderId}/`),
 
         /**
          * Update the Webhook Extra Header with new data.
          * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
          * @param {object} data
          */
-        updateHeader: (webhookExtraHeaderId, data) => request.put(`${webhookHeadersPath}/${webhookExtraHeaderId}`, data),
+        updateHeader: (webhookExtraHeaderId, data) => request.put(`${path}/${WEBHOOKS.HEADERS}${webhookExtraHeaderId}`, data),
 
         /**
          * Partially update the Webhook Extra Header with new data.
          * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
          * @param {object} data
          */
-        partialUpdateHeader: (webhookExtraHeaderId, data) => request.patch(`${webhookHeadersPath}/${webhookExtraHeaderId}`, data),
+        partialUpdateHeader: (webhookExtraHeaderId, data) => request.patch(`${path}/${WEBHOOKS.HEADERS}${webhookExtraHeaderId}`, data),
 
         /**
          * Delete a Webhook Extra Header.
          * @param {string} webhookExtraHeaderId - The ID that uniquely identifies the Webhook Extra Header.
          */
-        deleteHeader: (webhookExtraHeaderId) => request.delete(`${webhookHeadersPath}/${webhookExtraHeaderId}/`),
+        deleteHeader: (webhookExtraHeaderId) => request.delete(`${path}/${WEBHOOKS.HEADERS}/${webhookExtraHeaderId}/`),
         
         // --------------------
         // Events
@@ -113,14 +115,14 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
          * @param {string} [params.event_type] - A query for events of a specific type.
          * @returns All Webhooks Events
          */
-        listEvents: (params = {}) => request.get(`${webhookEventsPath}/`, params),
+        listEvents: (params = {}) => request.get(`${path}/${WEBHOOKS.EVENTS}/`, params),
 
         /**
          * Retrieve a Webhook Events.
          * @param {string} webhookEventId - The ID that uniquely identifies the Webhook Events.
          * @returns Webhook Events Data
          */
-        retrieveEvent: (webhookEventId) => request.get(`${webhookEventsPath}/${webhookEventId}/`),
+        retrieveEvent: (webhookEventId) => request.get(`${path}/${WEBHOOKS.EVENTS}/${webhookEventId}/`),
 
         // --------------------
         // Deliveries
@@ -133,14 +135,14 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
          * @param {string} [params.event_type] - A query for events of a specific type.
          * @returns All Webhooks Events
          */
-        listDeliveries: (params = {}) => request.get(`${webhookDeliveriesPath}/`, params),
+        listDeliveries: (params = {}) => request.get(`${path}/${WEBHOOKS.DELIVERIES}/`, params),
 
         /**
          * Retrieve a Webhook Deliveries.
          * @param {string} webhookDeliveryId - The ID that uniquely identifies the Webhook Deliveries.
          * @returns Webhook Deliveries Data
          */
-        retrieveDelivery: (webhookDeliveryId) => request.get(`${webhookDeliveriesPath}/${webhookDeliveryId}/`),
+        retrieveDelivery: (webhookDeliveryId) => request.get(`${path}/${WEBHOOKS.DELIVERIES}/${webhookDeliveryId}/`),
 
         // --------------------
         // Secret
@@ -150,13 +152,13 @@ const WebhookSubClient = ({webhooksPath, webhookHeadersPath, webhookEventsPath, 
 		 * Retrieve Webhook Shared Secret.
 		 * @returns Webhook Shared Secret Data
 		 */
-		retrieveSecret: () => request.get(`${webhookSecretPath}/`),
+		retrieveSecret: () => request.get(`${path}/${WEBHOOKS.SECRET}/`),
 
         /**
 		 * Regenerate Webhook Shared Secret.
 		 * @returns New Webhook Shared Secret Data
 		 */
-        regenerateSecret: () => request.post(`${webhookSecretPath}/regenerate/`),
+        regenerateSecret: () => request.post(`${path}/${WEBHOOKS.SECRET}/regenerate/`),
     }
 }
 

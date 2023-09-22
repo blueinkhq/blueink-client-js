@@ -78,14 +78,31 @@ const V_PATTERN = {
 	ZIP_CODE: 'zip_code',
 };
 
+const BLUEINK_PATH = {
+	BUNDLES: '/bundles',
+	PERSONS: '/persons',
+	PACKETS: '/packets',
+	TEMPLATES: '/templates',
+	WEBHOOKS: '/webhooks',
+}
+
+const WEBHOOKS = {
+	HEADERS: 'headers',
+	EVENTS: 'events',
+	DELIVERIES: 'deliveries',
+	SECRET: 'secret',
+}
+
 module.exports = {
-	BLUEINK_PAGINATION_HEADER,
-	DEFAULT_BASE_URL,
 	ATTACHMENT_TYPE,
+	BLUEINK_PAGINATION_HEADER,
+	BLUEINK_PATH,
 	BUNDLE_ORDER,
+	DEFAULT_BASE_URL,
+	V_PATTERN,
+	WEBHOOKS,
     BUNDLE_STATUS,
     DELIVER_VIA,
     FIELD_KIND,
     PACKET_STATUS,
-	V_PATTERN,
 };

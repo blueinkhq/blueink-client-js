@@ -1,29 +1,18 @@
 require('dotenv').config()
-const axios = require("axios");
-const has = require("lodash.has");
 
-const PaginationHelper = require("./helper/pagination.js");
-const { BLUEINK_PAGINATION_HEADER, DEFAULT_BASE_URL } = require("./constants.js");
+const { BLUEINK_PATH, DEFAULT_BASE_URL } = require("./constants.js");
 
 const RequestHelper = require('./helper/RequestHelper.js');
 const { BundleSubClient } = require('./subclients/bundle.js');
-const { PersonSubClient } = require('./subclients/person.js');
 const { PacketSubClient } = require('./subclients/packet.js');
-const { WebhookSubClient } = require('./subclients/webhook.js');
+const { PersonSubClient } = require('./subclients/person.js');
 const { TemplateSubClient } = require('./subclients/template.js');
+const { WebhookSubClient } = require('./subclients/webhook.js');
+
 class Client {
     #privateApiKey;
     #defaultBaseUrl = DEFAULT_BASE_URL;
     #baseApiUrl;
-    #bundlesPath = "/bundles";
-    #personsPath = "/persons";
-    #packetsPath = "/packets";
-    #templatesPath = "/templates";
-    #webhooksPath = "/webhooks";
-    #webhookEventsPath = "/webhooks/events/";
-    #webhookDeliveriesPath = "/webhooks/deliveries/";
-    #webhookHeadersPath = "/webhooks/headers/";
-    #webhookSecretPath = "/webhooks/secret/";
 
     /**
      * @param {string} privateApiKey
@@ -45,17 +34,11 @@ class Client {
 
         const request = new RequestHelper(this.#privateApiKey, this.#baseApiUrl)
 
-        this.bundles = BundleSubClient(this.#bundlesPath, request)
-        this.persons = PersonSubClient(this.#personsPath, request)
-        this.packets = PacketSubClient(this.#packetsPath, request)
-        this.templates = TemplateSubClient(this.#templatesPath, request)
-        this.webhooks = WebhookSubClient({
-            webhooksPath: this.#webhooksPath,
-            webhookHeadersPath: this.#webhookHeadersPath,
-            webhookEventsPath: this.#webhookEventsPath,
-            webhookDeliveriesPath: this.#webhookDeliveriesPath,
-            webhookSecretPath: this.#webhookSecretPath,
-        }, request)
+        this.bundles = BundleSubClient(BLUEINK_PATH.BUNDLES, request)
+        this.persons = PersonSubClient(BLUEINK_PATH.PERSONS, request)
+        this.packets = PacketSubClient(BLUEINK_PATH.PACKETS, request)
+        this.templates = TemplateSubClient(BLUEINK_PATH.TEMPLATES, request)
+        this.webhooks = WebhookSubClient(BLUEINK_PATH.WEBHOOKS, request)
     }
 }
 
