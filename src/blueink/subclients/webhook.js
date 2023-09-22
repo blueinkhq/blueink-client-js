@@ -1,4 +1,4 @@
-import { WEBHOOKS } from "../constants"
+const { WEBHOOKS } = require( "../constants.js");
 
 const WebhookSubClient = (path, request) => {
     return {
