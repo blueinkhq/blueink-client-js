@@ -42,6 +42,8 @@ const createBundleFromPath = async () => {
 		console.log('Test Field is added using BundleHelper Class. \n');
 		console.log('Creating a new Bundle.');
 
+		console.log(bundleHelper.asData())
+
 		const response = await client.bundles.create(bundleHelper.asData());
 		console.log(
 			chalk.bgGreen.black(
