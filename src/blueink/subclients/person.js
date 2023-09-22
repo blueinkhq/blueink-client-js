@@ -1,25 +1,27 @@
-const PersonSubClient = (path, request) => {
+const { PERSONS } = require('../endpoints')
+
+const PersonSubClient = (request) => {
     return {
         /**
          * Create new Person.
          * @param {object} data
          * @returns New Person data
          */
-        create: (data) => request.post(`${path}/`, data),
+        create: (data) => request.post(PERSONS.CREATE, data),
 
         /**
          * List all Persons. Maximum 50 results per page.
          * @param {object} params
          * @returns All Persons.
          */
-        list: (params = {}) => request.get(`${path}/`, params),
+        list: (params = {}) => request.get(PERSONS.LIST, params),
 
         /**
          * Retrieve a Person.
          * @param {string} personId - The ID that uniquely identifies the Person.
          * @returns Person Data
          */
-        retrieve: (personId) => request.get(`${path}/${personId}/`),
+        retrieve: (personId) => request.get(PERSONS.RETRIEVE(personId)),
 
         /**
          * Update a Person.
@@ -27,7 +29,7 @@ const PersonSubClient = (path, request) => {
          * @param {object} data
          */
         update: (personId, data) =>
-            request.put(`${path}/${personId}/`, data),
+            request.put(PERSONS.UPDATE(personId), data),
 
         /**
          * Partial update a Person.
@@ -35,13 +37,13 @@ const PersonSubClient = (path, request) => {
          * @param {object} data
          */
         partialUpdate: (personId, data) =>
-            request.patch(`${path}/${personId}/`, data),
+            request.patch(PERSONS.UPDATE(personId), data),
 
         /**
          * Delete a Person.
          * @param {string} personId
          */
-        delete: (personId) => request.delete(`${path}/${personId}/`),
+        delete: (personId) => request.delete(PERSONS.DELETE(personId)),
 
         /**
          * Paged list Persons.
@@ -57,13 +59,3 @@ const PersonSubClient = (path, request) => {
 }
 
 module.exports = { PersonSubClient }
-
-
-// const PersonSubClient = (path, request) => {
-//     return {
-
-//     };
-// }
-
-
-// module.exports = { PersonSubClient }
