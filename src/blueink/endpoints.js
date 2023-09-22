@@ -1,51 +1,51 @@
 const BUNDLES = {
     CREATE: '/bundles/',
     LIST: '/bundles/',
-    RETRIEVE: (bundle_id) => `/bundles/${bundle_id}/`,
-    CANCEL: (bundle_id) => `/bundles/${bundle_id}/cancel/`,
-    LIST_EVENTS: (bundle_id) => `/bundles/${bundle_id}/events/`,
-    LIST_FILES: (bundle_id) => `/bundles/${bundle_id}/files/`,
-    LIST_DATA: (bundle_id) => `/bundles/${bundle_id}/data/`,
+    RETRIEVE: (bundleId) => `/bundles/${bundleId}/`,
+    CANCEL: (bundleId) => `/bundles/${bundleId}/cancel/`,
+    LIST_EVENTS: (bundleId) => `/bundles/${bundleId}/events/`,
+    LIST_FILES: (bundleId) => `/bundles/${bundleId}/files/`,
+    LIST_DATA: (bundleId) => `/bundles/${bundleId}/data/`,
 };
 
 const PERSONS = {
     CREATE: '/persons/',
     LIST: '/persons/',
-    RETRIEVE: (person_id) => `/persons/${person_id}/`,
-    UPDATE: (person_id) => `/persons/${person_id}/`,
-    DELETE: (person_id) => `/persons/${person_id}/`,
+    RETRIEVE: (personId) => `/persons/${personId}/`,
+    UPDATE: (personId) => `/persons/${personId}/`,
+    DELETE: (personId) => `/persons/${personId}/`,
 };
 
 const PACKETS = {
-    EMBED_URL: (packet_id) => `/packets/${packet_id}/embed_url/`,
-    UPDATE: (packet_id) => `/packets/${packet_id}/`,
-    REMIND: (packet_id) => `/packets/${packet_id}/remind/`,
-    RETRIEVE_COE: (packet_id) => `/packets/${packet_id}/coe/`,
+    EMBED_URL: (packetId) => `/packets/${packetId}/embed_url/`,
+    UPDATE: (packetId) => `/packets/${packetId}/`,
+    REMIND: (packetId) => `/packets/${packetId}/remind/`,
+    RETRIEVE_COE: (packetId) => `/packets/${packetId}/coe/`,
 };
 
 const TEMPLATES = {
     LIST: '/templates/',
-    RETRIEVE: (template_id) => `/templates/${template_id}/`,
+    RETRIEVE: (templateId) => `/templates/${templateId}/`,
 };
 
 const WEBHOOKS = {
     CREATE: '/webhooks/',
     LIST: '/webhooks/',
-    RETRIEVE: (webhook_id) => `/webhooks/${webhook_id}/`,
-    UPDATE: (webhook_id) => `/webhooks/${webhook_id}/`,
-    DELETE: (webhook_id) => `/webhooks/${webhook_id}/`,
+    RETRIEVE: (webhookId) => `/webhooks/${webhookId}/`,
+    UPDATE: (webhookId) => `/webhooks/${webhookId}/`,
+    DELETE: (webhookId) => `/webhooks/${webhookId}/`,
 
     CREATE_HEADER: '/webhooks/headers/',
     LIST_HEADERS: '/webhooks/headers/',
-    RETRIEVE_HEADER: (webhook_header_id) => `/webhooks/headers/${webhook_header_id}/`,
-    UPDATE_HEADER: (webhook_header_id) => `/webhooks/headers/${webhook_header_id}/`,
-    DELETE_HEADER: (webhook_header_id) => `/webhooks/headers/${webhook_header_id}/`,
+    RETRIEVE_HEADER: (webhookHeaderId) => `/webhooks/headers/${webhookHeaderId}/`,
+    UPDATE_HEADER: (webhookHeaderId) => `/webhooks/headers/${webhookHeaderId}/`,
+    DELETE_HEADER: (webhookHeaderId) => `/webhooks/headers/${webhookHeaderId}/`,
 
     LIST_EVENTS: '/webhooks/events/',
-    RETRIEVE_EVENT: (webhook_event_id) => `/webhooks/events/${webhook_event_id}/`,
+    RETRIEVE_EVENT: (webhookEventId) => `/webhooks/events/${webhookEventId}/`,
 
     LIST_DELIVERIES: '/webhooks/deliveries/',
-    RETRIEVE_DELIVERY: (webhook_delivery_id) => `/webhooks/deliveries/${webhook_delivery_id}/`,
+    RETRIEVE_DELIVERY: (webhookDeliveryId) => `/webhooks/deliveries/${webhookDeliveryId}/`,
 
     RETRIEVE_SECRET: '/webhooks/secret/',
     REGENERATE_SECRET: '/webhooks/secret/regenerate/',
