@@ -1,6 +1,21 @@
 # blueink-client-js
 
-Javascript Client for the BlueInk API
+Javascript Client for the BlueInk eSignature API
+## Overview
+
+This README provides a narrative overview of using the Blueink Javascript client, and
+includes examples for many common use cases.
+
+Additional resources that might be useful include:
+
+* Examples at [blueink-client-python-examples](https://github.com/blueinkhq/blueink-client-python-examples)
+repo on GitHub.
+* The detailed [Blueink API Documentation](https://blueink.com/r/api-docs/), for
+  details on the data returned by each API call.
+
+For detailed documentation for each method call, please consult the source code,
+or rely on auto-complete in your favorite editor / IDE. The code is well commented and
+includes Javascript type annotations, which most IDEs understand.
 
 ## Installation
 
@@ -210,6 +225,59 @@ const createNewBundle = async () => {
 // Invokes the async function
 createNewBundle();
 ```
+## Client Method Index
+Parameters can be found using autocomplete within your IDE. Creates/Updates take a
+Javascript dictionary as the data field.
+
+### Bundle Related
+* Create via ```client.bundles.create(...)```
+* List via ```client.bundles.list(...)``` or ```client.bundles.paged_list(...)```
+* Retrieve via ```client.bundles.retrieve(...)```
+* Cancel via ```client.bundles.cancel(...)```
+* List Events via ```client.bundles.listEvents(...)```
+* List Files via ```client.bundles.listFiles(...)```
+* List Data via ```client.bundles.listData(...)```
+
+### Person Related
+* Create via ```client.persons.create(...)```
+* List via ```client.persons.list(...)``` or ```client.persons.pagedList(...)```
+* Retrieve via ```client.persons.retrieve(...)```
+* Delete via ```client.persons.delete(...)```
+* Update via ```client.persons.update(...)```
+
+### Packet Related
+* Update via ```client.packets.update(...)```
+* Create Embedded Signing URL via ```client.packets.embedUrl(...)```
+* Retrieve COE via ```client.packets.retrieveCOE(...)```
+* Remind via ```client.packets.remind(...)```
+
+### Template Related
+* List via ```client.templates.list(...)``` or ```client.templates.pagedList(...)```
+* Retrieve via ```client.templates.retrieve(...)```
+
+### Webhook Related
+
+#### Webhook Client Methods
+* Create via ```client.webhooks.create(...)```
+* List via ```client.webhooks.list(...)```
+* Retrieve via ```client.webhooks.retrieve(...)```
+* Delete via ```client.webhooks.delete(...)```
+* Update via ```client.webhooks.update(...)```
+
+#### WebhookExtraHeader Client Methods
+* Create via ```client.webhooks.createHeader(...)```
+* List via ```client.webhooks.listHeaders(...)```
+* Retrieve via ```client.webhooks.retrieveHeader(...)```
+* Delete via ```client.webhooks.deleteHeader(...)```
+* Update via ```client.webhooks.updateHeader(...)```
+
+#### WebhookEvent Client Methods
+* List via ```client.webhooks.listEvents(...)```
+* Retrieve via ```client.webhooks.retrieveEvent(...)```
+
+#### WebhookDelivery Client Methods
+* List via ```client.webhooks.listDeliveries(...)```
+* Retrieve via ```client.webhooks.retrieveDelivery(...)```
 
 ## Examples
 To run the example:

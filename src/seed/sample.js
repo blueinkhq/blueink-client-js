@@ -6,7 +6,6 @@ const sampleBundle = {
 	requester_name: "",
 	requester_email: "",
 	cc_emails: [],
-	is_test: true,
 	packets: [],
 	documents: [],
 };

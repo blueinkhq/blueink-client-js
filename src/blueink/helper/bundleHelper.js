@@ -2,6 +2,7 @@ const { FormDataEncoder } = require('form-data-encoder');
 const { FormData, File } = require('formdata-node');
 const { fileFromPathSync } = require('formdata-node/file-from-path');
 const isEmpty = require('lodash.isempty');
+const get = require('lodash.get');
 const has = require('lodash.has');
 const { Readable } = require('stream');
 
@@ -12,16 +13,29 @@ const { FIELD_KIND } = require('../constants.js');
 class BundleHelper {
 	/**
 	 * Define a Bundle Helper
-	 * @param {Object} newBundleData
+	 * @param {object} newBundleData
 	 * @param {string} newBundleData.label
 	 * @param {string} newBundleData.requester_email
 	 * @param {string} newBundleData.requester_name
 	 * @param {string} newBundleData.email_subject
 	 * @param {string} newBundleData.email_message
+	 * @param {boolean} newBundleData.in_order
+	 * @param {string[]} newBundleData.cc_emails
+	 * 
 	 */
 	constructor(newBundleData) {
 		// Initialize bundle
-		this.bundleData = { ...sampleBundle, ...newBundleData };
+		this.bundleData = { ...newBundleData };
+
+		if (!has(newBundleData, 'cc_emails')) {
+			this.bundleData.cc_emails = []
+		}
+		if (!has(newBundleData, 'documents')) {
+			this.bundleData.documents = []
+		}
+		if (!has(newBundleData, 'packets')) {
+			this.bundleData.packets = []
+		}
 
 		// Store the file info and will return it as FormData when the asData method get called.
 		this.files = {};
@@ -29,10 +43,10 @@ class BundleHelper {
 
 	/**
 	 * Add a new Document to the bundle.
-	 * @param {Object} newDoc - Must include either file_url, file_path, or file_data.
+	 * @param {object} newDoc - Must include either file_url, file_path, or file_data.
 	 * @param {string} [newDoc.file_url] - The url to the pdf document. If file_url is provided, file_path and file_data will be ignored.
 	 * @param {string} [newDoc.file_path] -The path to the pdf file. If file_path is provided, file_data will be ignored.
-	 * @param {Object} [newDoc.file_data] - The data of the file.
+	 * @param {object} [newDoc.file_data] - The data of the file.
 	 * @param {string} [newDoc.file_b64] - The base 64 string of the file.
 	 * @returns - Key of the Document.
 	 */
@@ -88,26 +102,50 @@ class BundleHelper {
 		this.bundleData.documents.push(newDoc);
 		return newDoc.key;
 	};
-
+	
+	/**
+	 * Add document by file path.
+	 * @param {string} filePath - Path to the file.
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByPath = (filePath, additionalFields = {}) => {
 		return this.#addDocument({ file_path: filePath, ...additionalFields });
 	};
 
+	/**
+	 * Add document by file url.
+	 * @param {string} fileURL - File URL.
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByUrl = (fileURL, additionalFields = {}) => {
 		return this.#addDocument({ file_url: fileURL, ...additionalFields });
 	};
 
+	/**
+	 * Add document by file data.
+	 * @param {object} fileData - File data
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByFile = (fileData, additionalFields = {}) => {
 		return this.#addDocument({ file_data: fileData, ...additionalFields });
 	};
 
+	/**
+	 * Add document by base64 string.
+	 * @param {string} fileB64 - Base 64 string of the file
+	 * @param {object} additionalFields - Addition fields
+	 * @returns - Key of the Document Template.
+	 */
 	addDocumentByB64 = (fileB64, additionalFields = {}) => {
 		return this.#addDocument({ file_b64: fileB64, ...additionalFields });
 	}
 
 	/**
 	 * Add a Document Template to the bundle.
-	 * @param {Object} template - Must include valid template id from BlueInk Dashboard.
+	 * @param {object} template - Must include valid template id from BlueInk Dashboard.
 	 * @param {string} template.template_id
 	 * @returns - Key of the Document Template.
 	 */
@@ -206,7 +244,15 @@ class BundleHelper {
 
 	/**
 	 * Add a Signer (Packet) to the bundle
-	 * @param {Object} newSigner
+	 * @param {object} newSigner
+	 * @param {string} [newSigner.key]
+	 * @param {string} newSigner.name
+	 * @param {string} newSigner.email
+	 * @param {string} [newSigner.phone]
+	 * @param {boolean} [newSigner.auth_sms]
+	 * @param {boolean} [newSigner.auth_selfie]
+	 * @param {boolean} [newSigner.auth_id]
+	 * @param {string} [newSigner.deliver_via]
 	 * @returns - Key of the Signer.
 	 */
 	addSigner = (newSigner) => {
@@ -221,8 +267,13 @@ class BundleHelper {
 	/**
 	 * Add a new Field to the Document. Field only need for DocumentRequest.
 	 * @param {string} docKey - The Key of the Document.
-	 * @param {Object} newField - New Field
-	 * @returns - Key of the Field.
+	 * @param {object} newField - New Field
+	 * @param {string} newField.kind
+	 * @param {string} newField.x
+	 * @param {string} newField.y
+	 * @param {string} newField.w
+	 * @param {string} newField.h
+	 * @returns {string} - Key of the Field.
 	 */
 	addField = (docKey, newField) => {
 		const errors = [];
@@ -269,10 +320,52 @@ class BundleHelper {
 	};
 
 	/**
+	 * Initialize field value
+	 * @param {string} docKey - The Key of the Document.
+	 * @param {string} fieldKey - The Key of the Field.
+	 * @param {(string|boolean)} value - The value of the Field.
+	 * @returns - Key of the Field.
+	 */
+	initializeField = (docKey, fieldKey, value) => {
+		const document = this.bundleData.documents.find(
+			(doc) => doc.key === docKey
+		);
+		if (!document) {
+			throw new Error(`Document with key ${docKey} is invalid.`);
+		}
+		
+		const isTemplate = has(document, 'template_id'); // Document is template
+		if (isTemplate) {
+			const field_values = get(document, 'field_values', []);
+			const index = field_values.findIndex(field => field.key === fieldKey);
+			if (index !== -1) {
+				field_values[index].initial_value = value;
+			} else {
+				field_values.push({
+					key: fieldKey,
+					initial_value: value,
+				})
+			}
+			document.field_values = [...field_values];
+			return fieldKey;
+		} else {
+			const fields = get(document, 'fields', []);
+			const index = fields.findIndex(field => field.key === fieldKey);
+			if (index !== -1) {
+				fields[index].initial_value = value;
+				document.fields = [...fields];
+			} else {
+				throw new Error(`Field with key ${fieldKey} cannot be found. The field must be added first.`)
+			}
+			return fieldKey;
+		}
+	}
+
+	/**
 	 * Set Document value
 	 * @param {string} docKey
 	 * @param {string} key
-	 * @param {*} value
+	 * @param {any} value
 	 */
 	setValue = (docKey, key, value) => {
 		const document = this.bundleData.documents.find(
