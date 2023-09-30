@@ -33,7 +33,7 @@ describe('BundleHelper', () => {
         it('should add a document by base64 data', () => {
             const fileB64 = DOCUMENT_BASE64;
             const additionalFields = { key: 'DOC-3' };
-            const result = bundleHelper.addDocumentByB64(fileB64, additionalFields);
+            const result = bundleHelper.addDocumentByB64('test', fileB64, additionalFields);
             expect(result).toEqual('DOC-3')
         });
     });

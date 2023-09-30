@@ -97,7 +97,20 @@ class BundleHelper {
 			const file = new File([newDoc.file_data.buffer], newDoc.file_data.originalname);
 			this.files[`files[${newDoc.file_index}]`] = file;
 			delete newDoc.file_data;
-		} 
+		} else if (newDoc.file_b64) {
+			// File Base64 is used
+			if (!has(newDoc, 'file_index')) {
+				// Find current index
+				const index = this.bundleData.documents.filter((doc) =>
+					has(doc, 'file_index')
+				).length;
+
+				newDoc.file_index = index;
+			}
+			const file = new File([Buffer.from(newDoc.file_b64, 'base64')], newDoc.file_name);
+			this.files[`files[${newDoc.file_index}]`] = file;
+			delete newDoc.file_b64;
+		}
 		
 		this.bundleData.documents.push(newDoc);
 		return newDoc.key;
@@ -135,12 +148,13 @@ class BundleHelper {
 
 	/**
 	 * Add document by base64 string.
+	 * @param {string} fileName - String of the file name
 	 * @param {string} fileB64 - Base 64 string of the file
 	 * @param {object} additionalFields - Addition fields
 	 * @returns - Key of the Document Template.
 	 */
-	addDocumentByB64 = (fileB64, additionalFields = {}) => {
-		return this.#addDocument({ file_b64: fileB64, ...additionalFields });
+	addDocumentByB64 = (fileName, fileB64, additionalFields = {}) => {
+		return this.#addDocument({ file_name: fileName, file_b64: fileB64, ...additionalFields });
 	}
 
 	/**

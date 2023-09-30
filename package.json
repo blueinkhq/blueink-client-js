@@ -8,6 +8,7 @@
 		"create-bundle-from-path": "node src/example/create_bundle_from_path.js",
 		"create-bundle-from-url": "node src/example/create_bundle_from_url.js",
 		"create-bundle-from-template": "node src/example/create_bundle_from_template.js",
+		"create-bundle-from-b64": "node src/example/create_bundle_from_b64.js",
 		"list-bundles": "node src/example/list_bundles.js"
 	},
 	"author": "Blueink",
