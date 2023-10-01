@@ -64,7 +64,7 @@ class RequestHelper {
     };
 
     delete = (path, data) => {
-        return axios({
+        return this._axios({
             url: path,
             method: "DELETE",
             data: data,

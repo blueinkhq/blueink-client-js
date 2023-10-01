@@ -231,7 +231,7 @@ Javascript dictionary as the data field.
 
 ### Bundle Related
 * Create via ```client.bundles.create(...)```
-* List via ```client.bundles.list(...)``` or ```client.bundles.paged_list(...)```
+* List via ```client.bundles.list(...)``` or ```client.bundles.pagedList(...)```
 * Retrieve via ```client.bundles.retrieve(...)```
 * Cancel via ```client.bundles.cancel(...)```
 * List Events via ```client.bundles.listEvents(...)```
@@ -279,21 +279,191 @@ Javascript dictionary as the data field.
 * List via ```client.webhooks.listDeliveries(...)```
 * Retrieve via ```client.webhooks.retrieveDelivery(...)```
 
-## Examples
+## Detailed Guide and Examples
+### Bundles
+
+#### Creating Bundles with the BundleHelper
+
+When creating a Bundle via the API, you need to pass quite a bit of data in the
+`client.bundle.create(...)` request. To ease the construction of that data, this
+library provides a `BundleHelper` class.
+
+Below is an example of using `BundleHelper` to create a Bundle with 1 document,
+and 1 signers. In this example, the uploaded document is specified via a URL. [View full example](https://www.google.com)
+
+```js
+const client = new Client(BLUEINK_API_KEY);
+
+const createBundleFromUrl = async () => {
+	try {
+		const bundleHelper = new BundleHelper({
+			label: 'New Bundle Created Using File URL',
+			requester_email: 'peter.griffin@gmail.com',
+			requester_name: 'Mr. Peter',
+			email_subject: 'Yay First Bundle',
+			email_message: 'This is your first bundle.',
+		});
+
+		// # Add a document to the Bundle by providing a publicly accessible URL where
+		// # the Blueink platform can download the document to include in the Bundle
+		const file_url = "https://www.irs.gov/pub/irs-pdf/fw9.pdf"
+		const docKey1 = bundleHelper.addDocumentByUrl(file_url, {
+			key: 'DOC-1',
+		});
+
+		const signer1 = bundleHelper.addSigner({
+			name: 'The Signer One',
+			email: 'glenn.quagmire@gmail.com',
+		});
+
+		const field = bundleHelper.addField(docKey1, {
+			label: 'Your Name',
+			page: 1,
+			kind: 'txt',
+			editors: [signer1],
+			x: 15,
+			y: 60,
+			w: 20,
+			h: 3,
+		});
+
+		const response = await client.bundles.create(bundleHelper.asData());
+		console.log(response.data);
+	} catch (error) {
+		if (error.response) {
+			console.log(error.response);
+		} else {
+			console.log(error);
+		}
+	}
+};
+```
+Using the BundleHelper, you can add files to a Bundle in multiple ways:
+```js
+const bh = new BundleHelper(...)
+
+// 0) Add a document using a URL to a web resource:
+doc0_key = bh.addDocumentByUrl("https://www.example.com/example.pdf")
+
+// 1) Add a document using a path to the file in the local filesystem
+doc1_key = bh.addDocumentByPath("/path/to/file/example.pdf")
+
+// 2) Add a document using a UTF-8 encoded Base64 string:
+filename, pdf_b64 = read_a_file_into_b64_string()
+doc02_key = bh.addDocumentByB64(filename, pdf_b64)
+```
+#### Retrieval
+
+Getting a single bundle is fairly easy. They can be accessed with a single call. To get
+the additional data (events, files, data), set the related_data flag to true.
+
+```js
+response = client.bundles.retrieve(bundleId, {related_data: true})
+bundle = response.data
+bundle_id = bundle.id
+
+// # additional data fields (only exist if related_data is true)
+events = bundle.events
+files = bundle.files
+data = bundle.data
+```
+#### Listing
+
+Listing has several options regarding pagination. You can also choose to append the
+additional data on each retrieved
+bundle as you can with single fetches. ```client.bundles.pagedList()``` returns an
+iterator object that lazy loads
+subsequent pages. If no parameters are set, it will start at page 0 and have up to 50
+bundles per page.
+
+```js
+// EXAMPLE: Collecting all bundle IDs
+const pageIterator = client.bundles.pagedList({
+	related_data, //bool
+	page: pagination.page,
+	per_page: pagination.per_page,
+});
+```
+
+### Webhooks
+
+Webhooks can be interacted with via several methods. Webhooks also have related objects, such as
+```WebhookExtraHeaders```, ```WebhookEvents```, and ```WebhookDeliveries``` which have their own
+methods to interact with.
+```js
+const client = new Client(BLUEINK_API_KEY)
+const webHookSample = {
+  url: "https://www.example.com/01/",
+  enable: true,
+  json: true,
+  event_types: [
+    EVENT_TYPE.EVENT_BUNDLE_LAUNCHED,
+    EVENT_TYPE.EVENT_PACKET_COMPLETE,
+  ],
+};
+
+const webHookSampleUpdate = {
+  url: "https://www.example.com/01/",
+  enabled: false,
+  event_types: [EVENT_TYPE.EVENT_PACKET_VIEWED],
+};
+
+const webHookSampleExtraHeader = {
+  name: "Courage_The_Cowardly_Webhook",
+  value: "Muriel Bagge",
+  order: 0,
+};
+
+const createWebhook() {
+	create_resp = await client.webhooks.create(webHookSample);
+	webhook = create_resp.data;
+	console.log(`Created webhook ${webhook.id}`);
+}
+
+const updateWebhook(webhook_id) {
+	const update_resp = await client.webhooks.update(
+		webhook_id,
+		webHookSampleUpdate
+	);
+	webhook = update_resp.data;
+	console.log(`Updated webhook ${webhook.id}`);
+}
+
+const createExtraHeader(webhook_id) {
+	const extra_header_data = { ...webHookSampleExtraHeader };
+	extra_header_data["webhook"] = webhook_id;
+	const header_create_resp = await client.webhooks.createHeader(
+		extra_header_data
+	);
+	header = header_create_resp.data;
+	console.log(
+		`Added ExtraHeader ${JSON.stringify(header)} to ${header.webhook}`
+	);
+}
+
+const listWebhooks() {
+	const list_resp = await client.webhooks.list();
+	webhook_list = list_resp.data;
+	console.log(`Found ${webhook_list.length} Webhooks`);
+	for (wh of webhook_list) {
+		console.log(` - Webhook ID: ${wh.id} to ${wh.url}`);
+	}
+}
+
+const deleteWebhook(webhook_id) {
+	const webhook_id = await askWebhookId();
+	const delete_resp = await client.webhooks.delete(webhook_id);
+	console.log(`Deleted Webhook ${webhook_id}`);
+}
+```
+
+## Full Examples
 To run the example:
-```
+```bash
 npm run create-bundle-from-path
-
-```
-```
 npm run create-bundle-from-url
-
-```
-```
 npm run create-bundle-from-template
-
-```
-```
+npm run create-bundle-from-b64
 npm run list-bundles
-
+npm run interact-webhooks
 ```

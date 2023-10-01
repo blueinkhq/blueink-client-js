@@ -1,6 +1,7 @@
 require('dotenv/config');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+const fetch = require('node-fetch');
 const { Client, BundleHelper } = require('../../index');
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
@@ -17,9 +18,9 @@ const createBundleFromUrl = async () => {
 		console.log('Test Bundle Data is added using BundleHelper Class. \n');
 
 		const file_url = await askFileUrl();
-        const file_b64 = await pdfUrlToBase64(file_url)
-		
+		const file_b64 = await pdfUrlToBase64(file_url)
 		const file_name = "test_bundle_b64"
+		
 		const docKey1 = bundleHelper.addDocumentByB64(file_name, file_b64, {
 			key: 'DOC-1',
 		});

@@ -78,6 +78,15 @@ const V_PATTERN = {
 	ZIP_CODE: 'zip_code',
 };
 
+const EVENT_TYPE = {
+  EVENT_BUNDLE_LAUNCHED: "bundle_sent",
+  EVENT_BUNDLE_COMPLETE: "bundle_complete",
+  EVENT_BUNDLE_DOCS_READY: "bundle_docs_ready",
+  EVENT_BUNDLE_ERROR: "bundle_error",
+  EVENT_BUNDLE_CANCELLED: "bundle_cancelled",
+  EVENT_PACKET_VIEWED: "packet_viewed",
+  EVENT_PACKET_COMPLETE: "packet_complete",
+};
 
 module.exports = {
 	ATTACHMENT_TYPE,
@@ -85,8 +94,9 @@ module.exports = {
 	BUNDLE_ORDER,
 	DEFAULT_BASE_URL,
 	V_PATTERN,
-    BUNDLE_STATUS,
-    DELIVER_VIA,
-    FIELD_KIND,
-    PACKET_STATUS,
+	BUNDLE_STATUS,
+	DELIVER_VIA,
+	FIELD_KIND,
+	PACKET_STATUS,
+	EVENT_TYPE,
 };
