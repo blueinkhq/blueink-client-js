@@ -8,7 +8,7 @@ includes examples for many common use cases.
 
 Additional resources that might be useful include:
 
-* Examples at [blueink-client-python-examples](https://github.com/blueinkhq/blueink-client-python-examples)
+* Examples at [blueink-client-js-examples](https://github.com/blueinkhq/blueink-client-js/tree/main/src/example)
 repo on GitHub.
 * The detailed [Blueink API Documentation](https://blueink.com/r/api-docs/), for
   details on the data returned by each API call.
@@ -230,7 +230,7 @@ Parameters can be found using autocomplete within your IDE. Creates/Updates take
 Javascript dictionary as the data field.
 
 ### Bundle Related
-* Create via ```client.bundles.create(...)```
+* Create via ```client.bundles.create(...)``` or ```client.bundles.createFromBundleHelper(...)```
 * List via ```client.bundles.list(...)``` or ```client.bundles.pagedList(...)```
 * Retrieve via ```client.bundles.retrieve(...)```
 * Cancel via ```client.bundles.cancel(...)```
@@ -239,7 +239,7 @@ Javascript dictionary as the data field.
 * List Data via ```client.bundles.listData(...)```
 
 ### Person Related
-* Create via ```client.persons.create(...)```
+* Create via ```client.persons.create(...)``` or ```client.persons.createFromPersonHelper(...)```
 * List via ```client.persons.list(...)``` or ```client.persons.pagedList(...)```
 * Retrieve via ```client.persons.retrieve(...)```
 * Delete via ```client.persons.delete(...)```
@@ -384,7 +384,123 @@ const pageIterator = client.bundles.pagedList({
 	per_page: pagination.per_page,
 });
 ```
+### Persons
 
+Creating a person is similar to a creating a Bundle. There is a PersonHelper to help
+create a person
+```js
+const client = new Client(BLUEINK_API_KEY)
+const ph = new PersonHelper();
+
+const personSampleUpdate = {
+  name: 'Stewie Griffin',
+  channels: []
+};
+
+// CREATE PERSON
+function createPerson() {
+	// Make up some metadata to add to the person
+	const metadata = {
+		number: 1,
+		string: "stringy",
+		dict: { number: 2 },
+		list: [3]
+	}
+	//# Set the metadata of the person
+	ph.setMetadata(metadata);
+
+	// Set the persons name
+	ph.setName("Brian Griffin");
+	// Add email contacts for the person
+	ph.addEmail("brian.griffin@gmail.com");
+	ph.addEmail("stewie.griffin@gmail.com");
+
+	// Get all of the emails for the person
+	let all_current_emails = ph.getEmails();
+	console.log("All Current Emails:", all_current_emails)
+
+	// Remove an email from the list
+	all_current_emails.splice(all_current_emails.indexOf("test@email.com"), 1);
+
+	// Overwrite the existing email list with this new list
+	// Effectively removing test@email.com list
+	ph.setEmails(all_current_emails);
+
+	// Add phone number contact for the person
+	ph.addPhone("5055551212");
+	ph.addPhone("5055551213");
+	ph.addPhone("5055551214");
+
+	// Get all of the phone numbers for the person
+	let all_current_phones = ph.getPhones();
+	console.log("All Current Phones:", all_current_phones)
+	// Remove a phone number from the list
+	all_current_phones.pop();
+
+	// Overwrite the existing phone list with this new list
+	// Effectively removing last phone number
+	ph.setPhones(all_current_phones);
+
+	create_resp = await client.persons.createFromPersonHelper(ph);
+	person = create_resp.data;
+	console.log(`Created person ${person.id}`);
+}
+// UPDATE PERSON
+function updatePerson(personId) {
+	const update_resp = await client.persons.update(
+		personId,
+		personSampleUpdate
+	);
+	person = update_resp.data;
+	console.log(`Updated person ${JSON.stringify(person)}`);
+}
+// RETRIEVE PERSON
+function retrievePerson(personId) {
+	const retrieve_resp = await client.persons.retrieve(personId);
+	person = retrieve_resp.data;
+	console.log(`Retrieved person ${JSON.stringify(person)}`);
+}
+// DELETE PERSON
+function deletePerson(personId) {
+	const delete_resp = await client.persons.delete(personId);
+	console.log(`Deleted person ${personId}`);
+}
+```
+### Packets
+
+Packets can be updated. Reminders may be triggered, and COEs can be retrieve using the
+client:
+
+```js
+// Retrieve
+client.packets.retrieve(packetId)
+
+// Update
+client.packets.update(packetId, payload)
+
+// Remind
+client.packets.remind(packetId)
+
+// Get COE
+client.packets.retrieveCOE(packetId)
+```
+### Templates
+
+Templates can be listed (non-paged), listed (paged) or retrieved singly:
+
+```js
+// Non paged
+const templates_list_response = await client.templates.list();
+
+// Paged
+for await (const page of client.templates.pagedList()) {
+  const templates_in_page = page.data;
+  // Do something with templates_in_page
+}
+
+// Single
+const template_response = await client.templates.retrieve(templateId);
+```
 ### Webhooks
 
 Webhooks can be interacted with via several methods. Webhooks also have related objects, such as
@@ -414,13 +530,13 @@ const webHookSampleExtraHeader = {
   order: 0,
 };
 
-const createWebhook() {
+function createWebhook() {
 	create_resp = await client.webhooks.create(webHookSample);
 	webhook = create_resp.data;
 	console.log(`Created webhook ${webhook.id}`);
 }
 
-const updateWebhook(webhook_id) {
+function updateWebhook(webhook_id) {
 	const update_resp = await client.webhooks.update(
 		webhook_id,
 		webHookSampleUpdate
@@ -429,7 +545,7 @@ const updateWebhook(webhook_id) {
 	console.log(`Updated webhook ${webhook.id}`);
 }
 
-const createExtraHeader(webhook_id) {
+function createExtraHeader(webhook_id) {
 	const extra_header_data = { ...webHookSampleExtraHeader };
 	extra_header_data["webhook"] = webhook_id;
 	const header_create_resp = await client.webhooks.createHeader(
@@ -441,7 +557,7 @@ const createExtraHeader(webhook_id) {
 	);
 }
 
-const listWebhooks() {
+function listWebhooks() {
 	const list_resp = await client.webhooks.list();
 	webhook_list = list_resp.data;
 	console.log(`Found ${webhook_list.length} Webhooks`);
@@ -450,7 +566,7 @@ const listWebhooks() {
 	}
 }
 
-const deleteWebhook(webhook_id) {
+function deleteWebhook(webhook_id) {
 	const webhook_id = await askWebhookId();
 	const delete_resp = await client.webhooks.delete(webhook_id);
 	console.log(`Deleted Webhook ${webhook_id}`);
@@ -465,5 +581,6 @@ npm run create-bundle-from-url
 npm run create-bundle-from-template
 npm run create-bundle-from-b64
 npm run list-bundles
+npm run interact-persons
 npm run interact-webhooks
 ```

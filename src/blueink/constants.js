@@ -88,6 +88,11 @@ const EVENT_TYPE = {
   EVENT_PACKET_COMPLETE: "packet_complete",
 };
 
+const PERSON_CHANNEL_KIND = {
+	EMAIL: 'em',
+	PHONE: 'mp',
+}
+
 module.exports = {
 	ATTACHMENT_TYPE,
 	BLUEINK_PAGINATION_HEADER,
@@ -99,4 +104,5 @@ module.exports = {
 	FIELD_KIND,
 	PACKET_STATUS,
 	EVENT_TYPE,
+	PERSON_CHANNEL_KIND,
 };
