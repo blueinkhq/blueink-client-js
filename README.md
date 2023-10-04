@@ -3,14 +3,14 @@
 Javascript Client for the BlueInk API
 ## Overview
 
-This README provides a narrative overview of using the Blueink Javascript client, and
+This README provides a narrative overview of using the BlueInk Javascript client, and
 includes examples for many common use cases.
 
 Additional resources that might be useful include:
 
 * Examples at [blueink-client-js-examples](https://github.com/blueinkhq/blueink-client-js/tree/main/src/example)
 repo on GitHub.
-* The detailed [Blueink API Documentation](https://blueink.com/r/api-docs/), for
+* The detailed [BlueInk API Documentation](https://blueink.com/r/api-docs/), for
   details on the data returned by each API call.
 
 For detailed documentation for each method call, please consult the source code,
@@ -19,7 +19,7 @@ includes Javascript type annotations, which most IDEs understand.
 
 ## Installation
 
-Use `npm` to install the Blueink Javascript Library
+Use `npm` to install the BlueInk Javascript Library
 
 ```
 npm install blueink-client-js
@@ -305,9 +305,9 @@ const createBundleFromUrl = async () => {
 		});
 
 		// # Add a document to the Bundle by providing a publicly accessible URL where
-		// # the Blueink platform can download the document to include in the Bundle
-		const file_url = "https://www.irs.gov/pub/irs-pdf/fw9.pdf"
-		const docKey1 = bundleHelper.addDocumentByUrl(file_url, {
+		// # the BlueInk platform can download the document to include in the Bundle
+		const fileUrl = "https://www.irs.gov/pub/irs-pdf/fw9.pdf"
+		const docKey1 = bundleHelper.addDocumentByUrl(fileUrl, {
 			key: 'DOC-1',
 		});
 
@@ -350,8 +350,8 @@ docKey02 = bh.addDocumentByPath("/path/to/file/example.pdf")
 
 // 3) Add a document using a UTF-8 encoded Base64 string:
 const filename = 'test-sample'
-const pdf_b64 = 'JVBERi0xLjMKMyAwI...'
-docKey03 = bh.addDocumentByB64(filename, pdf_b64)
+const pdfB64 = 'JVBERi0xLjMKMyAwI...'
+docKey03 = bh.addDocumentByB64(filename, pdfB64)
 ```
 #### Retrieval
 
@@ -416,15 +416,15 @@ function createPerson() {
 	ph.addEmail("stewie.griffin@gmail.com");
 
 	// Get all of the emails for the person
-	let all_current_emails = ph.getEmails();
-	console.log("All Current Emails:", all_current_emails)
+	let allCurrentEmails = ph.getEmails();
+	console.log("All Current Emails:", allCurrentEmails)
 
 	// Remove an email from the list
-	all_current_emails.splice(all_current_emails.indexOf("test@email.com"), 1);
+	allCurrentEmails.splice(allCurrentEmails.indexOf("test@email.com"), 1);
 
 	// Overwrite the existing email list with this new list
 	// Effectively removing test@email.com list
-	ph.setEmails(all_current_emails);
+	ph.setEmails(allCurrentEmails);
 
 	// Add phone number contact for the person
 	ph.addPhone("5055551212");
@@ -432,37 +432,37 @@ function createPerson() {
 	ph.addPhone("5055551214");
 
 	// Get all of the phone numbers for the person
-	let all_current_phones = ph.getPhones();
-	console.log("All Current Phones:", all_current_phones)
+	let allCurrentPhones = ph.getPhones();
+	console.log("All Current Phones:", allCurrentPhones)
 	// Remove a phone number from the list
-	all_current_phones.pop();
+	allCurrentPhones.pop();
 
 	// Overwrite the existing phone list with this new list
 	// Effectively removing last phone number
-	ph.setPhones(all_current_phones);
+	ph.setPhones(allCurrentPhones);
 
-	create_resp = await client.persons.createFromPersonHelper(ph);
-	person = create_resp.data;
+	createResp = await client.persons.createFromPersonHelper(ph);
+	person = createResp.data;
 	console.log(`Created person ${person.id}`);
 }
 // UPDATE PERSON
 function updatePerson(personId) {
-	const update_resp = await client.persons.update(
+	const updateResp = await client.persons.update(
 		personId,
 		personSampleUpdate
 	);
-	person = update_resp.data;
+	person = updateResp.data;
 	console.log(`Updated person ${JSON.stringify(person)}`);
 }
 // RETRIEVE PERSON
 function retrievePerson(personId) {
-	const retrieve_resp = await client.persons.retrieve(personId);
-	person = retrieve_resp.data;
+	const retrieveResp = await client.persons.retrieve(personId);
+	person = retrieveResp.data;
 	console.log(`Retrieved person ${JSON.stringify(person)}`);
 }
 // DELETE PERSON
 function deletePerson(personId) {
-	const delete_resp = await client.persons.delete(personId);
+	const deleteResp = await client.persons.delete(personId);
 	console.log(`Deleted person ${personId}`);
 }
 ```
@@ -490,16 +490,16 @@ Templates can be listed (non-paged), listed (paged) or retrieved singly:
 
 ```js
 // Non paged
-const templates_list_response = await client.templates.list();
+const templatesListResponse = await client.templates.list();
 
 // Paged
 for await (const page of client.templates.pagedList()) {
-  const templates_in_page = page.data;
-  // Do something with templates_in_page
+  const templatesInPage = page.data;
+  // Do something with templatesInPage
 }
 
 // Single
-const template_response = await client.templates.retrieve(templateId);
+const templateResponse = await client.templates.retrieve(templateId);
 ```
 ### Webhooks
 
@@ -531,45 +531,45 @@ const webHookSampleExtraHeader = {
 };
 
 function createWebhook() {
-	create_resp = await client.webhooks.create(webHookSample);
-	webhook = create_resp.data;
+	createResp = await client.webhooks.create(webHookSample);
+	webhook = createResp.data;
 	console.log(`Created webhook ${webhook.id}`);
 }
 
-function updateWebhook(webhook_id) {
-	const update_resp = await client.webhooks.update(
-		webhook_id,
+function updateWebhook(webhookId) {
+	const updateResp = await client.webhooks.update(
+		webhookId,
 		webHookSampleUpdate
 	);
-	webhook = update_resp.data;
+	webhook = updateResp.data;
 	console.log(`Updated webhook ${webhook.id}`);
 }
 
-function createExtraHeader(webhook_id) {
-	const extra_header_data = { ...webHookSampleExtraHeader };
-	extra_header_data["webhook"] = webhook_id;
-	const header_create_resp = await client.webhooks.createHeader(
-		extra_header_data
+function createExtraHeader(webhookId) {
+	const extraHeaderData = { ...webHookSampleExtraHeader };
+	extraHeaderData["webhook"] = webhookId;
+	const createHeaderResp = await client.webhooks.createHeader(
+		extraHeaderData
 	);
-	header = header_create_resp.data;
+	header = createHeaderResp.data;
 	console.log(
 		`Added ExtraHeader ${JSON.stringify(header)} to ${header.webhook}`
 	);
 }
 
 function listWebhooks() {
-	const list_resp = await client.webhooks.list();
-	webhook_list = list_resp.data;
-	console.log(`Found ${webhook_list.length} Webhooks`);
-	for (wh of webhook_list) {
+	const listResp = await client.webhooks.list();
+	webhookList = listResp.data;
+	console.log(`Found ${webhookList.length} Webhooks`);
+	for (wh of webhookList) {
 		console.log(` - Webhook ID: ${wh.id} to ${wh.url}`);
 	}
 }
 
-function deleteWebhook(webhook_id) {
-	const webhook_id = await askWebhookId();
-	const delete_resp = await client.webhooks.delete(webhook_id);
-	console.log(`Deleted Webhook ${webhook_id}`);
+function deleteWebhook(webhookId) {
+	const webhookId = await askWebhookId();
+	const deleteResp = await client.webhooks.delete(webhookId);
+	console.log(`Deleted Webhook ${webhookId}`);
 }
 ```
 
