@@ -1,6 +1,6 @@
 # blueink-client-js
 
-Javascript Client for the BlueInk eSignature API
+Javascript Client for the BlueInk API
 ## Overview
 
 This README provides a narrative overview of using the Blueink Javascript client, and
@@ -342,15 +342,16 @@ Using the BundleHelper, you can add files to a Bundle in multiple ways:
 ```js
 const bh = new BundleHelper(...)
 
-// 0) Add a document using a URL to a web resource:
-doc0_key = bh.addDocumentByUrl("https://www.example.com/example.pdf")
+// 1) Add a document using a URL to a web resource:
+docKey01 = bh.addDocumentByUrl("https://www.example.com/example.pdf")
 
-// 1) Add a document using a path to the file in the local filesystem
-doc1_key = bh.addDocumentByPath("/path/to/file/example.pdf")
+// 2) Add a document using a path to the file in the local filesystem
+docKey02 = bh.addDocumentByPath("/path/to/file/example.pdf")
 
-// 2) Add a document using a UTF-8 encoded Base64 string:
-filename, pdf_b64 = read_a_file_into_b64_string()
-doc02_key = bh.addDocumentByB64(filename, pdf_b64)
+// 3) Add a document using a UTF-8 encoded Base64 string:
+const filename = 'test-sample'
+const pdf_b64 = 'JVBERi0xLjMKMyAwI...'
+docKey03 = bh.addDocumentByB64(filename, pdf_b64)
 ```
 #### Retrieval
 
@@ -360,7 +361,6 @@ the additional data (events, files, data), set the related_data flag to true.
 ```js
 response = client.bundles.retrieve(bundleId, {related_data: true})
 bundle = response.data
-bundle_id = bundle.id
 
 // # additional data fields (only exist if related_data is true)
 events = bundle.events
