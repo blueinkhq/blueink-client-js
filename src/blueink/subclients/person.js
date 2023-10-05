@@ -7,7 +7,18 @@ const PersonSubClient = (request) => {
          * @param {object} data
          * @returns New Person data
          */
-        create: (data) => request.post(PERSONS.CREATE, data),
+        create: function (data) {
+            return request.post(PERSONS.CREATE, data)
+        },
+
+        /**
+         * Create a person using PersonHelper convenience object.
+         * @param {object} personHelper PersonHelper setup of a person
+         * @returns New Person data
+         */
+        createFromPersonHelper: function (personHelper) {
+            return this.create(personHelper.asDict())
+        }, 
 
         /**
          * List all Persons. Maximum 50 results per page.

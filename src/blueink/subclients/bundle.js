@@ -9,7 +9,15 @@ const BundleSubClient = (request) => {
          * @returns New Bundle data
          */
         create: (data) => request.post(BUNDLES.CREATE, data),
-
+        
+        /**
+         * Create new Bundle using BundleHelper convenience object.
+         * @param {object} bundleHelper BundleHelper setup of a person
+         * @returns New Bundle data
+         */
+        createFromBundleHelper: function (bundleHelper) {
+            return this.create(bundleHelper.asData())
+        }, 
         /**
          * List all Bundles. Maximum 50 results per page.
          * @param {object} params

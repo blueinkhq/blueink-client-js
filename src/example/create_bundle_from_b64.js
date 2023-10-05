@@ -1,15 +1,15 @@
 require('dotenv/config');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+const fetch = require('node-fetch');
 const { Client, BundleHelper } = require('../../index');
-
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const createBundleFromUrl = async () => {
 	try {
 		const requester_email = await askRequesterEmail();
 		const bundleHelper = new BundleHelper({
-			label: 'New Bundle Created Using File URL',
+			label: 'New Bundle Created Using File Base64',
 			requester_email: requester_email,
 			requester_name: 'Mr. Example',
 			email_subject: 'Yay First Bundle',
@@ -18,7 +18,10 @@ const createBundleFromUrl = async () => {
 		console.log('Test Bundle Data is added using BundleHelper Class. \n');
 
 		const file_url = await askFileUrl();
-		const docKey1 = bundleHelper.addDocumentByUrl(file_url, {
+		const file_b64 = await pdfUrlToBase64(file_url)
+		const file_name = "test_bundle_b64"
+		
+		const docKey1 = bundleHelper.addDocumentByB64(file_name, file_b64, {
 			key: 'DOC-1',
 		});
 		console.log('Test Document is added using BundleHelper Class. \n');
@@ -73,7 +76,7 @@ const askRequesterEmail = async () => {
 };
 
 const askFileUrl = async () => {
-	console.log('\nEnter a File URL');
+	console.log('\nEnter a File URL which is converted to Base64');
 	const answer = await inquirer.prompt({
 		name: 'file_url',
 		type: 'input',
@@ -83,5 +86,31 @@ const askFileUrl = async () => {
 	});
 	return answer.file_url;
 };
+
+async function pdfUrlToBase64(pdfUrl) {
+	try {
+		// Fetch the PDF file from the URL
+		const response = await fetch(pdfUrl);
+		
+		// Check if the request was successful (status code 200)
+		if (!response.ok) {
+		throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+		}
+		
+		// Get the PDF content as an array buffer
+		const pdfArrayBuffer = await response.arrayBuffer();
+		
+		// Convert the array buffer to a base64 string
+		const base64String = btoa(
+		new Uint8Array(pdfArrayBuffer)
+			.reduce((data, byte) => data + String.fromCharCode(byte), '')
+		);
+		
+		return base64String;
+	} catch (error) {
+		console.log('Error:', error.message);
+		return null;
+	}
+}
 
 createBundleFromUrl();
