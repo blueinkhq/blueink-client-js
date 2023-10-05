@@ -1,16 +1,16 @@
 # blueink-client-js
 
-Javascript Client for the BlueInk API
+Javascript Client for the Blueink API
 ## Overview
 
-This README provides a narrative overview of using the BlueInk Javascript client, and
+This README provides a narrative overview of using the Blueink Javascript client, and
 includes examples for many common use cases.
 
 Additional resources that might be useful include:
 
 * Examples at [blueink-client-js-examples](https://github.com/blueinkhq/blueink-client-js/tree/main/src/example)
 repo on GitHub.
-* The detailed [BlueInk API Documentation](https://blueink.com/r/api-docs/), for
+* The detailed [Blueink API Documentation](https://blueink.com/r/api-docs/), for
   details on the data returned by each API call.
 
 For detailed documentation for each method call, please consult the source code,
@@ -19,7 +19,7 @@ includes Javascript type annotations, which most IDEs understand.
 
 ## Installation
 
-Use `npm` to install the BlueInk Javascript Library
+Use `npm` to install the Blueink Javascript Library
 
 ```
 npm install blueink-client-js
@@ -30,29 +30,29 @@ npm install blueink-client-js
 **Recommended:** You can import the client in ES module style if your environment supports it:
 
 ```js
-import { BlueInkClient } from "blueink-client-js";
+import { Client } from "blueink-client-js";
 ```
 
 Or you can import the client in CommonJS style:
 
 ```js
-const { BlueInkClient } = require("blueink-client-js");
+const { Client } = require("blueink-client-js");
 ```
 
 ## How do I initialize the client?
 
 ```js
-import { BlueInkClient } from "blueink-client-js";
+import { Client } from "blueink-client-js";
 
-const client = new BlueInkClient("Your-BlueInk-Private-Api-Key");
+const client = new Client("Your-Blueink-Private-Api-Key");
 ```
 
-If your **BlueInk Private API Key** is not provided, the library will look for `BLUEINK_PRIVATE_API_KEY` in the `.env`.
+If your **Blueink Private API Key** is not provided, the library will look for `BLUEINK_PRIVATE_API_KEY` in the `.env`.
 
-You can also pass the URL to BlueInk API Call explicitly to the client:
+You can also pass the URL to Blueink API Call explicitly to the client:
 
 ```js
-const client = new BlueInkClient("Your-BlueInk-Private-Api-Key", "BlueInk-URL");
+const client = new Client("Your-Blueink-Private-Api-Key", "Blueink-URL");
 ```
 
 Otherwise, it will check for the URL in `.env` file or use the default one.
@@ -60,19 +60,19 @@ Otherwise, it will check for the URL in `.env` file or use the default one.
 ## Usage
 
 ```js
-import { BlueInkClient } from "blueink-client-js";
+import { Client } from "blueink-client-js";
 
 /*
 Create an instance of the API Client
 and initialize it with the credentials
 */
-const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 //Create wrapper async function
 const listAllBundles = async () => {
 	// The try/catch statement needs to be called from within an asynchronous function
 	try {
-		// Call bundles.list methods to get all bundles in the BlueInk account
+		// Call bundles.list methods to get all bundles in the Blueink account
 		const bundleList = await client.bundles.list();
 
 		console.log("Here is your all bundles: ", bundleList);
@@ -105,7 +105,7 @@ const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const pagedListAllBundles = async () => {
 	try {
-		// Call bundles.list methods to get all bundles in the BlueInk account
+		// Call bundles.list methods to get all bundles in the Blueink account
 		// Passing the related_data will fetch bundle's events, data, files at once
 		const pagedList = await client.bundles.pagedList({
 			page: 5,
@@ -148,13 +148,13 @@ pagedListAllBundles();
 ```
 
 Creating a new Bundle can be tedious and complex. Therefore, we provide `BundleHelper` which helps you to create a new bundle with less error prone.
-To create a new bundle, we can either use `addDocumentByPath`, `addDocumentByPath`, `addDocumentByFile`.
+To create a new bundle, we can either use `addDocumentByPath`, `addDocumentByUrl`, `addDocumentByFile`.
 
 
 ```js
-import { BlueInkClient, BundleHelper } from "blueink-client-js";
+import { Client, BundleHelper } from "blueink-client-js";
 
-const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const createNewBundle = async () => {
 	try {
@@ -305,7 +305,7 @@ const createBundleFromUrl = async () => {
 		});
 
 		// # Add a document to the Bundle by providing a publicly accessible URL where
-		// # the BlueInk platform can download the document to include in the Bundle
+		// # the Blueink platform can download the document to include in the Bundle
 		const fileUrl = "https://www.irs.gov/pub/irs-pdf/fw9.pdf"
 		const docKey1 = bundleHelper.addDocumentByUrl(fileUrl, {
 			key: 'DOC-1',
