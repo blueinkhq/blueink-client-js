@@ -343,15 +343,15 @@ Using the BundleHelper, you can add files to a Bundle in multiple ways:
 const bh = new BundleHelper(...)
 
 // 1) Add a document using a URL to a web resource:
-docKey01 = bh.addDocumentByUrl("https://www.example.com/example.pdf")
+const docKey01 = bh.addDocumentByUrl("https://www.example.com/example.pdf")
 
 // 2) Add a document using a path to the file in the local filesystem
-docKey02 = bh.addDocumentByPath("/path/to/file/example.pdf")
+const docKey02 = bh.addDocumentByPath("/path/to/file/example.pdf")
 
 // 3) Add a document using a UTF-8 encoded Base64 string:
 const filename = 'test-sample'
 const pdfB64 = 'JVBERi0xLjMKMyAwI...'
-docKey03 = bh.addDocumentByB64(filename, pdfB64)
+const docKey03 = bh.addDocumentByB64(filename, pdfB64)
 ```
 #### Retrieval
 
@@ -359,13 +359,13 @@ Getting a single bundle is fairly easy. They can be accessed with a single call.
 the additional data (events, files, data), set the related_data flag to true.
 
 ```js
-response = client.bundles.retrieve(bundleId, {related_data: true})
-bundle = response.data
+const response = client.bundles.retrieve(bundleId, {related_data: true})
+const bundle = response.data
 
 // # additional data fields (only exist if related_data is true)
-events = bundle.events
-files = bundle.files
-data = bundle.data
+const events = bundle.events
+const files = bundle.files
+const data = bundle.data
 ```
 #### Listing
 
