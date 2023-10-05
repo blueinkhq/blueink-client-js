@@ -78,7 +78,7 @@ const askFilePath = async () => {
 		name: 'file_path',
 		type: 'input',
 		default() {
-			return 'fw9.pdf';
+			return './src/example/fw9.pdf';
 		},
 	});
 	return answer.file_path;
