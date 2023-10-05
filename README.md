@@ -1,6 +1,6 @@
 # blueink-client-js
 
-Javascript Client for the BlueInk eSignature API
+Javascript Client for the Blueink API
 ## Overview
 
 This README provides a narrative overview of using the Blueink Javascript client, and
@@ -30,29 +30,29 @@ npm install blueink-client-js
 **Recommended:** You can import the client in ES module style if your environment supports it:
 
 ```js
-import { BlueInkClient } from "blueink-client-js";
+import { Client } from "blueink-client-js";
 ```
 
 Or you can import the client in CommonJS style:
 
 ```js
-const { BlueInkClient } = require("blueink-client-js");
+const { Client } = require("blueink-client-js");
 ```
 
 ## How do I initialize the client?
 
 ```js
-import { BlueInkClient } from "blueink-client-js";
+import { Client } from "blueink-client-js";
 
-const client = new BlueInkClient("Your-BlueInk-Private-Api-Key");
+const client = new Client("Your-Blueink-Private-Api-Key");
 ```
 
-If your **BlueInk Private API Key** is not provided, the library will look for `BLUEINK_PRIVATE_API_KEY` in the `.env`.
+If your **Blueink Private API Key** is not provided, the library will look for `BLUEINK_PRIVATE_API_KEY` in the `.env`.
 
-You can also pass the URL to BlueInk API Call explicitly to the client:
+You can also pass the URL to Blueink API Call explicitly to the client:
 
 ```js
-const client = new BlueInkClient("Your-BlueInk-Private-Api-Key", "BlueInk-URL");
+const client = new Client("Your-Blueink-Private-Api-Key", "Blueink-URL");
 ```
 
 Otherwise, it will check for the URL in `.env` file or use the default one.
@@ -60,19 +60,19 @@ Otherwise, it will check for the URL in `.env` file or use the default one.
 ## Usage
 
 ```js
-import { BlueInkClient } from "blueink-client-js";
+import { Client } from "blueink-client-js";
 
 /*
 Create an instance of the API Client
 and initialize it with the credentials
 */
-const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 //Create wrapper async function
 const listAllBundles = async () => {
 	// The try/catch statement needs to be called from within an asynchronous function
 	try {
-		// Call bundles.list methods to get all bundles in the BlueInk account
+		// Call bundles.list methods to get all bundles in the Blueink account
 		const bundleList = await client.bundles.list();
 
 		console.log("Here is your all bundles: ", bundleList);
@@ -105,7 +105,7 @@ const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const pagedListAllBundles = async () => {
 	try {
-		// Call bundles.list methods to get all bundles in the BlueInk account
+		// Call bundles.list methods to get all bundles in the Blueink account
 		// Passing the related_data will fetch bundle's events, data, files at once
 		const pagedList = await client.bundles.pagedList({
 			page: 5,
@@ -148,13 +148,13 @@ pagedListAllBundles();
 ```
 
 Creating a new Bundle can be tedious and complex. Therefore, we provide `BundleHelper` which helps you to create a new bundle with less error prone.
-To create a new bundle, we can either use `addDocumentByPath`, `addDocumentByPath`, `addDocumentByFile`.
+To create a new bundle, we can either use `addDocumentByPath`, `addDocumentByUrl`, `addDocumentByFile`.
 
 
 ```js
-import { BlueInkClient, BundleHelper } from "blueink-client-js";
+import { Client, BundleHelper } from "blueink-client-js";
 
-const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
+const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const createNewBundle = async () => {
 	try {
@@ -306,8 +306,8 @@ const createBundleFromUrl = async () => {
 
 		// # Add a document to the Bundle by providing a publicly accessible URL where
 		// # the Blueink platform can download the document to include in the Bundle
-		const file_url = "https://www.irs.gov/pub/irs-pdf/fw9.pdf"
-		const docKey1 = bundleHelper.addDocumentByUrl(file_url, {
+		const fileUrl = "https://www.irs.gov/pub/irs-pdf/fw9.pdf"
+		const docKey1 = bundleHelper.addDocumentByUrl(fileUrl, {
 			key: 'DOC-1',
 		});
 
@@ -342,15 +342,16 @@ Using the BundleHelper, you can add files to a Bundle in multiple ways:
 ```js
 const bh = new BundleHelper(...)
 
-// 0) Add a document using a URL to a web resource:
-doc0_key = bh.addDocumentByUrl("https://www.example.com/example.pdf")
+// 1) Add a document using a URL to a web resource:
+const docKey01 = bh.addDocumentByUrl("https://www.example.com/example.pdf")
 
-// 1) Add a document using a path to the file in the local filesystem
-doc1_key = bh.addDocumentByPath("/path/to/file/example.pdf")
+// 2) Add a document using a path to the file in the local filesystem
+const docKey02 = bh.addDocumentByPath("/path/to/file/example.pdf")
 
-// 2) Add a document using a UTF-8 encoded Base64 string:
-filename, pdf_b64 = read_a_file_into_b64_string()
-doc02_key = bh.addDocumentByB64(filename, pdf_b64)
+// 3) Add a document using a UTF-8 encoded Base64 string:
+const filename = 'test-sample'
+const pdfB64 = 'JVBERi0xLjMKMyAwI...'
+const docKey03 = bh.addDocumentByB64(filename, pdfB64)
 ```
 #### Retrieval
 
@@ -358,14 +359,13 @@ Getting a single bundle is fairly easy. They can be accessed with a single call.
 the additional data (events, files, data), set the related_data flag to true.
 
 ```js
-response = client.bundles.retrieve(bundleId, {related_data: true})
-bundle = response.data
-bundle_id = bundle.id
+const response = client.bundles.retrieve(bundleId, {related_data: true})
+const bundle = response.data
 
 // # additional data fields (only exist if related_data is true)
-events = bundle.events
-files = bundle.files
-data = bundle.data
+const events = bundle.events
+const files = bundle.files
+const data = bundle.data
 ```
 #### Listing
 
@@ -416,15 +416,15 @@ function createPerson() {
 	ph.addEmail("stewie.griffin@gmail.com");
 
 	// Get all of the emails for the person
-	let all_current_emails = ph.getEmails();
-	console.log("All Current Emails:", all_current_emails)
+	let allCurrentEmails = ph.getEmails();
+	console.log("All Current Emails:", allCurrentEmails)
 
 	// Remove an email from the list
-	all_current_emails.splice(all_current_emails.indexOf("test@email.com"), 1);
+	allCurrentEmails.splice(allCurrentEmails.indexOf("test@email.com"), 1);
 
 	// Overwrite the existing email list with this new list
 	// Effectively removing test@email.com list
-	ph.setEmails(all_current_emails);
+	ph.setEmails(allCurrentEmails);
 
 	// Add phone number contact for the person
 	ph.addPhone("5055551212");
@@ -432,37 +432,37 @@ function createPerson() {
 	ph.addPhone("5055551214");
 
 	// Get all of the phone numbers for the person
-	let all_current_phones = ph.getPhones();
-	console.log("All Current Phones:", all_current_phones)
+	let allCurrentPhones = ph.getPhones();
+	console.log("All Current Phones:", allCurrentPhones)
 	// Remove a phone number from the list
-	all_current_phones.pop();
+	allCurrentPhones.pop();
 
 	// Overwrite the existing phone list with this new list
 	// Effectively removing last phone number
-	ph.setPhones(all_current_phones);
+	ph.setPhones(allCurrentPhones);
 
-	create_resp = await client.persons.createFromPersonHelper(ph);
-	person = create_resp.data;
+	createResp = await client.persons.createFromPersonHelper(ph);
+	person = createResp.data;
 	console.log(`Created person ${person.id}`);
 }
 // UPDATE PERSON
 function updatePerson(personId) {
-	const update_resp = await client.persons.update(
+	const updateResp = await client.persons.update(
 		personId,
 		personSampleUpdate
 	);
-	person = update_resp.data;
+	person = updateResp.data;
 	console.log(`Updated person ${JSON.stringify(person)}`);
 }
 // RETRIEVE PERSON
 function retrievePerson(personId) {
-	const retrieve_resp = await client.persons.retrieve(personId);
-	person = retrieve_resp.data;
+	const retrieveResp = await client.persons.retrieve(personId);
+	person = retrieveResp.data;
 	console.log(`Retrieved person ${JSON.stringify(person)}`);
 }
 // DELETE PERSON
 function deletePerson(personId) {
-	const delete_resp = await client.persons.delete(personId);
+	const deleteResp = await client.persons.delete(personId);
 	console.log(`Deleted person ${personId}`);
 }
 ```
@@ -490,16 +490,16 @@ Templates can be listed (non-paged), listed (paged) or retrieved singly:
 
 ```js
 // Non paged
-const templates_list_response = await client.templates.list();
+const templatesListResponse = await client.templates.list();
 
 // Paged
 for await (const page of client.templates.pagedList()) {
-  const templates_in_page = page.data;
-  // Do something with templates_in_page
+  const templatesInPage = page.data;
+  // Do something with templatesInPage
 }
 
 // Single
-const template_response = await client.templates.retrieve(templateId);
+const templateResponse = await client.templates.retrieve(templateId);
 ```
 ### Webhooks
 
@@ -531,45 +531,45 @@ const webHookSampleExtraHeader = {
 };
 
 function createWebhook() {
-	create_resp = await client.webhooks.create(webHookSample);
-	webhook = create_resp.data;
+	createResp = await client.webhooks.create(webHookSample);
+	webhook = createResp.data;
 	console.log(`Created webhook ${webhook.id}`);
 }
 
-function updateWebhook(webhook_id) {
-	const update_resp = await client.webhooks.update(
-		webhook_id,
+function updateWebhook(webhookId) {
+	const updateResp = await client.webhooks.update(
+		webhookId,
 		webHookSampleUpdate
 	);
-	webhook = update_resp.data;
+	webhook = updateResp.data;
 	console.log(`Updated webhook ${webhook.id}`);
 }
 
-function createExtraHeader(webhook_id) {
-	const extra_header_data = { ...webHookSampleExtraHeader };
-	extra_header_data["webhook"] = webhook_id;
-	const header_create_resp = await client.webhooks.createHeader(
-		extra_header_data
+function createExtraHeader(webhookId) {
+	const extraHeaderData = { ...webHookSampleExtraHeader };
+	extraHeaderData["webhook"] = webhookId;
+	const createHeaderResp = await client.webhooks.createHeader(
+		extraHeaderData
 	);
-	header = header_create_resp.data;
+	header = createHeaderResp.data;
 	console.log(
 		`Added ExtraHeader ${JSON.stringify(header)} to ${header.webhook}`
 	);
 }
 
 function listWebhooks() {
-	const list_resp = await client.webhooks.list();
-	webhook_list = list_resp.data;
-	console.log(`Found ${webhook_list.length} Webhooks`);
-	for (wh of webhook_list) {
+	const listResp = await client.webhooks.list();
+	webhookList = listResp.data;
+	console.log(`Found ${webhookList.length} Webhooks`);
+	for (wh of webhookList) {
 		console.log(` - Webhook ID: ${wh.id} to ${wh.url}`);
 	}
 }
 
-function deleteWebhook(webhook_id) {
-	const webhook_id = await askWebhookId();
-	const delete_resp = await client.webhooks.delete(webhook_id);
-	console.log(`Deleted Webhook ${webhook_id}`);
+function deleteWebhook(webhookId) {
+	const webhookId = await askWebhookId();
+	const deleteResp = await client.webhooks.delete(webhookId);
+	console.log(`Deleted Webhook ${webhookId}`);
 }
 ```
 
