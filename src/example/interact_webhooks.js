@@ -34,53 +34,31 @@ const interactWebhook = async () => {
 
     switch (action) {
       case "Create Webhook": {
-<<<<<<< HEAD
-        create_resp = await client.webhooks.create(webHookSample);
-        webhook = create_resp.data;
-=======
         createResp = await client.webhooks.create(webHookSample);
         webhook = createResp.data;
->>>>>>> develop
         console.log(`Created webhook ${webhook.id}`);
         break;
       }
 
       case "Update Webhook": {
         const webhook_id = await askWebhookId();
-<<<<<<< HEAD
-        const update_resp = await client.webhooks.update(
-          webhook_id,
-          webHookSampleUpdate
-        );
-        webhook = update_resp.data;
-=======
         const updateResp = await client.webhooks.update(
           webhook_id,
           webHookSampleUpdate
         );
         webhook = updateResp.data;
->>>>>>> develop
         console.log(`Updated webhook ${webhook.id}`);
         break;
       }
 
       case "Create and add an ExtraHeader to the above Webhook": {
         const webhook_id = await askWebhookId();
-<<<<<<< HEAD
-        const extra_header_data = { ...webHookSampleExtraHeader };
-        extra_header_data["webhook"] = webhook_id;
-        const header_create_resp = await client.webhooks.createHeader(
-          extra_header_data
-        );
-        header = header_create_resp.data;
-=======
         const extraHeaderData = { ...webHookSampleExtraHeader };
         extraHeaderData["webhook"] = webhook_id;
         const createHeaderResp = await client.webhooks.createHeader(
           extraHeaderData
         );
         header = createHeaderResp.data;
->>>>>>> develop
         console.log(
           `Added ExtraHeader ${JSON.stringify(header)} to ${header.webhook}`
         );
@@ -88,17 +66,10 @@ const interactWebhook = async () => {
       }
 
       case "List Webhooks": {
-<<<<<<< HEAD
-        const list_resp = await client.webhooks.list();
-        webhook_list = list_resp.data;
-        console.log(`Found ${webhook_list.length} Webhooks`);
-        for (wh of webhook_list) {
-=======
         const listResp = await client.webhooks.list();
         webhookList = listResp.data;
         console.log(`Found ${webhookList.length} Webhooks`);
         for (wh of webhookList) {
->>>>>>> develop
           console.log(` - Webhook ID: ${wh.id} to ${wh.url}`);
         }
         break;
@@ -106,11 +77,7 @@ const interactWebhook = async () => {
 
       case "Delete Webhook": {
         const webhook_id = await askWebhookId();
-<<<<<<< HEAD
-        const delete_resp = await client.webhooks.delete(webhook_id);
-=======
         const deleteResp = await client.webhooks.delete(webhook_id);
->>>>>>> develop
         console.log(`Deleted Webhook ${webhook_id}`);
         break;
       }

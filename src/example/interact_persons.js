@@ -36,17 +36,6 @@ const interactPersons = async () => {
         ph.addEmail("stewie.griffin@gmail.com");
 
         // Get all of the emails for the person
-<<<<<<< HEAD
-        let all_current_emails = ph.getEmails();
-        console.log("All Current Emails:", all_current_emails)
-
-        // Remove an email from the list
-        all_current_emails.splice(all_current_emails.indexOf("test@email.com"), 1);
-
-        // Overwrite the existing email list with this new list
-        // Effectively removing test@email.com list
-        ph.setEmails(all_current_emails);
-=======
         let allCurrentEmails = ph.getEmails();
         console.log("All Current Emails:", allCurrentEmails)
 
@@ -56,7 +45,6 @@ const interactPersons = async () => {
         // Overwrite the existing email list with this new list
         // Effectively removing test@email.com list
         ph.setEmails(allCurrentEmails);
->>>>>>> develop
 
         // Add phone number contact for the person
         ph.addPhone("5055551212");
@@ -64,19 +52,6 @@ const interactPersons = async () => {
         ph.addPhone("5055551214");
 
         // Get all of the phone numbers for the person
-<<<<<<< HEAD
-        let all_current_phones = ph.getPhones();
-        console.log("All Current Phones:", all_current_phones)
-        // Remove a phone number from the list
-        all_current_phones.pop();
-
-        // Overwrite the existing phone list with this new list
-        // Effectively removing last phone number
-        ph.setPhones(all_current_phones);
-
-        create_resp = await client.persons.createFromPersonHelper(ph);
-        person = create_resp.data;
-=======
         let allCurrentPhones = ph.getPhones();
         console.log("All Current Phones:", allCurrentPhones)
         // Remove a phone number from the list
@@ -88,50 +63,32 @@ const interactPersons = async () => {
 
         createResp = await client.persons.createFromPersonHelper(ph);
         person = createResp.data;
->>>>>>> develop
         console.log(`Created person ${person.id}`);
         break;
       }
 
       case "Update Person": {
         const person_id = await askPersonId();
-<<<<<<< HEAD
-        const update_resp = await client.persons.update(
-          person_id,
-          personSampleUpdate
-        );
-        person = update_resp.data;
-=======
         const updateResp = await client.persons.update(
           person_id,
           personSampleUpdate
         );
         person = updateResp.data;
->>>>>>> develop
         console.log(`Updated person ${JSON.stringify(person)}`);
         break;
       }
 
       case "Retrieve Person": {
         const person_id = await askPersonId();
-<<<<<<< HEAD
-        const retrieve_resp = await client.persons.retrieve(person_id);
-        person = retrieve_resp.data;
-=======
         const retrieveResp = await client.persons.retrieve(person_id);
         person = retrieveResp.data;
->>>>>>> develop
         console.log(`Retrieved person ${JSON.stringify(person)}`);
         break;
       }
 
       case "Delete Person": {
         const person_id = await askPersonId();
-<<<<<<< HEAD
-        const delete_resp = await client.persons.delete(person_id);
-=======
         const deleteResp = await client.persons.delete(person_id);
->>>>>>> develop
         console.log(`Deleted person ${person_id}`);
         break;
       }
