@@ -50,13 +50,16 @@ const client = new Client("Your-Blueink-Private-Api-Key");
 If your **Blueink Private API Key** is not provided, the library will look for `BLUEINK_PRIVATE_API_KEY` 
 in the environment or in a file named `.env` in the local directory.
 
-You can also pass the URL to Blueink API Call explicitly to the client:
+You can also pass a custom Bluink API URL when intializing the client:
 
 ```js
 const client = new Client("Your-Blueink-Private-Api-Key", "Blueink-URL");
 ```
 
-Otherwise, it will check for the URL in `.env` file or use the default one.
+You can also specify the Blueink API URL via the environment or a `.env` file as a variable named `BLUEINK_API_URL`.
+
+**Note**: setting a custom Blueink API URL is not required for most use cases, as the default URL is configured for Blueink's production environment.
+
 
 ## Usage
 
