@@ -47,7 +47,8 @@ import { Client } from "blueink-client-js";
 const client = new Client("Your-Blueink-Private-Api-Key");
 ```
 
-If your **Blueink Private API Key** is not provided, the library will look for `BLUEINK_PRIVATE_API_KEY` in the `.env`.
+If your **Blueink Private API Key** is not provided, the library will look for `BLUEINK_PRIVATE_API_KEY` 
+in the environment or in a file named `.env` in the local directory.
 
 You can also pass the URL to Blueink API Call explicitly to the client:
 
