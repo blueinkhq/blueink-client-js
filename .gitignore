@@ -102,3 +102,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+api.json
+
+# Jetbrains IDE
+.idea/
