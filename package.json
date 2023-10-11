@@ -1,7 +1,7 @@
 {
 	"name": "@blueink360/blueink-client-js",
 	"description": "A Javascript client library for the Blueink eSignature REST API",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"main": "index.js",
 	"scripts": {
 		"test": "jest",
