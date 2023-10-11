@@ -8,7 +8,7 @@ includes examples for many common use cases.
 
 Additional resources that might be useful include:
 
-* Examples at [blueink-client-js-examples](https://github.com/blueinkhq/blueink-client-js/tree/main/src/example)
+* Examples at [blueink-client-js-examples](https://github.com/blueinkhq/blueink-api-examples-js)
 repo on GitHub.
 * The detailed [Blueink API Documentation](https://blueink.com/r/api-docs/), for
   details on the data returned by each API call.
