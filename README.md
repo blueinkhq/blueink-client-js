@@ -22,7 +22,7 @@ includes Javascript type annotations, which most IDEs understand.
 Use `npm` to install the Blueink Javascript Library
 
 ```
-npm install blueink-client-js
+npm install @blueink360/blueink-client-js
 ```
 
 ## How do I import the client and other helpers from the Library?
@@ -30,19 +30,19 @@ npm install blueink-client-js
 **Recommended:** You can import the client in ES module style if your environment supports it:
 
 ```js
-import { Client } from "blueink-client-js";
+import { Client } from "@blueink360/blueink-client-js";
 ```
 
 Or you can import the client in CommonJS style:
 
 ```js
-const { Client } = require("blueink-client-js");
+const { Client } = require("@blueink360/blueink-client-js");
 ```
 
 ## How do I initialize the client?
 
 ```js
-import { Client } from "blueink-client-js";
+import { Client } from "@blueink360/blueink-client-js";
 
 const client = new Client("Your-Blueink-Private-Api-Key");
 ```
@@ -64,7 +64,7 @@ You can also specify the Blueink API URL via the environment or a `.env` file as
 ## Usage
 
 ```js
-import { Client } from "blueink-client-js";
+import { Client } from "@blueink360/blueink-client-js";
 
 /*
 Create an instance of the API Client
@@ -103,7 +103,7 @@ listAllBundles();
 We provide the paged list where it has a generator function so you can fetch the next or previous page just using `nextPage` or `previousPage` methods
 
 ```js
-import { BlueInkClient } from "blueink-client-js";
+import { BlueInkClient } from "@blueink360/blueink-client-js";
 
 const client = new BlueInkClient(process.env.BLUEINK_PRIVATE_API_KEY);
 
@@ -156,7 +156,7 @@ To create a new bundle, we can either use `addDocumentByPath`, `addDocumentByUrl
 
 
 ```js
-import { Client, BundleHelper } from "blueink-client-js";
+import { Client, BundleHelper } from "@blueink360/blueink-client-js";
 
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
