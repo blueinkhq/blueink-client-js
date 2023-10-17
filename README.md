@@ -512,6 +512,7 @@ Webhooks can be interacted with via several methods. Webhooks also have related 
 methods to interact with.
 ```js
 const client = new Client(BLUEINK_API_KEY)
+let webhook;
 const webHookSample = {
   url: "https://www.example.com/01/",
   enable: true,
@@ -535,7 +536,7 @@ const webHookSampleExtraHeader = {
 };
 
 function createWebhook() {
-	createResp = await client.webhooks.create(webHookSample);
+	const createResp = await client.webhooks.create(webHookSample);
 	webhook = createResp.data;
 	console.log(`Created webhook ${webhook.id}`);
 }
@@ -550,7 +551,7 @@ function updateWebhook(webhookId) {
 }
 
 function createExtraHeader(webhookId) {
-	const extraHeaderData = { ...webHookSampleExtraHeader };
+	let extraHeaderData = { ...webHookSampleExtraHeader };
 	extraHeaderData["webhook"] = webhookId;
 	const createHeaderResp = await client.webhooks.createHeader(
 		extraHeaderData
