@@ -1,8 +1,10 @@
 require('dotenv/config');
-const inquirer = require('inquirer');
 const chalk = require('chalk');
+const inquirer = require('inquirer');
 const fetch = require('node-fetch');
+
 const { Client, BundleHelper } = require('../../index');
+
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
 const createBundleFromUrl = async () => {
@@ -10,17 +12,17 @@ const createBundleFromUrl = async () => {
 		const requester_email = await askRequesterEmail();
 		const bundleHelper = new BundleHelper({
 			label: 'New Bundle Created Using File Base64',
-			requester_email: requester_email,
-			requester_name: 'Mr. Example',
 			email_subject: 'Yay First Bundle',
 			email_message: 'This is your first bundle.',
+			requester_name: 'Mr. Example',
+			requester_email,
 		});
 		console.log('Test Bundle Data is added using BundleHelper Class. \n');
 
 		const file_url = await askFileUrl();
-		const file_b64 = await pdfUrlToBase64(file_url)
-		const file_name = "test_bundle_b64"
-		
+		const file_b64 = await pdfUrlToBase64(file_url);
+		const file_name = 'test_bundle_b64';
+
 		const docKey1 = bundleHelper.addDocumentByB64(file_name, file_b64, {
 			key: 'DOC-1',
 		});
@@ -87,25 +89,24 @@ const askFileUrl = async () => {
 	return answer.file_url;
 };
 
-async function pdfUrlToBase64(pdfUrl) {
+const pdfUrlToBase64 = async (pdfUrl) => {
 	try {
 		// Fetch the PDF file from the URL
 		const response = await fetch(pdfUrl);
-		
+
 		// Check if the request was successful (status code 200)
 		if (!response.ok) {
-		throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+			throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
 		}
-		
+
 		// Get the PDF content as an array buffer
 		const pdfArrayBuffer = await response.arrayBuffer();
-		
+
 		// Convert the array buffer to a base64 string
 		const base64String = btoa(
-		new Uint8Array(pdfArrayBuffer)
-			.reduce((data, byte) => data + String.fromCharCode(byte), '')
+			new Uint8Array(pdfArrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
 		);
-		
+
 		return base64String;
 	} catch (error) {
 		console.log('Error:', error.message);
