@@ -1,6 +1,6 @@
 const BundleHelper = require('../blueink/helper/bundleHelper');
 
-const DOCUMENT_PATH = "fw9.pdf"
+const DOCUMENT_PATH = "src/example/fw9.pdf"
 const DOCUMENT_URL = "https://www.irs.gov/pub/irs-pdf/fw4.pdf"
 const DOCUMENT_BASE64 = "JVBERi0xLjMKMyAwI"
 

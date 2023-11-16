@@ -6,7 +6,6 @@ const get = require('lodash.get');
 const has = require('lodash.has');
 const { Readable } = require('stream');
 
-const { sampleBundle } = require('../../seed/sample.js');
 const { generateKey } = require('../../util/utility.js');
 const { FIELD_KIND } = require('../constants.js');
 
@@ -21,7 +20,11 @@ class BundleHelper {
 	 * @param {string} newBundleData.email_message
 	 * @param {boolean} newBundleData.in_order
 	 * @param {string[]} newBundleData.cc_emails
-	 * 
+	 * @param {number} newBundleData.reminder_offset
+	 * @param {number} newBundleData.reminder_interval
+	 * @param {number} newBundleData.reminder_expires
+	 * @param {boolean} newBundleData.cc_sender
+	 * @param {string} newBundleData.status
 	 */
 	constructor(newBundleData) {
 		// Initialize bundle
