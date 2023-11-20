@@ -1,7 +1,8 @@
 require('dotenv/config');
-const { Client, BundleHelper } = require('../../index');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+
+const { Client, BundleHelper } = require('../../index');
 
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY);
 
@@ -10,10 +11,10 @@ const createBundleFromPath = async () => {
 		const requester_email = await askRequesterEmail();
 		const bundleHelper = new BundleHelper({
 			label: 'New Bundle Created Using File Path',
-			requester_email: requester_email,
-			requester_name: 'Mr. Example',
 			email_subject: 'Yay First Bundle',
 			email_message: 'This is your first bundle.',
+			requester_name: 'Mr. Example',
+			requester_email,
 		});
 		console.log('Test Bundle Data is added using BundleHelper Class. \n');
 
