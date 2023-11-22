@@ -1,6 +1,7 @@
 require('dotenv/config')
-const inquirer = require('inquirer')
 const chalk = require('chalk')
+const inquirer = require('inquirer')
+
 const { Client, PersonHelper } = require('../../index')
 
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY)

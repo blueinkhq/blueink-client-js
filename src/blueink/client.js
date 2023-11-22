@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 const { DEFAULT_BASE_URL } = require('./constants.js')
-const RequestHelper = require('./helper/RequestHelper.js')
+const RequestHelper = require('./helper/requestHelper.js')
 const { BundleSubClient } = require('./subclients/bundle.js')
 const { PacketSubClient } = require('./subclients/packet.js')
 const { PersonSubClient } = require('./subclients/person.js')

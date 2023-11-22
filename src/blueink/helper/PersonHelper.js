@@ -98,7 +98,7 @@ class PersonHelper {
    * @param {Object} additionalData - Additional data to include in the dictionary.
    * @returns {Object} - The person's data as a dictionary.
    */
-  asDict (additionalData = {}) {
+  asData (additionalData = {}) {
     const channels = []
 
     for (const email of this._emails) {
@@ -113,12 +113,8 @@ class PersonHelper {
       metadata: this._metadata,
       channels
     }
-    let outDict = { ...personOut }
 
-    // Merge in the additional data
-    outDict = { ...outDict, ...additionalData }
-
-    return outDict
+    return { ...personOut, ...additionalData }
   }
 }
 

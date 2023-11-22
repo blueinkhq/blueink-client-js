@@ -17,7 +17,7 @@ const PersonSubClient = (request) => {
          * @returns New Person data
          */
     createFromPersonHelper: function (personHelper) {
-      return this.create(personHelper.asDict())
+      return this.create(personHelper.asData())
     },
 
     /**

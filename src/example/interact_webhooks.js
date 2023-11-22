@@ -1,6 +1,7 @@
 require('dotenv/config')
-const inquirer = require('inquirer')
 const chalk = require('chalk')
+const inquirer = require('inquirer')
+
 const { Client } = require('../../index')
 const { EVENT_TYPE } = require('../blueink/constants.js')
 

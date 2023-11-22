@@ -1,6 +1,6 @@
 require('dotenv/config')
-const inquirer = require('inquirer')
 const chalk = require('chalk')
+const inquirer = require('inquirer')
 
 const { Client, BundleHelper } = require('../../index')
 

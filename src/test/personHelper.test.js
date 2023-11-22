@@ -1,4 +1,4 @@
-const PersonHelper = require('../blueink/helper/PersonHelper')
+import PersonHelper from '../blueink/helper/personHelper'
 
 describe('PersonHelper', () => {
   let personHelper
@@ -89,9 +89,9 @@ describe('PersonHelper', () => {
     })
   })
 
-  describe('asDict', () => {
+  describe('asData', () => {
     it("should return the person's data as a dictionary", () => {
-      const dict = personHelper.asDict({ additionalData: 'foo' })
+      const dict = personHelper.asData({ additionalData: 'foo' })
       expect(dict).toEqual({
         name: 'John Doe',
         metadata: {

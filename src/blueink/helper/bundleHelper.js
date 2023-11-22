@@ -1,9 +1,9 @@
 const { FormDataEncoder } = require('form-data-encoder')
 const { FormData, File } = require('formdata-node')
 const { fileFromPathSync } = require('formdata-node/file-from-path')
-const isEmpty = require('lodash.isempty')
 const get = require('lodash.get')
 const has = require('lodash.has')
+const isEmpty = require('lodash.isempty')
 const { Readable } = require('stream')
 
 const { generateKey } = require('../../util/utility.js')
