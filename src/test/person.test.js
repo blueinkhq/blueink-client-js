@@ -13,11 +13,12 @@ describe('Persons', () => {
   })
 
   it('Retrieve a Person', async () => {
-    const personId = '1ca04018-2996-454b-a938-412bcd5168da'
+    const { data: personList } = await client.persons.list()
+    const personId = personList[0].id
 
     const { status, data } = await client.persons.retrieve(personId)
     expect(status).toBe(200)
-    expect(data.name).toBe('Test Account')
+    expect(data.name).toBe(personList[0].name)
   })
 
   it('Create a Person', async () => {

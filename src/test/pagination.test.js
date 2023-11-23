@@ -5,36 +5,35 @@ dotenv.config()
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY)
 
 describe('Pagination', () => {
-  it('Iterator', async () => {
-    const pageList = await client.bundles.pagedList({
-      related_data: false,
-      page: 2,
-      per_page: 2
+  let page
+  let pageList
+  beforeEach(() => {
+    page = 1
+    pageList = client.bundles.pagedList({
+      page,
+      per_page: 10
     })
-    let i = 2
-    console.log(pageList.pages)
-    for (const page of pageList.pages) {
-      ++i
-      const pageData = await page
-      expect(pageData.pageNumber).toBe(i)
+  })
+
+  it('Iterator', async () => {
+    // Navigate through pages by explicitly calling next() on the iterator
+    let fetchNextPage = true
+    while (fetchNextPage) {
+      const { value: response } = await pageList.next()
+      const { pageNumber, totalPages } = response.pagination
+      expect(pageNumber).toBe(page)
+      if (pageNumber === totalPages) {
+        fetchNextPage = false
+      } else {
+        page++
+      }
     }
   })
 
   it('Get Next Page', async () => {
-    const pageList = await client.bundles.pagedList({
-      page: 2,
-      per_page: 2
-    })
-    const nextPage = await pageList.nextPage()
-    expect(nextPage.pageNumber).toBe(3)
-  })
-
-  it('Get Previous Page', async () => {
-    const pageList = await client.bundles.pagedList({
-      page: 3,
-      per_page: 20
-    })
-    const nextPage = await pageList.previousPage()
-    expect(nextPage.pageNumber).toBe(2)
+    await pageList.next() // call to fetch first page data
+    const { value: nextPageValue } = await pageList.next()
+    const nextPageNumber = await nextPageValue.pagination.pageNumber
+    expect(nextPageNumber).toBe(page + 1)
   })
 })

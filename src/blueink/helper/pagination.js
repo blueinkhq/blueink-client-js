@@ -20,7 +20,6 @@ class PaginationHelper {
 
   async * yieldNextPage () {
     let currentPage = this.#params.page
-    console.log(this.#lastPagination)
     while (
       isEmpty(this.#lastPagination) ||
       currentPage <= this.#lastPagination.totalPages

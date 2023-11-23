@@ -11,7 +11,8 @@ describe('Templates', () => {
   })
 
   it('Retrieve a Template', async () => {
-    const templateId = '5703cfb0-970d-4950-b6d0-9f9d70d9168f'
+    const { data } = await client.templates.list()
+    const templateId = data[0].id
     const { status } = await client.templates.retrieve(templateId)
     expect(status).toBe(200)
   })
