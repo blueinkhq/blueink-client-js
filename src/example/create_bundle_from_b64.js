@@ -1,7 +1,7 @@
 require('dotenv/config')
 const chalk = require('chalk')
-const fetch = require('node-fetch')
 const inquirer = require('inquirer')
+const fetch = require('node-fetch')
 
 const { Client, BundleHelper } = require('../../index')
 

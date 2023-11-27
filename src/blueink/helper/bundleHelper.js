@@ -6,8 +6,9 @@ const has = require('lodash.has')
 const isEmpty = require('lodash.isempty')
 const { Readable } = require('stream')
 
-const { generateKey } = require('../../util/utility.js')
 const { FIELD_KIND } = require('../constants.js')
+const { generateKey } = require('../../util/utility.js')
+
 
 class BundleHelper {
   /**
