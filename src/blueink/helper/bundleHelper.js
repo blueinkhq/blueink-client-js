@@ -9,7 +9,6 @@ const { Readable } = require('stream')
 const { FIELD_KIND } = require('../constants.js')
 const { generateKey } = require('../../util/utility.js')
 
-
 class BundleHelper {
   /**
    * Define a Bundle Helper
