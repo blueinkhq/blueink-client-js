@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import { Client } from '../../index.js'
 
-dotenv.config()
 const client = new Client(process.env.BLUEINK_PRIVATE_API_KEY)
 
 describe('Persons', () => {

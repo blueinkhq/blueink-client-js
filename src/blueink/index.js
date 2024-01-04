@@ -1,5 +1,5 @@
 const Client = require('./client.js')
-const BundleHelper = require('./helper/bundleHelper.js')
-const PersonHelper = require('./helper/personHelper.js')
+const BundleHelper = require('./helper/bundle.js')
+const PersonHelper = require('./helper/person.js')
 
 module.exports = { Client, BundleHelper, PersonHelper }

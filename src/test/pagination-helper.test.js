@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+
 import { Client } from '../../index.js'
 
 dotenv.config()
