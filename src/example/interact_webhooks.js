@@ -54,7 +54,7 @@ const interactWebhook = async () => {
 
       case "Create and add an ExtraHeader to the above Webhook": {
         const webhookId = await askWebhookId();
-        let extraHeaderData = { ...webHookSampleExtraHeader };
+        const extraHeaderData = { ...webHookSampleExtraHeader };
         extraHeaderData["webhook"] = webhookId;
         const createHeaderResp = await client.webhooks.createHeader(
           extraHeaderData
