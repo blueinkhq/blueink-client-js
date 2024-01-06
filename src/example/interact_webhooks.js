@@ -42,9 +42,9 @@ const interactWebhook = async () => {
       }
 
       case 'Update Webhook': {
-        const webhook_id = await askWebhookId() /* eslint-disable-line camelcase */
+        const webhookId = await askWebhookId()
         const updateResp = await client.webhooks.update(
-          webhook_id, /* eslint-disable-line camelcase */
+          webhookId,
           webHookSampleUpdate
         )
         const webhook = updateResp.data
@@ -53,9 +53,9 @@ const interactWebhook = async () => {
       }
 
       case 'Create and add an ExtraHeader to the above Webhook': {
-        const webhook_id = await askWebhookId() /* eslint-disable-line camelcase */
+        const webhookId = await askWebhookId()
         const extraHeaderData = { ...webHookSampleExtraHeader }
-        extraHeaderData.webhook = webhook_id /* eslint-disable-line camelcase */
+        extraHeaderData.webhook = webhookId
         const createHeaderResp = await client.webhooks.createHeader(
           extraHeaderData
         )
@@ -77,9 +77,9 @@ const interactWebhook = async () => {
       }
 
       case 'Delete Webhook': {
-        const webhook_id = await askWebhookId() /* eslint-disable-line camelcase */
-        await client.webhooks.delete(webhook_id) /* eslint-disable-line camelcase */
-        console.log(`Deleted Webhook ${webhook_id}`) /* eslint-disable-line camelcase */
+        const webhookId = await askWebhookId()
+        await client.webhooks.delete(webhookId)
+        console.log(`Deleted Webhook ${webhookId}`)
         break
       }
     }
@@ -111,15 +111,15 @@ const askAction = async () => {
 
 const askWebhookId = async () => {
   console.log('\nEnter a Webhook ID')
-  let webhook_id = '' /* eslint-disable-line camelcase */
-  while (!webhook_id) { /* eslint-disable-line camelcase */
+  let webhookId = ''
+  while (!webhookId) {
     const answer = await inquirer.prompt({
-      name: 'webhook_id',
+      name: 'webhookId',
       type: 'input'
     })
-    webhook_id = answer.webhook_id /* eslint-disable-line camelcase */
+    webhookId = answer.webhookId
   }
-  return webhook_id /* eslint-disable-line camelcase */
+  return webhookId
 }
 
 interactWebhook()
