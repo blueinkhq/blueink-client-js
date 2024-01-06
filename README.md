@@ -560,9 +560,9 @@ const webHookSampleExtraHeader = {
 };
 
 function createWebhook() {
-  createResp = await client.webhooks.create(webHookSample);
-  webhook = createResp.data;
-  console.log(`Created webhook ${webhook.id}`);
+	const createResp = await client.webhooks.create(webHookSample);
+	const webhook = createResp.data;
+	console.log(`Created webhook ${webhook.id}`);
 }
 
 function updateWebhook(webhookId) {
@@ -570,7 +570,7 @@ function updateWebhook(webhookId) {
     webhookId,
     webHookSampleUpdate
   );
-  webhook = updateResp.data;
+  const webhook = updateResp.data;
   console.log(`Updated webhook ${webhook.id}`);
 }
 
@@ -580,7 +580,7 @@ function createExtraHeader(webhookId) {
   const createHeaderResp = await client.webhooks.createHeader(
     extraHeaderData
   );
-  header = createHeaderResp.data;
+  const header = createHeaderResp.data;
   console.log(
     `Added ExtraHeader ${JSON.stringify(header)} to ${header.webhook}`
   );
@@ -588,7 +588,7 @@ function createExtraHeader(webhookId) {
 
 function listWebhooks() {
   const listResp = await client.webhooks.list();
-  webhookList = listResp.data;
+  const webhookList = listResp.data;
   console.log(`Found ${webhookList.length} Webhooks`);
   for (wh of webhookList) {
     console.log(` - Webhook ID: ${wh.id} to ${wh.url}`);

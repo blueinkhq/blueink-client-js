@@ -31,19 +31,20 @@ const interactWebhook = async () => {
   try {
     console.log(chalk.bgBlue.white("Using webhook is easy\n"));
     const action = await askAction();
+    let webhook;
 
     switch (action) {
       case "Create Webhook": {
-        createResp = await client.webhooks.create(webHookSample);
+        const createResp = await client.webhooks.create(webHookSample);
         webhook = createResp.data;
         console.log(`Created webhook ${webhook.id}`);
         break;
       }
 
       case "Update Webhook": {
-        const webhook_id = await askWebhookId();
+        const webhookId = await askWebhookId();
         const updateResp = await client.webhooks.update(
-          webhook_id,
+          webhookId,
           webHookSampleUpdate
         );
         webhook = updateResp.data;
@@ -52,9 +53,9 @@ const interactWebhook = async () => {
       }
 
       case "Create and add an ExtraHeader to the above Webhook": {
-        const webhook_id = await askWebhookId();
+        const webhookId = await askWebhookId();
         const extraHeaderData = { ...webHookSampleExtraHeader };
-        extraHeaderData["webhook"] = webhook_id;
+        extraHeaderData["webhook"] = webhookId;
         const createHeaderResp = await client.webhooks.createHeader(
           extraHeaderData
         );
@@ -76,9 +77,9 @@ const interactWebhook = async () => {
       }
 
       case "Delete Webhook": {
-        const webhook_id = await askWebhookId();
-        const deleteResp = await client.webhooks.delete(webhook_id);
-        console.log(`Deleted Webhook ${webhook_id}`);
+        const webhookId = await askWebhookId();
+        const deleteResp = await client.webhooks.delete(webhookId);
+        console.log(`Deleted Webhook ${webhookId}`);
         break;
       }
     }
@@ -110,15 +111,15 @@ const askAction = async () => {
 
 const askWebhookId = async () => {
   console.log("\nEnter a Webhook ID");
-  let webhook_id = "";
-  while (!webhook_id) {
+  let webhookId = "";
+  while (!webhookId) {
     const answer = await inquirer.prompt({
-      name: "webhook_id",
+      name: "webhookId",
       type: "input",
     });
-    webhook_id = answer.webhook_id;
+    webhookId = answer.webhookId;
   }
-  return webhook_id;
+  return webhookId;
 };
 
 interactWebhook();
