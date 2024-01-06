@@ -1,37 +1,42 @@
-const isEmpty = require('lodash.isempty');
+const isEmpty = require('lodash.isempty')
 
 class PaginationHelper {
-	#params;
-	#pagedRequest;
-	#lastPagination;
+  #params
+  #pagedRequest
+  #lastPagination
 
-	/**
-	 *
-	 * @param {*} pagedRequest
-	 * @param {*} params
-	 * @returns iterator function
-	 */
-	constructor(pagedRequest, params) {
-		this.#params = params;
-		this.#pagedRequest = pagedRequest;
-		this.#lastPagination = {};
+  /**
+   *
+   * @param {*} pagedRequest
+   * @param {*} params
+   * @returns iterator function
+   */
+  constructor (pagedRequest, params) {
+    this.#params = params
+    this.#pagedRequest = pagedRequest
+    this.#lastPagination = {}
+    return this.yieldNextPage()
+  }
 
-		return this.yieldNextPage();
-	}
+  async * yieldNextPage () {
+    let currentPage = this.#params.page
+    while (
+      isEmpty(this.#lastPagination) ||
+      currentPage <= this.#lastPagination.totalPages
+    ) {
+      yield await this.getPageResponse(currentPage)
+      currentPage++
+    }
+  }
 
-	async *yieldNextPage() {
-		let currentPage = this.#params.page;
-		while (isEmpty(this.#lastPagination) || currentPage <= this.#lastPagination.totalPages) {
-			yield await this.getPageResponse(currentPage);
-			currentPage++;
-		}
-	}
-
-	async getPageResponse(pageNumber) {
-		const response = await this.#pagedRequest({ ...this.#params, page: pageNumber });
-		this.#lastPagination = response.pagination;
-		return response;
-	};
+  async getPageResponse (pageNumber) {
+    const response = await this.#pagedRequest({
+      ...this.#params,
+      page: pageNumber
+    })
+    this.#lastPagination = response.pagination
+    return response
+  }
 }
 
-module.exports = PaginationHelper;
+module.exports = PaginationHelper

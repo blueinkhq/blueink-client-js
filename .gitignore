@@ -107,3 +107,6 @@ api.json
 
 # Jetbrains IDE
 .idea/
+
+# Mac
+.DS_Store
