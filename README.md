@@ -551,7 +551,7 @@ function updateWebhook(webhookId) {
 }
 
 function createExtraHeader(webhookId) {
-	let extraHeaderData = { ...webHookSampleExtraHeader };
+	const extraHeaderData = { ...webHookSampleExtraHeader };
 	extraHeaderData["webhook"] = webhookId;
 	const createHeaderResp = await client.webhooks.createHeader(
 		extraHeaderData
