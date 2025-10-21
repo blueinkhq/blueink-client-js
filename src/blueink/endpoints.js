@@ -1,5 +1,6 @@
 const BUNDLES = {
     CREATE: '/bundles/',
+    CREATE_FROM_ENVELOPE_TEMPLATE: '/bundles/create_from_envelope_template/',
     LIST: '/bundles/',
     RETRIEVE: (bundleId) => `/bundles/${bundleId}/`,
     CANCEL: (bundleId) => `/bundles/${bundleId}/cancel/`,
@@ -28,6 +29,11 @@ const TEMPLATES = {
     RETRIEVE: (templateId) => `/templates/${templateId}/`,
 };
 
+const ENVELOPE_TEMPLATES = {
+    LIST: '/envelope-templates/',
+    RETRIEVE: (envelopeTemplateId) => `/envelope-templates/${envelopeTemplateId}/`,
+};
+
 const WEBHOOKS = {
     CREATE: '/webhooks/',
     LIST: '/webhooks/',
@@ -51,4 +57,4 @@ const WEBHOOKS = {
     REGENERATE_SECRET: '/webhooks/secret/regenerate/',
 };
 
-module.exports = { BUNDLES, PERSONS, PACKETS, TEMPLATES, WEBHOOKS }
+module.exports = { BUNDLES, PERSONS, PACKETS, TEMPLATES, ENVELOPE_TEMPLATES, WEBHOOKS }

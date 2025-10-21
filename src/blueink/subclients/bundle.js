@@ -16,8 +16,30 @@ const BundleSubClient = (request) => {
          * @returns New Bundle data
          */
         createFromBundleHelper: function (bundleHelper) {
-            return this.create(bundleHelper.asData())
-        }, 
+            const data = bundleHelper.asData();
+            // If envelope_template is present, use the special endpoint
+            if (data.envelope_template) {
+                return this.createFromEnvelopeTemplate(data);
+            }
+            return this.create(data);
+        },
+
+        /**
+         * Create new Bundle from an Envelope Template.
+         * Envelope Templates are reusable document workflows with predefined documents,
+         * field layouts, signer roles, and configuration settings.
+         * Uses the /bundles/create_from_envelope_template/ endpoint.
+         * @param {object} data - Bundle data with envelope_template
+         * @param {object} data.envelope_template - Envelope template configuration
+         * @param {string} data.envelope_template.template_id - The ID of the Envelope Template to use (format: T-xxx)
+         * @param {object} [data.envelope_template.field_values] - Field values to populate in the template
+         * @param {array} [data.packets] - Signer information (packets)
+         * @returns New Bundle data
+         */
+        createFromEnvelopeTemplate: function (data) {
+            return request.post(BUNDLES.CREATE_FROM_ENVELOPE_TEMPLATE, data)
+        },
+
         /**
          * List all Bundles. Maximum 50 results per page.
          * @param {object} params
@@ -94,7 +116,7 @@ const BundleSubClient = (request) => {
     };
 }
 
-getRelatedData = async (request, path, bundle) => {
+const getRelatedData = async (request, path, bundle) => {
     try {
         const related_data = {};
         related_data.events = await request.get(BUNDLES.LIST_EVENTS(bundle.id));

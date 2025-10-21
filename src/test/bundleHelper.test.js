@@ -182,4 +182,252 @@ describe('BundleHelper', () => {
             expect(result).toHaveProperty('headers');
         });
     });
+
+    // Auto Placement Tests
+    describe('AutoPlacementHelper', () => {
+        const AutoPlacementHelper = BundleHelper.AutoPlacement;
+
+        it('Create a signature auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here");
+            const config = autoPlacement.getConfig();
+            expect(config.kind).toBe("sig");
+            expect(config.search).toBe("Sign Here");
+        });
+
+        it('Create a date auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createDate("Date");
+            const config = autoPlacement.getConfig();
+            expect(config.kind).toBe("sdt");
+            expect(config.search).toBe("Date");
+        });
+
+        it('Create a text auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createText("Name");
+            const config = autoPlacement.getConfig();
+            expect(config.kind).toBe("txt");
+            expect(config.search).toBe("Name");
+        });
+
+        it('Create a checkbox auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createCheckbox("Agree");
+            const config = autoPlacement.getConfig();
+            expect(config.kind).toBe("cbx");
+            expect(config.search).toBe("Agree");
+        });
+
+        it('Create an initial auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createInitial("Initial");
+            const config = autoPlacement.getConfig();
+            expect(config.kind).toBe("ini");
+            expect(config.search).toBe("Initial");
+        });
+
+        it('Set height on auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .setHeight(10);
+            const config = autoPlacement.getConfig();
+            expect(config.h).toBe(10);
+        });
+
+        it('Set width on auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .setWidth(50);
+            const config = autoPlacement.getConfig();
+            expect(config.w).toBe(50);
+        });
+
+        it('Set offset X on auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .setOffsetX(5);
+            const config = autoPlacement.getConfig();
+            expect(config.offset_x).toBe(5);
+        });
+
+        it('Set offset Y on auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .setOffsetY(2);
+            const config = autoPlacement.getConfig();
+            expect(config.offset_y).toBe(2);
+        });
+
+        it('Set editors on auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .setEditors(["signer-1", "signer-2"]);
+            const config = autoPlacement.getConfig();
+            expect(config.editors).toEqual(["signer-1", "signer-2"]);
+        });
+
+        it('Add single editor to auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .addEditor("signer-1")
+                .addEditor("signer-2");
+            const config = autoPlacement.getConfig();
+            expect(config.editors).toEqual(["signer-1", "signer-2"]);
+        });
+
+        it('Chain multiple methods on auto-placement', () => {
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .setHeight(3)
+                .setWidth(25)
+                .setOffsetY(2)
+                .addEditor("signer-1");
+            const config = autoPlacement.getConfig();
+            expect(config.kind).toBe("sig");
+            expect(config.search).toBe("Sign Here");
+            expect(config.h).toBe(3);
+            expect(config.w).toBe(25);
+            expect(config.offset_y).toBe(2);
+            expect(config.editors).toEqual(["signer-1"]);
+        });
+
+        it('Throw error when kind is missing', () => {
+            expect(() => {
+                new AutoPlacementHelper({ search: "Sign Here" });
+            }).toThrow();
+        });
+
+        it('Throw error when search is missing', () => {
+            expect(() => {
+                new AutoPlacementHelper({ kind: "sig" });
+            }).toThrow();
+        });
+
+        it('Throw error when kind is invalid', () => {
+            expect(() => {
+                new AutoPlacementHelper({ kind: "invalid", search: "Sign Here" });
+            }).toThrow();
+        });
+
+        it('Throw error when editors is not an array', () => {
+            expect(() => {
+                new AutoPlacementHelper({
+                    kind: "sig",
+                    search: "Sign Here",
+                    editors: "signer-1"
+                });
+            }).toThrow();
+        });
+
+        it('Throw error when height is not a number', () => {
+            expect(() => {
+                new AutoPlacementHelper({
+                    kind: "sig",
+                    search: "Sign Here",
+                    h: "10"
+                });
+            }).toThrow();
+        });
+
+        it('Throw error when width is not a number', () => {
+            expect(() => {
+                new AutoPlacementHelper({
+                    kind: "sig",
+                    search: "Sign Here",
+                    w: "50"
+                });
+            }).toThrow();
+        });
+    });
+
+    describe('addAutoPlacement', () => {
+        const AutoPlacementHelper = BundleHelper.AutoPlacement;
+
+        it('Add auto-placement to document', () => {
+            const bundleHelper = new BundleHelper({
+                label: "Test Bundle with Auto Placement",
+                requester_email: "test@example.com",
+                requester_name: "Test User",
+            });
+
+            const docKey = bundleHelper.addDocumentByUrl("https://example.com/test.pdf");
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here")
+                .setHeight(3)
+                .setWidth(25)
+                .setOffsetY(2)
+                .addEditor("signer-1");
+
+            bundleHelper.addAutoPlacement(docKey, autoPlacement.getConfig());
+            const doc = bundleHelper.bundleData.documents[0];
+            expect(doc.auto_placements).toBeDefined();
+            expect(doc.auto_placements.length).toBe(1);
+            expect(doc.auto_placements[0].search).toBe("Sign Here");
+        });
+
+        it('Add multiple auto-placements to document', () => {
+            const bundleHelper = new BundleHelper({
+                label: "Test Bundle with Auto Placement",
+                requester_email: "test@example.com",
+                requester_name: "Test User",
+            });
+
+            const docKey = bundleHelper.addDocumentByUrl("https://example.com/test.pdf");
+
+            const sigPlacement = AutoPlacementHelper.createSignature("Tenant Signature")
+                .setHeight(3)
+                .setWidth(25)
+                .setOffsetY(2)
+                .addEditor("signer-1");
+
+            const datePlacement = AutoPlacementHelper.createDate("Tenant Date")
+                .setHeight(3)
+                .setWidth(25)
+                .setOffsetY(2)
+                .addEditor("signer-1");
+
+            bundleHelper.addAutoPlacement(docKey, sigPlacement.getConfig());
+            bundleHelper.addAutoPlacement(docKey, datePlacement.getConfig());
+
+            const doc = bundleHelper.bundleData.documents[0];
+            expect(doc.auto_placements.length).toBe(2);
+            expect(doc.auto_placements[0].search).toBe("Tenant Signature");
+            expect(doc.auto_placements[1].search).toBe("Tenant Date");
+        });
+
+        it('Throw error when adding auto-placement to invalid document', () => {
+            const bundleHelper = new BundleHelper({
+                label: "Test Bundle",
+                requester_email: "test@example.com",
+                requester_name: "Test User",
+            });
+
+            const autoPlacement = AutoPlacementHelper.createSignature("Sign Here");
+
+            expect(() => {
+                bundleHelper.addAutoPlacement("invalid-key", autoPlacement.getConfig());
+            }).toThrow();
+        });
+
+        it('Throw error when adding auto-placement with invalid kind', () => {
+            const bundleHelper = new BundleHelper({
+                label: "Test Bundle",
+                requester_email: "test@example.com",
+                requester_name: "Test User",
+            });
+
+            const docKey = bundleHelper.addDocumentByUrl("https://example.com/test.pdf");
+
+            expect(() => {
+                bundleHelper.addAutoPlacement(docKey, {
+                    kind: "invalid",
+                    search: "Sign Here"
+                });
+            }).toThrow();
+        });
+
+        it('Throw error when adding auto-placement without search string', () => {
+            const bundleHelper = new BundleHelper({
+                label: "Test Bundle",
+                requester_email: "test@example.com",
+                requester_name: "Test User",
+            });
+
+            const docKey = bundleHelper.addDocumentByUrl("https://example.com/test.pdf");
+
+            expect(() => {
+                bundleHelper.addAutoPlacement(docKey, {
+                    kind: "sig"
+                });
+            }).toThrow();
+        });
+    });
 });

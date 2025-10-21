@@ -6,6 +6,7 @@ const get = require('lodash.get');
 const has = require('lodash.has');
 const { Readable } = require('stream');
 
+const AutoPlacementHelper = require('./autoPlacementHelper.js');
 const { generateKey } = require('../../util/utility.js');
 const { FIELD_KIND } = require('../constants.js');
 
@@ -229,6 +230,51 @@ class BundleHelper {
 	};
 
 	/**
+	 * Add an Envelope Template to the bundle.
+	 * Envelope Templates are reusable document workflows with predefined documents,
+	 * field layouts, signer roles, and configuration settings.
+	 * @param {object} envelopeTemplate - Must include valid envelope template id.
+	 * @param {string} envelopeTemplate.template_id - The ID of the envelope template (format: T-xxx)
+	 * @param {object} [envelopeTemplate.field_values] - Field values to populate
+	 * @returns - The envelope template configuration
+	 */
+	addEnvelopeTemplate = (envelopeTemplate) => {
+		const error = [];
+		const noBlankMessage = 'This field must not be blank.';
+
+		// Check template_id
+		if (!envelopeTemplate.template_id) {
+			error.push({
+				field: 'template_id',
+				message: noBlankMessage,
+			});
+		}
+
+		// Check field_values if provided
+		if (envelopeTemplate.field_values && !Array.isArray(envelopeTemplate.field_values)) {
+			error.push({
+				field: `field_values`,
+				message: 'This field must be an array.',
+			});
+		} else if (envelopeTemplate.field_values) {
+			for (let i in envelopeTemplate.field_values) {
+				if (!envelopeTemplate.field_values[i].key) {
+					error.push({
+						field: `field_values[${i}].key`,
+						message: noBlankMessage,
+					});
+				}
+			}
+		}
+
+		if (isEmpty(error)) {
+			// Store envelope_template configuration in bundleData
+			this.bundleData.envelope_template = envelopeTemplate;
+			return envelopeTemplate;
+		} else throw error;
+	};
+
+	/**
 	 * Assign a Role to a Signer (Packet). Used when a Document Template is used.
 	 * @param {string} signerKey
 	 * @param {string} templateKey
@@ -337,6 +383,76 @@ class BundleHelper {
 	};
 
 	/**
+	 * Add an Auto Placement field to the Document.
+	 * Auto Placement automatically places fields on PDFs based on specific string inputs.
+	 * @param {string} docKey - The Key of the Document.
+	 * @param {object} autoPlacement - Auto Placement configuration
+	 * @param {string} autoPlacement.kind - Field type (sig, sdt, txt, chk, etc.)
+	 * @param {string} autoPlacement.search - String to search for in the document
+	 * @param {number} [autoPlacement.h] - Height of the field
+	 * @param {number} [autoPlacement.w] - Width of the field
+	 * @param {number} [autoPlacement.offset_x] - X offset from the search string
+	 * @param {number} [autoPlacement.offset_y] - Y offset from the search string
+	 * @param {string[]} [autoPlacement.editors] - Array of signer keys who can edit this field
+	 * @returns {string} - Key of the Auto Placement field.
+	 */
+	addAutoPlacement = (docKey, autoPlacement) => {
+		const errors = [];
+		const noBlankMessage = 'This field must not be blank.';
+
+		// Validate required fields
+		if (!autoPlacement.kind) {
+			errors.push({
+				field: 'kind',
+				message: noBlankMessage,
+			});
+		}
+		if (!autoPlacement.search) {
+			errors.push({
+				field: 'search',
+				message: noBlankMessage,
+			});
+		}
+
+		// Validate kind is valid
+		if (autoPlacement.kind && !Object.values(FIELD_KIND).includes(autoPlacement.kind)) {
+			errors.push({
+				field: 'kind',
+				message: 'kind is invalid.',
+			});
+		}
+
+		// Validate editors if provided
+		if (has(autoPlacement, 'editors') && !Array.isArray(autoPlacement.editors)) {
+			errors.push({
+				field: 'editors',
+				message: 'This field must be an array',
+			});
+		}
+
+		// Find the document
+		const document = this.bundleData.documents.find(
+			(doc) => doc.key === docKey
+		);
+		if (!document) {
+			errors.push({
+				field: 'docKey',
+				message: `Document with key ${docKey} is invalid.`,
+			});
+		}
+
+		if (!isEmpty(errors)) throw errors;
+
+		// Initialize auto_placements array if it doesn't exist
+		if (!document.auto_placements) {
+			document.auto_placements = [];
+		}
+
+		document.auto_placements.push(autoPlacement);
+		return autoPlacement.search;
+	};
+
+	/**
 	 * Initialize field value
 	 * @param {string} docKey - The Key of the Document.
 	 * @param {string} fieldKey - The Key of the Field.
@@ -413,5 +529,8 @@ class BundleHelper {
 		return this.bundleData;
 	};
 }
+
+// Attach AutoPlacementHelper as a static property
+BundleHelper.AutoPlacement = AutoPlacementHelper;
 
 module.exports = BundleHelper;
