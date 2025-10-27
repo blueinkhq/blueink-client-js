@@ -16,7 +16,29 @@ const BundleSubClient = (request) => {
      * @returns New Bundle data
      */
     createFromBundleHelper: function (bundleHelper) {
-      return this.create(bundleHelper.asData())
+      const data = bundleHelper.asData()
+      // If envelope_template is present, use the createFromEnvelopeTemplate method
+      if (data.envelope_template) {
+        return this.createFromEnvelopeTemplate(data)
+      }
+      return this.create(data)
+    },
+
+    /**
+     * Create new Bundle from an Envelope Template.
+     * Envelope Templates are reusable document workflows with predefined documents,
+     * field layouts, signer roles, and configuration settings.
+     * Uses the standard /bundles/ endpoint with envelope_template in the request body.
+     * @param {object} data - Bundle data with envelope_template
+     * @param {object} data.envelope_template - Envelope template configuration
+     * @param {string} data.envelope_template.template_id - The ID of the Envelope Template to use (format: T-xxx)
+     * @param {object} [data.envelope_template.field_values] - Field values to populate in the template
+     * @param {array} [data.packets] - Signer information (packets)
+     * @returns New Bundle data
+     */
+    createFromEnvelopeTemplate: function (data) {
+      // Use the standard create endpoint - the API handles envelope_template in the request body
+      return this.create(data)
     },
     /**
      * List all Bundles. Maximum 50 results per page.
