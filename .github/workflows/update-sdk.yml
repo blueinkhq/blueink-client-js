@@ -1,0 +1,145 @@
+name: Update JS SDK from blueink-core changes
+
+on:
+  repository_dispatch:
+    types: [blueink-core-updated]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-and-create-issue:
+    # Only act on production pushes (skip check for manual workflow_dispatch)
+    if: github.event_name == 'workflow_dispatch' || github.event.client_payload.ref == 'refs/heads/production'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout blueink-core (production, depth 2)
+        uses: actions/checkout@v4
+        with:
+          repository: blueinkhq/blueink-core
+          ref: production
+          token: ${{ secrets.CORE_READ_TOKEN }}
+          fetch-depth: 2
+          path: blueink-core
+
+      - name: Compute diff of signasure/apiv2
+        id: diff
+        working-directory: blueink-core
+        run: |
+          CURRENT_SHA=$(git rev-parse HEAD)
+          PREVIOUS_SHA=$(git rev-parse HEAD~1)
+
+          echo "current_sha=$CURRENT_SHA" >> "$GITHUB_OUTPUT"
+          echo "previous_sha=$PREVIOUS_SHA" >> "$GITHUB_OUTPUT"
+
+          DIFF=$(git diff "$PREVIOUS_SHA" "$CURRENT_SHA" -- signasure/apiv2/ || true)
+
+          if [ -z "$DIFF" ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No changes in signasure/apiv2 between $PREVIOUS_SHA and $CURRENT_SHA"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "$DIFF" > /tmp/apiv2_diff.txt
+            echo "Detected changes in signasure/apiv2"
+          fi
+
+      - name: Create GitHub Issue for Copilot
+        if: steps.diff.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.SDK_UPDATE_TOKEN }}
+          CURRENT_SHA: ${{ steps.diff.outputs.current_sha }}
+        run: |
+          DIFF_CONTENT=$(cat /tmp/apiv2_diff.txt)
+
+          # Build the issue body
+          {
+            echo "## Auto-update JS SDK from blueink-core API changes"
+            echo ""
+            echo "A push to the \`production\` branch of \`blueink-core\` included changes in"
+            echo "\`signasure/apiv2/\`. Please update the JS SDK in this repository to"
+            echo "reflect these API changes."
+            echo ""
+            echo "### Instructions"
+            echo "1. Review the diff of \`signasure/apiv2/\` below."
+            echo "2. Update any files in this repo necessary to reflect the API changes, including"
+            echo "   source files, tests, and examples."
+            echo "3. Make sure all updated methods, parameters, and models are consistent with the diff."
+            echo ""
+            echo "### Diff of \`signasure/apiv2/\`"
+            echo ""
+            echo '```diff'
+            echo "$DIFF_CONTENT"
+            echo '```'
+          } > /tmp/issue_body.md
+
+          SHORT_SHA=$(echo "$CURRENT_SHA" | cut -c1-7)
+          TITLE="Update JS SDK: blueink-core production $SHORT_SHA"
+
+          # Create the issue (without assignment - REST API can't assign Copilot)
+          ISSUE_URL=$(gh issue create \
+            --repo blueinkhq/blueink-client-js \
+            --title "$TITLE" \
+            --body-file /tmp/issue_body.md)
+
+          echo "Created issue: $ISSUE_URL"
+
+          # Extract issue number from URL
+          ISSUE_NUMBER=$(echo "$ISSUE_URL" | grep -o '[0-9]*$')
+
+          # Use GraphQL to find the issue node ID
+          ISSUE_ID=$(gh api graphql -f query='
+            query($owner: String!, $name: String!, $number: Int!) {
+              repository(owner: $owner, name: $name) {
+                issue(number: $number) {
+                  id
+                }
+              }
+            }
+          ' -f owner="blueinkhq" -f name="blueink-client-js" -F number="$ISSUE_NUMBER" \
+            --jq '.data.repository.issue.id')
+
+          # Find the Copilot bot actor ID
+          COPILOT_ID=$(gh api graphql -f query='
+            query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                suggestedActors(capabilities: [CAN_BE_ASSIGNED], first: 100) {
+                  nodes {
+                    login
+                    ... on Bot {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          ' -f owner="blueinkhq" -f name="blueink-client-js" \
+            --jq '.data.repository.suggestedActors.nodes[] | select(.login == "copilot-swe-agent") | .id')
+
+          if [ -z "$COPILOT_ID" ]; then
+            echo "Warning: copilot-swe-agent not found in suggested actors. Issue created but not assigned."
+            exit 0
+          fi
+
+          # Assign Copilot to the issue via GraphQL mutation
+          gh api graphql -f query="
+            mutation {
+              replaceActorsForAssignable(input: {assignableId: \"$ISSUE_ID\", actorIds: [\"$COPILOT_ID\"]}) {
+                assignable {
+                  ... on Issue {
+                    id
+                    title
+                    assignees(first: 10) {
+                      nodes {
+                        login
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          "
+
+          echo "Assigned Copilot to issue #$ISSUE_NUMBER"
