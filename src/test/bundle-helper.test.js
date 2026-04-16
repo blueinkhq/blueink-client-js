@@ -38,6 +38,38 @@ describe('BundleHelper', () => {
     });
   });
 
+  describe('addDocumentByHtml', () => {
+    it('should add a document by HTML content', () => {
+      const htmlContent = '<html><body><p>Hello</p></body></html>';
+      const additionalFields = { key: 'DOC-4' };
+      const result = bundleHelper.addDocumentByHtml(htmlContent, additionalFields);
+      expect(result).toEqual('DOC-4');
+    });
+
+    it('should store file_html in the document data', () => {
+      const htmlContent = '<html><body><p>Hello</p></body></html>';
+      bundleHelper.addDocumentByHtml(htmlContent, { key: 'DOC-HTML' });
+      const doc = bundleHelper.bundleData.documents.find(d => d.key === 'DOC-HTML');
+      expect(doc).toBeDefined();
+      expect(doc.file_html).toEqual(htmlContent);
+    });
+
+    it('should pass html_fields_mode in additional fields', () => {
+      const htmlContent = '<html><body><p>Hello</p></body></html>';
+      bundleHelper.addDocumentByHtml(htmlContent, { key: 'DOC-HTML-MODE', html_fields_mode: 'none' });
+      const doc = bundleHelper.bundleData.documents.find(d => d.key === 'DOC-HTML-MODE');
+      expect(doc).toBeDefined();
+      expect(doc.html_fields_mode).toEqual('none');
+    });
+
+    it('should not add file_html to this.files (HTML is sent as JSON)', () => {
+      const htmlContent = '<html><body><p>Hello</p></body></html>';
+      bundleHelper.addDocumentByHtml(htmlContent, { key: 'DOC-HTML-FILES' });
+      expect(Object.keys(bundleHelper.files)).toHaveLength(0);
+    });
+  });
+
+
   describe('addDocumentTemplate', () => {
     it('should add a document template', () => {
       const template = {
