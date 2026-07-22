@@ -46,11 +46,12 @@ class BundleHelper {
 
   /**
    * Add a new Document to the bundle.
-   * @param {object} newDoc - Must include either file_url, file_path, or file_data.
+   * @param {object} newDoc - Must include either file_url, file_path, file_data, file_b64, or file_html.
    * @param {string} [newDoc.file_url] - The url to the pdf document. If file_url is provided, file_path and file_data will be ignored.
    * @param {string} [newDoc.file_path] -The path to the pdf file. If file_path is provided, file_data will be ignored.
    * @param {object} [newDoc.file_data] - The data of the file.
    * @param {string} [newDoc.file_b64] - The base 64 string of the file.
+   * @param {string} [newDoc.file_html] - The HTML content to convert to PDF.
    * @returns - Key of the Document.
    */
   #addDocument = (newDoc) => {
@@ -62,12 +63,13 @@ class BundleHelper {
       !has(newDoc, 'file_path') &&
       !has(newDoc, 'file_url') &&
       !has(newDoc, 'file_data') &&
-      !has(newDoc, 'file_b64')
+      !has(newDoc, 'file_b64') &&
+      !has(newDoc, 'file_html')
     ) {
       /* eslint-disable no-throw-literal */
       throw [
         {
-          field: 'file_path/file_url/file_data/file_b64',
+          field: 'file_path/file_url/file_data/file_b64/file_html',
           message: 'This field must not be blank.'
         }
       ]
@@ -170,6 +172,17 @@ class BundleHelper {
       file_b64: fileB64,
       ...additionalFields
     })
+  }
+
+  /**
+   * Add document by HTML content.
+   * The HTML content will be converted to PDF server-side.
+   * @param {string} htmlContent - HTML content string.
+   * @param {object} additionalFields - Additional fields (e.g. filename, html_fields_mode)
+   * @returns - Key of the Document.
+   */
+  addDocumentByHtml = (htmlContent, additionalFields = {}) => {
+    return this.#addDocument({ file_html: htmlContent, ...additionalFields })
   }
 
   /**
