@@ -78,6 +78,29 @@ const BundleSubClient = (request) => {
     },
 
     /**
+     * Partially update a Bundle (PATCH). Typically used on draft Bundles to
+     * update fields such as signing_brand, team, expires, cc_emails, etc.
+     * @param {string} bundleId - The ID that uniquely identifies the Bundle.
+     * @param {object} data - Fields to update on the Bundle.
+     * @returns Updated Bundle data
+     */
+    update: (bundleId, data) => request.patch(BUNDLES.UPDATE(bundleId), data),
+
+    /**
+     * Send a draft Bundle (POST).
+     * @param {string} bundleId - The ID that uniquely identifies the Bundle.
+     * @returns Bundle data
+     */
+    send: (bundleId) => request.post(BUNDLES.SEND(bundleId)),
+
+    /**
+     * Validate a draft Bundle (PUT).
+     * @param {string} bundleId - The ID that uniquely identifies the Bundle.
+     * @returns Validation result (can_send, msg, n_docs)
+     */
+    validate: (bundleId) => request.put(BUNDLES.VALIDATE(bundleId)),
+
+    /**
      * Cancel a Bundle.
      * @param {string} bundleId - The ID that uniquely identifies the Bundle.
      */

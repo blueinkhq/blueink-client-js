@@ -2,6 +2,9 @@ const BUNDLES = {
   CREATE: '/bundles/',
   LIST: '/bundles/',
   RETRIEVE: (bundleId) => `/bundles/${bundleId}/`,
+  UPDATE: (bundleId) => `/bundles/${bundleId}/`,
+  SEND: (bundleId) => `/bundles/${bundleId}/send/`,
+  VALIDATE: (bundleId) => `/bundles/${bundleId}/validate/`,
   CANCEL: (bundleId) => `/bundles/${bundleId}/cancel/`,
   LIST_EVENTS: (bundleId) => `/bundles/${bundleId}/events/`,
   LIST_FILES: (bundleId) => `/bundles/${bundleId}/files/`,
@@ -25,13 +28,18 @@ const PACKETS = {
 
 const TEMPLATES = {
   LIST: '/templates/',
-  RETRIEVE: (templateId) => `/templates/${templateId}/`
+  RETRIEVE: (templateId) => `/templates/${templateId}/`,
+  UPDATE: (templateId) => `/templates/${templateId}/`
+}
+
+const VERIFY = {
+  CREATE: '/verify/'
 }
 
 const ENVELOPE_TEMPLATES = {
-    LIST: '/envelope-templates/',
-    RETRIEVE: (envelopeTemplateId) => `/envelope-templates/${envelopeTemplateId}/`,
-};
+  LIST: '/envelope-templates/',
+  RETRIEVE: (envelopeTemplateId) => `/envelope-templates/${envelopeTemplateId}/`
+}
 
 const WEBHOOKS = {
   CREATE: '/webhooks/',
@@ -56,4 +64,4 @@ const WEBHOOKS = {
   REGENERATE_SECRET: '/webhooks/secret/regenerate/'
 }
 
-module.exports = { BUNDLES, PERSONS, PACKETS, TEMPLATES, ENVELOPE_TEMPLATES, WEBHOOKS }
+module.exports = { BUNDLES, PERSONS, PACKETS, TEMPLATES, ENVELOPE_TEMPLATES, VERIFY, WEBHOOKS }

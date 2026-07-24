@@ -18,6 +18,16 @@ const TemplateSubClient = (request) => {
       request.get(TEMPLATES.RETRIEVE(templateId)),
 
     /**
+         * Partially update a Template (PATCH). Typically used to update
+         * metadata on an existing Template.
+         * @param {string} templateId - The ID that uniquely identifies the Template.
+         * @param {object} data - Fields to update on the Template.
+         * @returns Updated Template Data.
+         */
+    update: (templateId, data) =>
+      request.patch(TEMPLATES.UPDATE(templateId), data),
+
+    /**
          * Paged list Templates.
          * @param {object} params
          * @param {number} [params.page]

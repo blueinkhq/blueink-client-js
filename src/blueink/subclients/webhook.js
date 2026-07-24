@@ -16,6 +16,7 @@ const WebhookSubClient = (request) => {
     /**
      * Create new Webhook Subscription.
      * @param {object} data
+     * @param {string} data.name - Required. A human-readable name for the Webhook.
      * @param {string} data.url
      * @param {string[]} data.event_types
      * @param {boolean} [data.enabled]

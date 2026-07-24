@@ -7,6 +7,7 @@ const { PacketSubClient } = require('./subclients/packet.js')
 const { PersonSubClient } = require('./subclients/person.js')
 const { TemplateSubClient } = require('./subclients/template.js')
 const { EnvelopeTemplateSubClient } = require('./subclients/envelopeTemplate.js')
+const { VerifySubClient } = require('./subclients/verify.js')
 const { WebhookSubClient } = require('./subclients/webhook.js')
 
 class Client {
@@ -39,6 +40,7 @@ class Client {
     this.packets = PacketSubClient(request)
     this.templates = TemplateSubClient(request)
     this.envelopeTemplates = EnvelopeTemplateSubClient(request)
+    this.verify = VerifySubClient(request)
     this.webhooks = WebhookSubClient(request)
   }
 }
