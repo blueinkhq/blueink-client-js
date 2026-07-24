@@ -9,9 +9,7 @@ class RequestHelper {
     this._axios = axios.create({
       baseURL: baseApiUrl,
       headers: {
-        common: {
-          Authorization: `Token ${privateApiKey}`
-        }
+        Authorization: `Token ${privateApiKey}`
       }
     })
 
