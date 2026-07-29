@@ -1,0 +1,4 @@
+# Default owners for everything in this repo.
+# The SDKs - Maintainers team reviews and merges all changes.
+# https://docs.github.com/articles/about-code-owners
+* @blueinkhq/sdks-maintainers
