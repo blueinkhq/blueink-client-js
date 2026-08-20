@@ -87,4 +87,14 @@ describe('2.16 endpoint construction', () => {
       expect(values).toContain('bundle_signer_reassigned')
     })
   })
+
+  describe('APIv2 2.18 constants', () => {
+    it('includes stamp field kind and reassigned packet status', () => {
+      const { FIELD_KIND, PACKET_STATUS } = require('../blueink/constants')
+      expect(FIELD_KIND.STAMP).toBe('stp')
+      expect(Object.values(FIELD_KIND)).toContain('stp')
+      expect(PACKET_STATUS.REASSIGNED).toBe('ra')
+      expect(Object.values(PACKET_STATUS)).toContain('ra')
+    })
+  })
 })
