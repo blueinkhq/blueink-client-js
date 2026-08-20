@@ -53,7 +53,8 @@ const FIELD_KIND = {
   DATE: 'dat',
   CHECKBOX: 'chk',
   CHECKBOXES: 'cbx',
-  ATTACHMENT: 'att'
+  ATTACHMENT: 'att',
+  STAMP: 'stp'
 }
 
 const PACKET_STATUS = {
@@ -64,7 +65,8 @@ const PACKET_STATUS = {
   CANCELLED: 'ca',
   EXPIRED: 'ex',
   COMPLETE: 'co',
-  FAILED: 'fa'
+  FAILED: 'fa',
+  REASSIGNED: 'ra'
 }
 
 const V_PATTERN = {
