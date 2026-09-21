@@ -114,10 +114,19 @@ const BundleSubClient = (request) => {
     listEvents: (bundleId) => request.get(BUNDLES.LIST_EVENTS(bundleId)),
 
     /**
-     * Get downloadable files for a completed Bundle.
+     * Get downloadable files for a completed Bundle (or interim files when early
+     * access is enabled). Returns 409 while generation is pending (APIv2 2.19.0+).
      * @param {string} bundleId - The ID that uniquely identifies the Bundle.
      */
     listFiles: (bundleId) => request.get(BUNDLES.LIST_FILES(bundleId)),
+
+    /**
+     * Enqueue unsigned filled-PDF generation for an incomplete Bundle.
+     * Requires early file access (FEATURE.API_DATA_EARLY). Poll listFiles until
+     * ready (APIv2 2.19.0+).
+     * @param {string} bundleId - The ID that uniquely identifies the Bundle.
+     */
+    generateFiles: (bundleId) => request.put(BUNDLES.LIST_FILES(bundleId)),
 
     /**
      * Get data entered into fields for a completed Bundle.
