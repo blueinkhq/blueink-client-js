@@ -263,6 +263,8 @@ Javascript dictionary as the data field.
 
 - List via `client.templates.list(...)` or `client.templates.pagedList(...)`
 - Retrieve via `client.templates.retrieve(...)`
+- Delete via `client.templates.delete(...)`
+- Create Preparation Session via `client.templates.createPreparationSession(...)`
 
 ### Webhook Related
 

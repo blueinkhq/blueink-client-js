@@ -29,7 +29,9 @@ const PACKETS = {
 const TEMPLATES = {
   LIST: '/templates/',
   RETRIEVE: (templateId) => `/templates/${templateId}/`,
-  UPDATE: (templateId) => `/templates/${templateId}/`
+  UPDATE: (templateId) => `/templates/${templateId}/`,
+  DELETE: (templateId) => `/templates/${templateId}/`,
+  CREATE_PREPARATION_SESSION: '/templates/preparation_session/'
 }
 
 const VERIFY = {
