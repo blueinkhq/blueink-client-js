@@ -97,4 +97,11 @@ describe('2.16 endpoint construction', () => {
       expect(Object.values(PACKET_STATUS)).toContain('ra')
     })
   })
+
+  describe('APIv2 2.19 endpoints', () => {
+    it('exposes generateFiles on the same path as listFiles', () => {
+      const { BUNDLES } = require('../blueink/endpoints')
+      expect(BUNDLES.LIST_FILES('abc123')).toBe('/bundles/abc123/files/')
+    })
+  })
 })
