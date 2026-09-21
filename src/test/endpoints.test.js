@@ -54,6 +54,22 @@ describe('2.16 endpoint construction', () => {
       expect(req.calls[0].path).toBe('/templates/T-abc123/')
       expect(req.calls[0].data).toEqual({ metadata: { a: 1 } })
     })
+
+    it('delete() DELETEs /templates/{id}/', () => {
+      const req = mockRequest()
+      TemplateSubClient(req).delete('T-abc123')
+      expect(req.calls[0].method).toBe('delete')
+      expect(req.calls[0].path).toBe('/templates/T-abc123/')
+    })
+
+    it('createPreparationSession() POSTs /templates/preparation_session/', () => {
+      const req = mockRequest()
+      const data = { allowed_data_flow_tags: ['customer_name', 'acme:*'] }
+      TemplateSubClient(req).createPreparationSession(data)
+      expect(req.calls[0].method).toBe('post')
+      expect(req.calls[0].path).toBe('/templates/preparation_session/')
+      expect(req.calls[0].data).toEqual(data)
+    })
   })
 
   describe('VerifySubClient', () => {
@@ -76,6 +92,8 @@ describe('2.16 endpoint construction', () => {
       expect(typeof client.bundles.send).toBe('function')
       expect(typeof client.bundles.validate).toBe('function')
       expect(typeof client.templates.update).toBe('function')
+      expect(typeof client.templates.delete).toBe('function')
+      expect(typeof client.templates.createPreparationSession).toBe('function')
     })
   })
 
@@ -85,6 +103,13 @@ describe('2.16 endpoint construction', () => {
       const values = Object.values(EVENT_TYPE)
       expect(values).toContain('packet_declined')
       expect(values).toContain('bundle_signer_reassigned')
+    })
+
+    it('includes 2.20 document template event types', () => {
+      const { EVENT_TYPE } = require('../blueink/constants')
+      expect(EVENT_TYPE.EVENT_DOC_TEMPLATE_CREATED).toBe('doc_template_created')
+      expect(EVENT_TYPE.EVENT_DOC_TEMPLATE_UPDATED).toBe('doc_template_updated')
+      expect(EVENT_TYPE.EVENT_DOC_TEMPLATE_DELETED).toBe('doc_template_deleted')
     })
   })
 
@@ -102,6 +127,16 @@ describe('2.16 endpoint construction', () => {
     it('exposes generateFiles on the same path as listFiles', () => {
       const { BUNDLES } = require('../blueink/endpoints')
       expect(BUNDLES.LIST_FILES('abc123')).toBe('/bundles/abc123/files/')
+    })
+  })
+
+  describe('APIv2 2.20 endpoints', () => {
+    it('exposes template delete and preparation session paths', () => {
+      const { TEMPLATES } = require('../blueink/endpoints')
+      expect(TEMPLATES.DELETE('T-abc123')).toBe('/templates/T-abc123/')
+      expect(TEMPLATES.CREATE_PREPARATION_SESSION).toBe(
+        '/templates/preparation_session/'
+      )
     })
   })
 })

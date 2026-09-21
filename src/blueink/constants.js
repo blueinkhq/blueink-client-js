@@ -87,6 +87,9 @@ const EVENT_TYPE = {
   EVENT_BUNDLE_ERROR: 'bundle_error',
   EVENT_BUNDLE_CANCELLED: 'bundle_cancelled',
   EVENT_BUNDLE_SIGNER_REASSIGNED: 'bundle_signer_reassigned',
+  EVENT_DOC_TEMPLATE_CREATED: 'doc_template_created',
+  EVENT_DOC_TEMPLATE_UPDATED: 'doc_template_updated',
+  EVENT_DOC_TEMPLATE_DELETED: 'doc_template_deleted',
   EVENT_PACKET_VIEWED: 'packet_viewed',
   EVENT_PACKET_COMPLETE: 'packet_complete',
   EVENT_PACKET_DECLINED: 'packet_declined'
