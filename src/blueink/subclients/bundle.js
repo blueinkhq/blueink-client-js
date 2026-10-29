@@ -80,7 +80,8 @@ const BundleSubClient = (request) => {
     /**
      * Partially update a Bundle (PATCH). Typically used on draft Bundles to
      * update fields such as signing_brand, team, expires, cc_emails,
-     * allow_signer_reassign, and allow_chained_signer_reassign.
+     * allow_signer_reassign, allow_chained_signer_reassign, and
+     * allow_decline_to_sign.
      * @param {string} bundleId - The ID that uniquely identifies the Bundle.
      * @param {object} data - Fields to update on the Bundle.
      * @returns Updated Bundle data
@@ -133,6 +134,17 @@ const BundleSubClient = (request) => {
      * @param {string} bundleId - The ID that uniquely identifies the Bundle.
      */
     listData: (bundleId) => request.get(BUNDLES.LIST_DATA(bundleId)),
+
+    /**
+     * Create an embedded Bundle preparation session.
+     * Optional `send_button` customizes the embedded Send button (APIv2 2.21.0+).
+     * Optional `allow_add_signers` (default true) hides Add Signer / Recipient
+     * when false (APIv2 2.22.0+).
+     * @param {object} data - Session configuration.
+     * @returns Preparation session URL and expiry.
+     */
+    createPreparationSession: (data) =>
+      request.post(BUNDLES.CREATE_PREPARATION_SESSION, data),
 
     /**
      * Paged list Bundles.
