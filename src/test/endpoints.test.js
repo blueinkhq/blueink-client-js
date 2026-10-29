@@ -44,6 +44,18 @@ describe('2.16 endpoint construction', () => {
       expect(req.calls[0].method).toBe('put')
       expect(req.calls[0].path).toBe('/bundles/B-abc123/validate/')
     })
+
+    it('createPreparationSession() POSTs /bundles/preparation_session/', () => {
+      const req = mockRequest()
+      const data = {
+        allow_add_signers: false,
+        send_button: { text: 'Submit', color: '#ffffff', background_color: '#111827' }
+      }
+      BundleSubClient(req).createPreparationSession(data)
+      expect(req.calls[0].method).toBe('post')
+      expect(req.calls[0].path).toBe('/bundles/preparation_session/')
+      expect(req.calls[0].data).toEqual(data)
+    })
   })
 
   describe('TemplateSubClient', () => {
@@ -94,6 +106,7 @@ describe('2.16 endpoint construction', () => {
       expect(typeof client.templates.update).toBe('function')
       expect(typeof client.templates.delete).toBe('function')
       expect(typeof client.templates.createPreparationSession).toBe('function')
+      expect(typeof client.bundles.createPreparationSession).toBe('function')
     })
   })
 
@@ -110,6 +123,12 @@ describe('2.16 endpoint construction', () => {
       expect(EVENT_TYPE.EVENT_DOC_TEMPLATE_CREATED).toBe('doc_template_created')
       expect(EVENT_TYPE.EVENT_DOC_TEMPLATE_UPDATED).toBe('doc_template_updated')
       expect(EVENT_TYPE.EVENT_DOC_TEMPLATE_DELETED).toBe('doc_template_deleted')
+    })
+
+    it('includes 2.22 packet_sent and bundle_expired event types', () => {
+      const { EVENT_TYPE } = require('../blueink/constants')
+      expect(EVENT_TYPE.EVENT_PACKET_SENT).toBe('packet_sent')
+      expect(EVENT_TYPE.EVENT_BUNDLE_EXPIRED).toBe('bundle_expired')
     })
   })
 
@@ -136,6 +155,15 @@ describe('2.16 endpoint construction', () => {
       expect(TEMPLATES.DELETE('T-abc123')).toBe('/templates/T-abc123/')
       expect(TEMPLATES.CREATE_PREPARATION_SESSION).toBe(
         '/templates/preparation_session/'
+      )
+    })
+  })
+
+  describe('APIv2 2.21 / 2.22 endpoints', () => {
+    it('exposes bundle preparation session path', () => {
+      const { BUNDLES } = require('../blueink/endpoints')
+      expect(BUNDLES.CREATE_PREPARATION_SESSION).toBe(
+        '/bundles/preparation_session/'
       )
     })
   })

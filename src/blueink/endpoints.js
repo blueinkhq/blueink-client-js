@@ -8,7 +8,8 @@ const BUNDLES = {
   CANCEL: (bundleId) => `/bundles/${bundleId}/cancel/`,
   LIST_EVENTS: (bundleId) => `/bundles/${bundleId}/events/`,
   LIST_FILES: (bundleId) => `/bundles/${bundleId}/files/`,
-  LIST_DATA: (bundleId) => `/bundles/${bundleId}/data/`
+  LIST_DATA: (bundleId) => `/bundles/${bundleId}/data/`,
+  CREATE_PREPARATION_SESSION: '/bundles/preparation_session/'
 }
 
 const PERSONS = {

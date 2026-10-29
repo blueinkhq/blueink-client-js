@@ -243,6 +243,7 @@ Javascript dictionary as the data field.
 - List Events via `client.bundles.listEvents(...)`
 - List Files via `client.bundles.listFiles(...)`
 - List Data via `client.bundles.listData(...)`
+- Create Preparation Session via `client.bundles.createPreparationSession(...)`
 
 ### Person Related
 
